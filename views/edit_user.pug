@@ -1,0 +1,74 @@
+extends layout
+
+block title
+  title Edit #{typeName(u.type)} #{u.id} "#{u.name}"
+
+block top
+  h3.text-dark.mb-0.m-2.d-none.d-md-block Edit #{typeName(u.type)} #{u.id} "#{u.name}"
+  h3.text-dark.mb-0.m-2.d-md-none Edit #{u.id}
+
+block topr
+  .nav-item.dropdown.no-arrow
+    a.nav-link(onclick="history.go(-1); return false;", href='#')
+      span.d-inline.mr-2.text-gray-600.small Back
+
+block content
+  .row.justify-content-center
+    .col-sm-12.col-md-11.col-lg-9.col-xl-6
+      .card.shadow-lg.o-hidden.border-0.my-5
+        .card-header.py-3
+          p.text-primary.m-0.font-weight-bold Edit Form
+        .card-body.p-0
+          .p-5
+            form.user(method="post")
+              .form-group.dropdown
+                input.d-none(name='type')
+                input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Type (Unchanged)", onfocus='this.blur()')
+                .dropdown-menu(role='menu')
+                  -var t = 0;
+                  while t <= Math.min(session.type, 2)
+                    a.dropdown-item(role='presentation', onclick="$('#type0').val('" + typeName(t) + "'); $('[name=type]').val(" + t + "); input(0)")= typeName(t)
+                    -t++;
+                  a.dropdown-item(role='presentation', onclick="$('#type0').val(''); $('[name=type]').val(''); input(0)") Unchanged
+                if (u.id === session.userID)
+                  #warning.text-danger.d-none You may LOST your #{typeName(session.type)} Permission once you reset your type
+                else
+                  #warning.text-danger.d-none You may NOT edit or delete this user once you reset its type
+              .form-group
+                input.form-control.form-control-user(type="text", placeholder="Name (Unchanged)", name="name", oninput="input(1)")
+              .form-group
+                button#wb.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, onclick='$(this).attr(\'disabled\', true); submit();') Edit
+              .form-group
+                a.btn.btn-primary.btn-block.text-white.btn-user(href='/reset_password?id=' + u.id) Reset Password
+
+  script
+    | function input(x) {
+    |   if ($('[name=name]').val() || $('[name=type]').val())
+    |     $('[type=submit]').removeAttr('disabled');
+    |   else
+    |     $('[type=submit]').attr('disabled', '');
+    if (u.id === session.userID)
+      |   if (!x) {
+      |     if ($('[name=type]').val() && Number($('[name=type]').val()) < #{session.type}) {
+      |       $('#warning').removeClass('d-none');
+      |       $('#wb').removeClass('btn-primary');
+      |       $('#wb').addClass('btn-danger');
+      |     } else {
+      |       $('#warning').addClass('d-none');
+      |       $('#wb').removeClass('btn-danger');
+      |       $('#wb').addClass('btn-primary');
+      |     }
+      |   }
+    else
+      |   if (!x) {
+      |     if (Number($('[name=type]').val()) === #{session.type}) {
+      |       $('#warning').removeClass('d-none');
+      |       $('#wb').removeClass('btn-primary');
+      |       $('#wb').addClass('btn-danger');
+      |     } else {
+      |       $('#warning').addClass('d-none');
+      |       $('#wb').removeClass('btn-danger');
+      |       $('#wb').addClass('btn-primary');
+      |     }
+      |   }
+    | }

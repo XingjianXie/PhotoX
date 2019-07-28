@@ -1,0 +1,21 @@
+extends layout
+
+block title
+  title= msg
+
+block menu
+  li.nav-item(role='presentation')
+    a.nav-link.active.disabled
+      i.fas.fa-exclamation-circle
+      span= msg
+
+block content
+  .text-center.mt-5
+    .error.mx-auto(data-text= code)
+      p.m-0= code
+    p.text-dark.mb-5.lead= msg
+    p.text-black-50.mb-0= inf
+    if home
+      a(href="/") ← Back To Home
+    else
+      a(href="#", onclick="history.go(-1); return false;") ← Back

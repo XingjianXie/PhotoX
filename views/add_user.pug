@@ -1,0 +1,58 @@
+extends layout
+
+block title
+  title Add User
+
+block top
+  h3.text-dark.mb-0.m-2 Add User
+
+block topr
+  .nav-item.dropdown.no-arrow
+    a.nav-link(onclick="history.go(-1); return false;", href='#')
+      span.d-inline.mr-2.text-gray-600.small Back
+
+block content
+  .row.justify-content-center
+    .col-sm-12.col-md-11.col-lg-9.col-xl-6
+      .card.shadow-lg.o-hidden.border-0.my-5
+        .card-header.py-3
+          p.text-primary.m-0.font-weight-bold Add Form
+        .card-body.p-0
+          .p-5
+            form.user(method="post")
+              .form-group.dropdown
+                input.d-none(name='type')
+                input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Type", onfocus='this.blur()')
+                .dropdown-menu(role='menu')
+                  -var t = 0;
+                  while t <= Math.min(session.type, 2)
+                    a.dropdown-item(role='presentation', onclick="$('#type0').val('" + typeName(t) + "'); $('[name=type]').val(" + t + "); input(0)")= typeName(t)
+                    -t++;
+                #warning.text-danger.d-none You may NOT edit or delete this user once you create it
+              .form-group
+                input.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput="input(1)")
+              .form-group
+                input.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input(1)")
+              .form-group
+                button#wb.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, onclick='$(this).attr(\'disabled\', true); submit();') Add
+
+  script
+    | function input(x) {
+    |   if ($('[name=name]').val() && $('[name=pwd]').val() && $('[name=type]').val())
+    |     $('[type=submit]').removeAttr('disabled');
+    |   else
+    |     $('[type=submit]').attr('disabled', '');
+    |   if (!x) {
+    |     $('[name=name]').val('');
+    |     $('[name=pwd]').val('');
+    |     if ($('[name=type]').val() === '#{session.type}') {
+    |       $('#warning').removeClass('d-none');
+    |       $('#wb').removeClass('btn-primary');
+    |       $('#wb').addClass('btn-danger');
+    |     } else {
+    |       $('#warning').addClass('d-none');
+    |       $('#wb').removeClass('btn-danger');
+    |       $('#wb').addClass('btn-primary');
+    |     }
+    |   }
+    | }

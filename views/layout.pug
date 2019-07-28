@@ -1,0 +1,129 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0, shrink-to-fit=no")
+
+    block title
+      title= title
+
+    block stylesheets
+      link(rel="stylesheet", href="/assets/bootstrap/css/bootstrap.min.css")
+      link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i")
+      link(rel="stylesheet", href="/assets/fonts/fontawesome-all.min.css")
+      style.
+        body {
+          -o-user-select: none;
+          -moz-user-select: none; /*火狐 firefox*/
+          -webkit-user-select: none; /*webkit浏览器*/
+          -ms-user-select: none; /*IE10+*/
+          -khtml-user-select: none; /*早期的浏览器*/
+          user-select: none;
+        }
+
+    // bring support for HTML5 and CSS3 to old IEs
+    <!--[if lt IE 9]>
+    script(src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js")
+    script(src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js")
+    <![endif]-->
+
+  body#page-top
+    #wrapper
+      nav.navbar.navbar-dark.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0
+        script.
+          var width = window.innerWidth
+                  || document.documentElement.clientWidth
+                  || document.body.clientWidth;
+          if (width < 768) {
+            document.querySelector('body').classList.add('sidebar-toggled');
+            document.querySelector('.sidebar').classList.add('toggled');
+          }
+        .container-fluid.d-flex.flex-column.p-0
+          a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='/')
+            .sidebar-brand-icon.rotate-n-15
+              i.fas.fa-grip-horizontal
+            .sidebar-brand-text.mx-3
+              span PhotoX
+          hr.sidebar-divider.my-0
+          ul#accordionSidebar.nav.navbar-nav.text-light
+            block menu
+              li.nav-item(role='presentation')
+                a.nav-link(href='/gallery', class= {active: url.indexOf('/gallery') === 0})
+                  i.fas.fa-images
+                  span Gallery
+              li.nav-item(role='presentation')
+                a.nav-link(href='/reset_password', class= {active: url.indexOf('/reset_password') === 0})
+                  i.fas.fa-key
+                  span Reset Password
+              if session.type > 0
+                li.nav-item(role='presentation')
+                  a.nav-link(href='/user', class= {active: url.indexOf('/user') === 0})
+                    i.fas.fa-user
+                    span User
+          .text-center.d-none.d-md-inline
+            button#sidebarToggle.btn.rounded-circle.border-0(type='button')
+      #content-wrapper.d-flex.flex-column
+        #content
+          nav.navbar.navbar-light.navbar-expand.bg-white.shadow.mb-4.topbar.static-top
+            .container-fluid.justify-content-start
+              button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3(type='button')
+                i.fas.fa-bars
+              block top
+              .nav.navbar-nav.flex-nowrap.ml-auto
+                block topr
+                .topbar-divider
+                .nav-item.dropdown.no-arrow
+                  a.dropdown-toggle.nav-link(data-toggle='dropdown', aria-expanded='false', href='#')
+                    if session.sign
+                      span.d-inline.mr-2.text-gray-600.small= session.name
+                    else
+                      span.d-inline.mr-2.text-gray-600.small GUEST
+                  .dropdown-menu.shadow.dropdown-menu-right.animated--grow-in(role='menu')
+                    block user
+                      if session.sign
+                        .dropdown-item(role='presentation')
+                          |  User ID: #{session.userID}
+                        .dropdown-item(role='presentation')
+                          |  Type: #{typeName(session.type)}
+                      else
+                        .dropdown-item(role='presentation')
+                          |  User ID: -1
+                        .dropdown-item(role='presentation')
+                          |  Type: Guest
+                    .dropdown-divider
+                    if session.sign
+                      a.dropdown-item(role='presentation', href='/logout')
+                        i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
+                        |  Logout
+                    else
+                      a.dropdown-item(role='presentation', href='/login')
+                        i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
+                        |  Login
+          .container-fluid
+            block content
+
+        footer.bg-white.sticky-footer
+          .container.my-auto
+            .text-center.my-auto.copyright
+              span Copyright © PhotoX 2019
+      a.border.rounded.d-inline.scroll-to-top(href='#page-top')
+        i.fas.fa-angle-up
+
+    block javascripts
+      script(src="/assets/js/jquery.min.js")
+      script(src="/assets/bootstrap/js/bootstrap.min.js")
+      script(src="/assets/js/chart.min.js")
+      script(src="/assets/js/bs-charts.js")
+      script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js")
+      script(src="/assets/js/theme.js")
+      script.
+        window.addEventListener("pageshow", function (event) {
+          var historyTraversal = event.persisted ||
+                  (typeof window.performance != "undefined" &&
+                          window.performance.navigation.type === 2);
+          if (historyTraversal) {
+            // Handle page restore.
+            window.location.reload();
+          }
+        });
+

@@ -1,0 +1,149 @@
+extends layout
+
+block title
+  title User
+
+block top
+  h3.text-dark.mb-0.m-2 User
+
+  form.m-2.d-none.d-sm-block
+    .input-group
+      input.form-control.form-control-sm(type='text', placeholder= wd ? 'Results for \"' + wd + '\"': 'ID or Name', onchange='submit()', name='wd')
+      .input-group-append
+        button.btn.btn-primary.py-0(type='button', onclick='submit()')
+          if wd
+            i.fas.fa-times.d-lg-none
+            .d-none.d-lg-block Clear
+          else
+            i.fas.fa-search.d-lg-none
+            .d-none.d-lg-block Search
+    input.d-none(name='max', value=maximum)
+
+  form.form-inline.ml-5.d-none.d-lg-block
+    label
+      if wd
+        input.d-none(name='wd', value=wd)
+      | Show 
+      select.form-control.form-control-sm.custom-select.custom-select-sm(onchange='submit()', name='max')
+        option(selected= maximum === 5) 5
+        option(selected= maximum === 10) 10
+        option(selected= maximum === 25) 25
+
+block topr
+  .nav-item.dropdown.no-arrow
+    a.nav-link(href='/user/add')
+      span.d-inline.mr-2.text-gray-600.small Add User
+
+block content
+  .card.shadow
+    .card-header.py-3
+      p.text-primary.m-0.font-weight-bold User Info
+    .card-body
+      .table-responsive.table.mt-2(role='grid')
+        table.table.my-0
+          thead
+            tr
+              th ID
+              th Name
+              th Type
+              th.d-none.d-sm-block Options
+          tbody
+            each val in users
+              tr
+                if val.id === session.userID
+                  th= val.id + ' (Me)'
+                else
+                  th= val.id
+                th= val.name
+                th= typeName(val.type)
+
+                th.d-none.d-sm-block
+                  form.d-inline-block(method='post', action='/user/logout')
+                    input.d-none(value=val.id, name='userID')
+                    if map[val.id]
+                      button.btn.btn-primary.btn-sm(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
+                        | Logout
+                    else
+                      button.btn.btn-primary.btn-sm(disabled)
+                        | Offline
+                  =' '
+                  form.d-inline-block
+                    button.btn.btn-primary.btn-sm(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                      | Edit
+                  =' '
+                  form.d-inline-block(method='post' action='/user/delete')
+                    input.d-none(value=val.id, name='userID')
+                    button.btn.btn-danger.btn-sm(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
+                      | Delete
+      .row.d-block.d-lg-flex
+        .col-sm-12.col-md-6.align-self-center
+          p(role='status', aria-live='polite') Showing #{ (current - 1) * maximum + 1 } to #{(current - 1) * maximum + users.length} of #{total}
+        .col-6.d-none.d-sm-block.d-lg-flex.justify-content-end
+          nav
+            - var end = Math.ceil(total / maximum);
+            ul.pagination
+              li.page-item(class={disabled: current === 1})
+                form
+                  input.d-none(name='pg', value=current - 1)
+                  input.d-none(name='wd', value=wd)
+                  input.d-none(name='max', value=maximum)
+                  button.page-link(type='submit', aria-label='Previous')
+                    span(aria-hidden='true') «
+              li.page-item(class={"active": current === 1})
+                form
+                  input.d-none(name='pg', value=1)
+                  input.d-none(name='wd', value=wd)
+                  input.d-none(name='max', value=maximum)
+                  button.page-link(type='submit')= 1
+              li.page-item(disabled, class={'d-none': 2 >= current - 2})
+                form
+                  button.page-link(disabled) ...
+              - var t = Math.max(2, current - 2);
+              while t <= Math.min(end - 1, current + 2)
+                li.page-item(class={ "active": current === t})
+                  form
+                    input.d-none(name='pg', value=t)
+                    input.d-none(name='wd', value=wd)
+                    input.d-none(name='max', value=maximum)
+                    button.page-link(type='submit')= t
+                    - t++
+              li.page-item(disabled, class={'d-none': end - 1 <= current + 2})
+                form
+                  button.page-link(disabled) ...
+              li.page-item(class={"active": current === end})
+                form
+                  input.d-none(name='pg', value=end)
+                  input.d-none(name='wd', value=wd)
+                  input.d-none(name='max', value=maximum)
+                  button.page-link(type='submit')= end
+              li.page-item(class={disabled: current === end})
+                form
+                  input.d-none(name='pg', value=current + 1)
+                  input.d-none(name='wd', value=wd)
+                  input.d-none(name='max', value=maximum)
+                  button.page-link(type='submit', aria-label='Next')
+                    span(aria-hidden='true') »
+        .col-12.d-sm-none.justify-content-end
+          nav
+            - var end = Math.ceil(total / maximum);
+            ul.pagination
+              li.page-item(class={disabled: current === 1})
+                form
+                  input.d-none(name='pg', value=current - 1)
+                  input.d-none(name='wd', value=wd)
+                  input.d-none(name='max', value=maximum)
+                  button.page-link(type='submit')
+                    span Previous
+              li.page-item.active
+                form
+                  input.d-none(name='pg', value=current)
+                  input.d-none(name='wd', value=wd)
+                  input.d-none(name='max', value=maximum)
+                  button.page-link(type='submit')= current
+              li.page-item(class={disabled: current === end})
+                form
+                  input.d-none(name='pg', value=current + 1)
+                  input.d-none(name='wd', value=wd)
+                  input.d-none(name='max', value=maximum)
+                  button.page-link(type='submit', aria-label='Next')
+                    span Next

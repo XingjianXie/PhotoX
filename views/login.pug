@@ -1,0 +1,44 @@
+extends layout
+
+block title
+  title Login
+
+block menu
+  li.nav-item(role='presentation')
+    a.nav-link.active.disabled(href=url)
+      i.fas.fa-user-circle
+      span Login
+
+block top
+  h3.text-dark.mb-0.m-2 Login
+
+block content
+  .row.justify-content-center
+    .col-sm-12.col-md-9.col-lg-11.col-xl-9
+      .card.shadow-lg.o-hidden.border-0.my-5
+        .card-header.py-3.d-lg-none
+          p.text-primary.m-0.font-weight-bold Login Form
+        .card-body.p-0
+          .row
+            .col-lg-6.d-none.d-lg-flex
+              .flex-grow-1.bg-login-image(style="background-image: url(/images/bg.jpeg);")
+            .col-lg-6
+              .p-5
+                .text-center
+                  h4.text-dark.mb-4 Welcome To PhotoX
+                form.user(method="post")
+                  .form-group
+                    input.form-control.form-control-user(type="text", placeholder="User ID", name="id", oninput="input(0)")
+                  .form-group
+                    input.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input(1)")
+                  button.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, onclick='$(this).attr(\'disabled\', true); submit();') Login
+
+  script.
+    function input(x) {
+      if ($('[name=id]').val() && $('[name=pwd]').val())
+        $('[type=submit]').removeAttr('disabled');
+      else
+        $('[type=submit]').attr('disabled', true);
+      if(!x)
+        $('[name=pwd]').val('');
+    }

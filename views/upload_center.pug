@@ -1,0 +1,32 @@
+extends layout
+
+block title
+  title Upload Center
+
+block top
+  h3.text-dark.mb-0.m-2 Upload Center
+
+block topr
+  .nav-item.dropdown.no-arrow
+    a.nav-link(onclick="history.go(-1); return false;", href='#')
+      span.d-inline.mr-2.text-gray-600.small Back
+
+block content
+  .card.shadow
+    .card-header.py-3
+      p.text-primary.m-0.font-weight-bold Photo
+    .card-body
+      .table-responsive.table.mt-2(role='grid')
+        table.table.my-0
+          thead
+            tr
+              th ID
+              th Name
+              th Uploader
+          tbody
+
+      .row
+        .col-6.align-self-center
+          p(role='status', aria-live='polite') Showing #{ 0 } to #{ 0 } of #{ 0 }
+        .col-6
+          nav.d-flex.justify-content-end.dataTables_paginate.paging_simple_numbers
