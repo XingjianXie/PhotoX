@@ -9,7 +9,7 @@ import multer from "multer";
 
 require(`express-async-errors` );
 const app = express();
-const store : Store = new redisStore({ host: 'localhost', port: 6379, client: redis.createClient() });
+const store : Store = new redisStore({ host: require('./db/RedisConfig').host, port: require('./db/RedisConfig').port, client: redis.createClient() });
 let session_map : any = {};
 
 // view engine setup
