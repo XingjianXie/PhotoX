@@ -3,12 +3,13 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import session = require("express-session");
-import {MemoryStore} from "express-session";
+import redis from 'redis';
+const redisStore = require('connect-redis')(session);
 import multer from "multer";
 
 require(`express-async-errors` );
 const app = express();
-const store = new MemoryStore();
+const store : Store = new redisStore({ host: 'localhost', port: 6379, client: redis.createClient() });
 let session_map : any = {};
 
 // view engine setup
@@ -26,7 +27,7 @@ app.use(session({
     store: store,
     saveUninitialized: false,
     destroy_callback: function (session_id) {
-        store.get(session_id, (err, session) => {
+        store.get(session_id, (err , session) => {
             if (err) throw err;
             else session_map[session!.id] = undefined;
         });
@@ -53,6 +54,7 @@ app.use((req, res, next) => {
 
 import index from './routes/index';
 import db from "./db/db";
+import {Store} from "express-session";
 app.use(index(session_map, db, multer({ dest: 'uploads/' })));
 
 export default app;
