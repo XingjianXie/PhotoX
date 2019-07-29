@@ -1,6 +1,5 @@
 import app from '../app';
 import http from 'http';
-const debug = require('debug')('photox:server');
 
 /**
  * Get port from environment and store in Express.
@@ -80,5 +79,5 @@ function onListening() {
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr!.port;
-  debug('Listening on ' + bind);
+  console.log('Listening on ' + bind);
 }
