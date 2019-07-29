@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-import session = require("express-session");
+import session from "express-session";
 import redis from 'redis';
 const redisStore = require('connect-redis')(session);
 import multer from "multer";
