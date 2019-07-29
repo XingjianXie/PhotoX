@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "debug": "ts-node bin/www.ts",
     "build": "tsc",
-    "start": "node bin/www.js"
+    "start": "node bin/www.js",
+    "debug": "nodemon bin/www.ts"
   },
   "dependencies": {
     "connect-redis": "^3.4.2",
