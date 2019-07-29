@@ -1,20 +1,12 @@
 # PhotoX
-This is a website for Year Book Club of CNU School  
-**THE MAIN PART OF THIS PROJECT IS NOT FINISHED YET.**  
-**MYSQL AND REDIS IS REQUIRED IN ORDER TO SAVE USER AND SESSION**
+**PhotoX is used to manage photos for Year Book Club of CNU High School.**  
+We will support upload and download photos, and we have a simply user manage system. The download of photos will be recorded so that we can make sure a photo is used for only one time.  
 
-# Build PhotoX
-## Install Environment (only for Ubuntu, install Node & NPM by yourself for other system)
-```shell script
-# Install Node & NPM
-sudo apt install nodejs-legacy
-sudo apt install npm
-
-# Update NPM
-sudo npm install npm@latest -g
-```
+**THE MAIN PART(MANAGE PHOTOS) OF THIS PROJECT IS NOT FINISHED YET.**  
 
 ## Build
+**Node and NPM should be installed at first.**  
+**Mysql and Redis are required to save informations of user and session.**  
 ```shell script
 # Install Dependencies
 npm install
