@@ -35,7 +35,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             return;
         }
         const password = ps_create(req.body.pwd);
-        const rs = await db(query.insert, [req.body.name, req.body.type, password[0], password[1]]);
+        const rs = await db(query.addUser, [req.body.name, req.body.type, password[0], password[1]]);
         res.status(201);
         res.render('message', {
             code: 201,

@@ -1,0 +1,82 @@
+.col-6.d-none.d-sm-block.d-lg-flex.justify-content-end
+  nav
+    - var end = Math.ceil(total / maximum);
+    ul.pagination
+      li.page-item(class={disabled: current === 1})
+        form
+          input.d-none(name='pg', value=current - 1)
+          input.d-none(name='wd', value=wd)
+          input.d-none(name='max', value=maximum)
+          button.page-link(type='submit', aria-label='Previous')
+            span(aria-hidden='true') «
+      if 2 <= current - 2
+        li.page-item(class={"active": current === 1})
+          form
+            input.d-none(name='wd', value=wd)
+            input.d-none(name='max', value=maximum)
+            input.page-link(type='submit', name='pg', value=1)
+      if 3 < current - 2
+        li.page-item(disabled)
+          form
+            button.page-link(disabled) ...
+      if 3 === current - 2
+        li.page-item(class={"active": current === 2})
+          form
+            input.d-none(name='wd', value=wd)
+            input.d-none(name='max', value=maximum)
+            input.page-link(type='submit', name='pg', value=2)
+      - var t = Math.max(1, current - 2);
+      while t <= Math.min(end, current + 2)
+        li.page-item(class={ "active": current === t})
+          form
+            input.d-none(name='wd', value=wd)
+            input.d-none(name='max', value=maximum)
+            input.page-link(type='submit', name='pg', value=t)
+            - t++
+      if end - 2 > current + 2
+        li.page-item(disabled)
+          form
+            button.page-link(disabled) ...
+      if end - 2 === current + 2
+        li.page-item(class={"active": current === end - 1})
+          form
+            input.d-none(name='wd', value=wd)
+            input.d-none(name='max', value=maximum)
+            input.page-link(type='submit', name='pg', value=end - 1)
+      if end - 1 >= current + 2
+        li.page-item(class={"active": current === end})
+          form
+            input.d-none(name='wd', value=wd)
+            input.d-none(name='max', value=maximum)
+            input.page-link(type='submit', name='pg', value=end)
+      li.page-item(class={disabled: current === end})
+        form
+          input.d-none(name='pg', value=current + 1)
+          input.d-none(name='wd', value=wd)
+          input.d-none(name='max', value=maximum)
+          button.page-link(type='submit', aria-label='Next')
+            span(aria-hidden='true') »
+.col-12.d-sm-none.justify-content-end
+  nav
+    - var end = Math.ceil(total / maximum);
+    ul.pagination
+      li.page-item(class={disabled: current === 1})
+        form
+          input.d-none(name='pg', value=current - 1)
+          input.d-none(name='wd', value=wd)
+          input.d-none(name='max', value=maximum)
+          button.page-link(type='submit')
+            span Previous
+      li.page-item.active
+        form
+          input.d-none(name='pg', value=current)
+          input.d-none(name='wd', value=wd)
+          input.d-none(name='max', value=maximum)
+          button.page-link(type='submit')= current
+      li.page-item(class={disabled: current === end})
+        form
+          input.d-none(name='pg', value=current + 1)
+          input.d-none(name='wd', value=wd)
+          input.d-none(name='max', value=maximum)
+          button.page-link(type='submit', aria-label='Next')
+            span Next

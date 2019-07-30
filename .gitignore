@@ -1,7 +1,9 @@
-# TypeScirpt
+# Project
 *.js
 *.map
-!public/**/*
+!public/
+public/uploads/
+uploads/
 
 # Logs
 logs
@@ -156,7 +158,8 @@ tags
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*

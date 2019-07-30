@@ -33,6 +33,7 @@ block content
                     input.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input(1)")
                   button.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, onclick='$(this).attr(\'disabled\', true); submit();') Login
 
+append javascripts
   script.
     function input(x) {
       if ($('[name=id]').val() && $('[name=pwd]').val())

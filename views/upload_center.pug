@@ -8,6 +8,11 @@ block top
 
 block topr
   .nav-item.dropdown.no-arrow
+    a#upload.nav-link(onclick="document.querySelector('#uploadInput').click(); return false;" href='#')
+      span.d-inline.mr-2.text-gray-600.small Upload
+    form#uploadForm.d-none(method="post", enctype="multipart/form-data")
+      input#uploadInput(type="file", name="photo", accept='image/*', onchange="upload()", multiple)
+  .nav-item.dropdown.no-arrow
     a.nav-link(onclick="history.go(-1); return false;", href='#')
       span.d-inline.mr-2.text-gray-600.small Back
 
@@ -30,3 +35,25 @@ block content
           p(role='status', aria-live='polite') Showing #{ 0 } to #{ 0 } of #{ 0 }
         .col-6
           nav.d-flex.justify-content-end.dataTables_paginate.paging_simple_numbers
+          
+append javascripts
+  script.
+    function upload() {
+      const formData = new FormData();
+      const files = document.getElementById('uploadInput').files;
+      for (const file of files)
+          formData.append('photo', file);
+      const xhr = new XMLHttpRequest();
+
+
+      xhr.open('post', '/gallery/upload_center', true);
+
+      xhr.upload.onprogress = function (e) {
+        if (e.lengthComputable) {
+          const percentage = (e.loaded / e.total) * 100;
+          console.log(percentage + "%");
+        }
+      };
+
+      xhr.send(formData);
+    }

@@ -65,9 +65,9 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         session_map[Number(req.params.id)] = undefined;
 
         if (req.body.type)
-            await db(query.resetType, [Number(req.body.type), Number(req.params.id)]);
+            await db(query.resetUserType, [Number(req.body.type), Number(req.params.id)]);
         if (req.body.name)
-            await db(query.resetName, [req.body.name, Number(req.params.id)]);
+            await db(query.resetUserName, [req.body.name, Number(req.params.id)]);
 
         if (Number(req.params.id) === req.session.userID) {
             res.status(200);

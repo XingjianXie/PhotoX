@@ -55,6 +55,10 @@ app.use((req, res, next) => {
 import index from './routes/index';
 import db from "./db/db";
 import {Store} from "express-session";
+import {mkdir} from "fs";
+import * as util from "util";
+util.promisify(mkdir)('public/uploads')
+    .catch(err => { if (err.code != 'EEXIST') throw err });
 app.use(index(session_map, db, multer({ dest: 'uploads/' })));
 
 export default app;
