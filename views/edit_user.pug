@@ -5,10 +5,10 @@ block title
 
 block top
   h3.text-dark.mb-0.m-2.d-none.d-md-block Edit #{typeName(u.type)} #{u.id} "#{u.name}"
-  h3.text-dark.mb-0.m-2.d-md-none Edit #{u.id}
+  h5.text-dark.mb-0.m-2.d-md-none Edit #{u.id}
 
 block topr
-  .nav-item.dropdown.no-arrow
+  .nav-item
     a.nav-link(onclick="history.go(-1); return false;", href='#')
       span.d-inline.mr-2.text-gray-600.small Back
 

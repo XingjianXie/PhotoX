@@ -4,15 +4,19 @@ block title
   title Upload Center
 
 block top
-  h3.text-dark.mb-0.m-2 Upload Center
+  h3#t1.text-dark.mb-0.m-2.d-none.d-lg-inline Upload Center
+  h5#t2.text-dark.mb-0.m-2.d-lg-none Upload Center
+  #progressbar.my-auto.col-3.d-none.m-2
+    .progress
+      .progress-bar
 
 block topr
-  .nav-item.dropdown.no-arrow
+  .nav-item
     a#upload.nav-link(onclick="document.querySelector('#uploadInput').click(); return false;" href='#')
       span.d-inline.mr-2.text-gray-600.small Upload
     form#uploadForm.d-none(method="post", enctype="multipart/form-data")
       input#uploadInput(type="file", name="photo", accept='image/*', onchange="upload()", multiple)
-  .nav-item.dropdown.no-arrow
+  .nav-item
     a.nav-link(onclick="history.go(-1); return false;", href='#')
       span.d-inline.mr-2.text-gray-600.small Back
 
@@ -50,8 +54,18 @@ append javascripts
 
       xhr.upload.onprogress = function (e) {
         if (e.lengthComputable) {
-          const percentage = (e.loaded / e.total) * 100;
-          console.log(percentage + "%");
+          if (e.loaded === e.total) {
+            $('#t1').html("Uploading Finished");
+            $('#t2').html("Finished");
+            $('#progressbar').removeClass('d-lg-block');
+          } else {
+            const percentage = ((e.loaded / e.total) * 100);
+            $('#t1').html("Uploading...");
+            $('#t2').html("Uploading... " + percentage.toFixed(2).toString() + '%');
+            $('.progress-bar').attr('style', "width: " + percentage.toString() + "%; transition:none;")
+            $('.progress-bar').html(percentage.toFixed(2).toString() + "%");
+            $('#progressbar').addClass('d-lg-block');
+          }
         }
       };
 
