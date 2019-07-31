@@ -6,7 +6,7 @@ import {create as ps_create} from "../../tools/password";
 export default (db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
     router.get('/', async(req, res, next) => {
-        if (!req.session.sign || !req.session.type) {
+        if (!req.session || !req.session.sign || !req.session.type) {
             res.redirect('/');
             return;
         }
@@ -14,7 +14,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
     });
 
     router.post('/', async(req, res, next) => {
-        if (!req.session.sign || !req.session.type) {
+        if (!req.session || !req.session.sign || !req.session.type) {
             next(createError(401, 'Unauthorized'));
             return;
         }

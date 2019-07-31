@@ -6,7 +6,7 @@ import session from "express-session";
 import redis from 'redis';
 const redisStore = require('connect-redis')(session);
 import createError from "http-errors";
-import multer from "multer";
+const multer = require("multer");
 
 require(`express-async-errors` );
 const app = express();
@@ -60,11 +60,6 @@ import {mkdir} from "fs";
 import * as util from "util";
 util.promisify(mkdir)('public/uploads')
     .catch(err => { if (err.code != 'EEXIST') throw err });
-app.use(index(session_map, db, multer({ dest: 'uploads/', fileFilter: function (req, file, cb) {
-        if (file.mimetype.split('/')[0] !== "image") {
-            return cb(createError(400, 'Only Images Are Accepted'), false);
-        }
-        cb(null, true);
-}})));
+app.use(index(session_map, db, multer( { limits: { fileSize: 1e8 } } )));
 
 export default app;

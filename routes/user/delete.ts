@@ -6,7 +6,7 @@ import createError from "http-errors";
 export default (session_map : any, db : (sql : string, values : any) => Promise<any[]>) => {
     const router = express.Router();
     router.post('/', async(req, res, next) => {
-        if (!req.session.sign || !req.session.type) {
+        if (!req.session || !req.session.sign || !req.session.type) {
             next(createError(401, 'Unauthorized'));
             return;
         }
@@ -24,7 +24,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             return;
         }
         await new Promise((resolve, reject) => {
-            req.sessionStore.destroy(session_map[Number(req.body.userID)], (err) => {
+            req.sessionStore!.destroy(session_map[Number(req.body.userID)], (err) => {
                 if(err) reject(err);
                 else resolve();
             });

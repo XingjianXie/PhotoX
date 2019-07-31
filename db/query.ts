@@ -9,6 +9,6 @@ export default {
     resetUserName: 'UPDATE user SET name=? WHERE id=?',
     total: 'SELECT FOUND_ROWS()',
     addPhoto: 'INSERT INTO photo(uploader_id, type, date) VALUES(?, 0, now())',
-    updatePhoto: 'UPDATE photo SET type=1, file=?',
-    publishPhoto: 'UPDATE photo SET type=2, name=?',
+    updatePhoto: 'UPDATE photo SET type=1 WHERE id=?',
+    publishPhoto: 'UPDATE photo SET type=2, name=? WHERE id=?',
 };

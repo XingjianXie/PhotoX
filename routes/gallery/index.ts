@@ -5,7 +5,7 @@ import upload_center from "./upload_center";
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
     router.get('/', (req, res) => {
-        if (!req.session.sign) {
+        if (!req.session || !req.session.sign) {
             res.redirect('/');
             return;
         }

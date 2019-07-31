@@ -6,7 +6,7 @@ import createError from "http-errors";
 export default (session_map : any, db: (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
     router.get('/', (req, res) => {
-        if (req.session.sign) {
+        if (req.session!.sign) {
             res.redirect('/');
             return;
         }
@@ -14,7 +14,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
     });
 
     router.post('/', async(req, res, next) => {
-        if (req.session.sign) {
+        if (req.session!.sign) {
             res.redirect('/');
             return;
         }
@@ -37,15 +37,15 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
         }
         if (ps_make(req.body.pwd, rs[0].passrd) === rs[0].passcode) {
             await new Promise((resolve, reject) => {
-                req.sessionStore.destroy(session_map[Number(req.body.id)], (err) => {
+                req.sessionStore!.destroy(session_map[Number(req.body.id)], (err) => {
                     if(err) reject(err);
                     else resolve();
                 });
             });
-            req.session.sign = true;
-            req.session.userID = Number(req.body.id);
-            req.session.type = Number(rs[0].type);
-            req.session.name = rs[0].name;
+            req.session!.sign = true;
+            req.session!.userID = Number(req.body.id);
+            req.session!.type = Number(rs[0].type);
+            req.session!.name = rs[0].name;
             session_map[Number(req.body.id)] = req.sessionID;
             res.redirect('/');
         } else {

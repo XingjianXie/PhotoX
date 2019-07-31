@@ -2,20 +2,18 @@ import express from 'express';
 import query from '../db/query';
 import {make as ps_make, create as ps_create} from '../tools/password';
 import createError from "http-errors";
-import {MemoryStore} from "express-session";
 
 export default (session_map : any, db: (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
     router.get('/', (req, res) => {
-        if (!req.session.sign) {
+        if (!req.session || !req.session.sign) {
             res.redirect('/');
             return;
         }
         res.render("reset_password", { pre: req.query.id });
     });
-
     router.post('/', async(req, res, next) => {
-        if (!req.session.sign) {
+        if (!req.session || !req.session.sign) {
             next(createError(401, 'Unauthorized'));
             return;
         }
@@ -59,7 +57,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             const ps_new = ps_create(req.body.pwd_new);
             await db(query.resetPassword, [ ps_new[0], ps_new[1], id]);
             await new Promise((resolve, reject) => {
-                req.sessionStore.destroy(session_map[id], (err) => {
+                req.sessionStore!.destroy(session_map[id], (err) => {
                     if(err) reject(err);
                     else resolve();
                 });

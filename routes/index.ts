@@ -13,8 +13,8 @@ import reset_password from './reset_password'
 export default (session_map : any, db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
     router.get('/',  (req, res) => {
-        if (req.session.sign) res.redirect('/gallery');
-        else res.redirect('/login');
+        if (!req.session || !req.session.sign) res.redirect('/login');
+        else res.redirect('/gallery');
     });
 
     router.use('/login', login(session_map, db));

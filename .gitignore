@@ -3,7 +3,6 @@
 *.map
 !public/
 public/uploads/
-uploads/
 
 # Logs
 logs

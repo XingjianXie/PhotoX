@@ -9,7 +9,7 @@ import logout from "./logout";
 export default (session_map: any, db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
     router.get('/',  async(req, res, next) => {
-        if (!req.session.sign || !req.session.type) {
+        if (!req.session || !req.session.sign || !req.session.type) {
             res.redirect('/');
             return;
         }
