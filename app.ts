@@ -4,8 +4,13 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import session from "express-session";
 import redis from 'redis';
+import index from './routes/index';
+import db from "./db/db";
+import {Store} from "express-session";
+import {mkdir} from "fs";
+import * as util from "util";
+
 const redisStore = require('connect-redis')(session);
-import createError from "http-errors";
 const multer = require("multer");
 
 require(`express-async-errors` );
@@ -35,6 +40,13 @@ app.use(session({
         return true;
     }
 }));
+app.use("/uploads", (req, res, next) => {
+    if (!req.session || !req.session.sign) {
+        res.redirect('/');
+        return;
+    }
+    next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
@@ -53,11 +65,6 @@ app.use((req, res, next) => {
     next();
 });
 
-import index from './routes/index';
-import db from "./db/db";
-import {Store} from "express-session";
-import {mkdir} from "fs";
-import * as util from "util";
 util.promisify(mkdir)('public/uploads')
     .catch(err => { if (err.code != 'EEXIST') throw err });
 app.use(index(session_map, db, multer( { limits: { fileSize: 1e8 } } )));
