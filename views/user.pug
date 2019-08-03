@@ -7,28 +7,17 @@ block top
   h3.text-dark.mb-0.m-2.d-none.d-md-inline User
   h5.text-dark.mb-0.m-2.d-md-none User
 
-  form.m-2.d-none.d-sm-block
-    .input-group
-      input.form-control.form-control-sm(type='text', placeholder= wd ? 'Results for \"' + wd + '\"': 'ID or Name', onchange='submit()', name='wd')
-      .input-group-append
-        button.btn.btn-primary.py-0(type='button', onclick='submit()')
-          if wd
-            i.fas.fa-times.d-lg-none
-            .d-none.d-lg-block Clear
-          else
-            i.fas.fa-search.d-lg-none
-            .d-none.d-lg-block Search
-    input.d-none(name='max', value=maximum)
+  form.form-inline(onsubmit='cu_submit($(this)); return false;')
+    #topbar_form.m-2.d-none.d-sm-block
+      input#search_form.form-control.form-control-sm(type='text', autocomplete="off", placeholder='ID or Name', oninput="cu_submit($(this).parents('form'))", name='wd')
 
-  form.form-inline.ml-5.d-none.d-lg-block
-    label
-      if wd
-        input.d-none(name='wd', value=wd)
-      | Show 
-      select.form-control.form-control-sm.custom-select.custom-select-sm(onchange='submit()', name='max')
-        option(selected= maximum === 5) 5
-        option(selected= maximum === 10) 10
-        option(selected= maximum === 25) 25
+    .ml-5.d-none.d-lg-block
+      label
+        | Show 
+        select.form-control.form-control-sm.custom-select.custom-select-sm(onchange="cu_submit($(this).parents('form'))", name='max')
+          option(selected= maximum === 5) 5
+          option(selected= maximum === 10) 10
+          option(selected= maximum === 25) 25
 
 block topr
   .nav-item
@@ -39,44 +28,75 @@ block content
   .card.shadow
     .card-header.py-3
       p.text-primary.m-0.font-weight-bold User Info
-    .card-body
-      .table-responsive.table.mt-2(role='grid')
-        table.table.my-0
-          thead
-            tr
-              th ID
-              th Name
-              th Type
-              th.d-none.d-sm-block Options
-          tbody
-            each val in users
+    #list.card-body
+      if users.length
+        .table-responsive.table.mt-2(role='grid')
+          table.table.my-0
+            thead
               tr
-                if val.id === session.userID
-                  th= val.id + ' (Me)'
-                else
-                  th= val.id
-                th= val.name
-                th= typeName(val.type)
+                th ID
+                th Name
+                th Type
+                th.d-none.d-sm-block Options
+            tbody
+              each val in users
+                tr
+                  if val.id === session.userID
+                    th= val.id + ' (Me)'
+                  else
+                    th= val.id
+                  th= val.name
+                  th= typeName(val.type)
 
-                th.d-none.d-sm-block
-                  form.d-inline-block(method='post', action='/user/logout')
-                    input.d-none(value=val.id, name='userID')
-                    if map[val.id]
-                      button.btn.btn-primary.btn-sm(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
-                        | Logout
-                    else
-                      button.btn.btn-primary.btn-sm(disabled)
-                        | Offline
-                  =' '
-                  form.d-inline-block
-                    button.btn.btn-primary.btn-sm(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
-                      | Edit
-                  =' '
-                  form.d-inline-block(method='post' action='/user/delete')
-                    input.d-none(value=val.id, name='userID')
-                    button.btn.btn-danger.btn-sm(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
-                      | Delete
-      .row.d-block.d-lg-flex
-        .col-sm-12.col-md-6.align-self-center
-          p(role='status', aria-live='polite') Showing #{ (current - 1) * maximum + 1 } to #{(current - 1) * maximum + users.length} of #{total}
-        include page
+                  th.d-none.d-sm-block
+                    form.d-inline-block(method='post', action='/user/logout')
+                      input.d-none(value=val.id, name='userID')
+                      if map[val.id]
+                        button.btn.btn-primary.btn-sm(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
+                          | Logout
+                      else
+                        button.btn.btn-primary.btn-sm(disabled)
+                          | Offline
+                    =' '
+                    form.d-inline-block
+                      button.btn.btn-primary.btn-sm(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                        | Edit
+                    =' '
+                    form.d-inline-block(method='post' action='/user/delete')
+                      input.d-none(value=val.id, name='userID')
+                      button.btn.btn-danger.btn-sm(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
+                        | Delete
+        .row.d-block.d-lg-flex
+          .col-sm-12.col-md-6.align-self-center
+            p(role='status', aria-live='polite') Showing #{ (current - 1) * maximum + 1 } to #{(current - 1) * maximum + users.length} of #{total}
+          include page
+      else
+        .text-center.mt-5
+          .error.mx-auto(data-text= 404)
+            p.m-0.d-inline-block= 404
+          p.text-dark.mb-5.lead User Not Found
+
+append javascripts
+  script.
+    function ajax_reload() {
+
+    }
+    function cu_submit(d, ext) {
+      let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
+      const xhr = new XMLHttpRequest();
+      const url = (d.attr('action') || '/user') + '?' + fd;
+      xhr.open('get', url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(xhr.responseText, "text/html");
+          $('#list').html($('#list', xmlDoc).html());
+          if ($('#search_form').val())
+            $('#clear_button').removeClass('d-none');
+          else
+            $('#clear_button').addClass('d-none');
+          window.history.pushState(ajax_reload, null, url);
+        }
+      }
+      xhr.send();
+    }

@@ -16,14 +16,8 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 500, 1);
         const rs = await db(query.queryUnPublishedPhotoWithLimit, [req.session.type,  (pg - 1) * maximum, maximum]);
-        const total = (await db(query.total, []))[0]['total'];
+        const total = (await db(query.countQueryUnPublishedPhotoWithLimit, [req.session.type]))[0]['COUNT(*)'];
 
-        if (!rs.length) {
-            if (total)
-                res.redirect("/gallery/upload_center?pg=" + Math.ceil(total / maximum).toString() + "&max=" + maximum.toString());
-            next(createError(404, 'Photo Not Found'));
-            return;
-        }
         res.render('upload_center', {
             photos: rs,
             total: total,

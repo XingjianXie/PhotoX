@@ -25,30 +25,54 @@ block content
     .card-header.py-3
       p.text-primary.m-0.font-weight-bold Photo
     #list.card-body
-      .table-responsive.table.mt-2(role='grid')
-        table.table.my-0
-          thead
-            tr
-              th ID
-              th Preview
-              th Name
-              th Uploader
-
-          tbody
-            each val in photos
+      if photos.length
+        .table-responsive.table.mt-2(role='grid')
+          table.table.my-0
+            thead
               tr
-                th= val['id']
-                th
-                  img.mr-2(width="150" src="/uploads/" + val['id'] + ".png")
-                th= val['name'] || 'Untitled'
-                th= val['uploader_name'] + ' (' + val['uploader_id'] + ')'
+                th ID
+                th Preview
+                th Name
+                th Uploader
+                th Status
+                th Options
 
-      .row
-        .col-6.align-self-center
-          p(role='status', aria-live='polite') Showing #{ 0 } to #{ 0 } of #{ 0 }
-        .col-6
-          nav.d-flex.justify-content-end.dataTables_paginate.paging_simple_numbers
-          
+            tbody
+              each val in photos
+                tr
+                  th= val['id']
+                  th
+                    //img.mr-2(width="150" src="/uploads/" + val['id'] + ".png")
+                    div(style={
+                      "background-image": "url(/uploads/" + val['id'] + ".png)",
+                      height: '120px',
+                      width: '120px',
+                      'background-size': 'cover',
+                      'background-position': '50%'
+                    })
+                  th= val['name'] || 'Untitled'
+                  th= val['uploader_name'] + ' (' + val['uploader_id'] + ')'
+                  th= val['type'] === 0 ? "Converting" : "Unpublished"
+                  th
+                    form.d-inline-block
+                      button.btn.btn-danger.btn-sm(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                        | Delete
+                    =' '
+                    form.d-inline-block
+                      button.btn.btn-danger.btn-sm(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                        | Publish
+
+        .row
+          .col-6.align-self-center
+            p(role='status', aria-live='polite') Showing #{ 0 } to #{ 0 } of #{ 0 }
+          .col-6
+            nav.d-flex.justify-content-end.dataTables_paginate.paging_simple_numbers
+      else
+        .text-center.mt-5
+          .error.mx-auto(data-text= 404)
+            p.m-0.d-inline-block= 404
+          p.text-dark.mb-5.lead Photo Not Found
+
 append javascripts
   script.
     function upload() {
@@ -57,7 +81,7 @@ append javascripts
       for (const file of files)
           formData.append('photo', file);
       const xhr = new XMLHttpRequest();
-
+      let finished = false;
 
       xhr.open('post', '/gallery/upload_center', true);
 
@@ -66,6 +90,16 @@ append javascripts
           if (e.loaded === e.total) {
             $('#t1').html("Converting...");
             $('#t2').html("Converting...");
+            const xhr2 = new XMLHttpRequest();
+            xhr2.open('get', '/gallery/upload_center', true);
+            xhr2.onreadystatechange = function () {
+              if (xhr2.readyState === XMLHttpRequest.DONE && !finished) {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xhr2.responseText, "text/html");
+                $('#list').html($('#list', xmlDoc).html());
+              }
+            }
+            xhr2.send();
             $('#progressbar').removeClass('d-lg-block');
           } else {
             const percentage = ((e.loaded / e.total) * 100);
@@ -78,7 +112,6 @@ append javascripts
         }
       };
 
-      xhr.send(formData);
       xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           $('#t1').html("Finished");
@@ -86,13 +119,15 @@ append javascripts
           const xhr1 = new XMLHttpRequest();
           xhr1.open('get', '/gallery/upload_center', true);
           xhr1.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-              var parser = new DOMParser();
-              var xmlDoc = parser.parseFromString(xhr1.responseText, "text/html");
+            if (xhr1.readyState === XMLHttpRequest.DONE) {
+              const parser = new DOMParser();
+              const xmlDoc = parser.parseFromString(xhr1.responseText, "text/html");
               $('#list').html($('#list', xmlDoc).html());
             }
           }
           xhr1.send();
+          finished = true;
         }
       }
+      xhr.send(formData);
     }

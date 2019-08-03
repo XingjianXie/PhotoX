@@ -22,7 +22,7 @@ block content
           .p-5
             form.user(method="post")
               .form-group.dropdown
-                input.d-none(name='type')
+                input.d-none(name='type', autocomplete="off")
                 input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Type (Unchanged)", onfocus='this.blur()')
                 .dropdown-menu(role='menu')
                   -let t = 0;
@@ -35,7 +35,7 @@ block content
                 else
                   #warning.text-danger.d-none You may NOT edit or delete this user once you reset its type
               .form-group
-                input.form-control.form-control-user(type="text", placeholder="Name (Unchanged)", name="name", oninput="input(1)")
+                input.form-control.form-control-user(type="text", autocomplete="off", placeholder="Name (Unchanged)", name="name", oninput="input(1)")
               .form-group
                 button#wb.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, onclick='$(this).attr(\'disabled\', true); submit();') Edit
               .form-group
