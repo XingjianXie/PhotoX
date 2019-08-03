@@ -17,7 +17,7 @@ block topr
     form#uploadForm.d-none(method="post", enctype="multipart/form-data")
       input#uploadInput(type="file", name="photo", accept='image/*', onchange="upload()", multiple)
   .nav-item
-    a.nav-link(onclick="history.go(-1); return false;", href='#')
+    a.nav-link(onclick="history.back(); return false;", href='#')
       span.d-inline.mr-2.text-gray-600.small Back
 
 block content
@@ -93,11 +93,8 @@ append javascripts
             const xhr2 = new XMLHttpRequest();
             xhr2.open('get', '/gallery/upload_center', true);
             xhr2.onreadystatechange = function () {
-              if (xhr2.readyState === XMLHttpRequest.DONE && !finished) {
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(xhr2.responseText, "text/html");
-                $('#list').html($('#list', xmlDoc).html());
-              }
+              if (xhr2.readyState === XMLHttpRequest.DONE && !finished)
+                $('#list').html($('#list', xhr2.response).html());
             }
             xhr2.send();
             $('#progressbar').removeClass('d-lg-block');
@@ -119,11 +116,8 @@ append javascripts
           const xhr1 = new XMLHttpRequest();
           xhr1.open('get', '/gallery/upload_center', true);
           xhr1.onreadystatechange = function() {
-            if (xhr1.readyState === XMLHttpRequest.DONE) {
-              const parser = new DOMParser();
-              const xmlDoc = parser.parseFromString(xhr1.responseText, "text/html");
-              $('#list').html($('#list', xmlDoc).html());
-            }
+            if (xhr1.readyState === XMLHttpRequest.DONE)
+              $('#list').html($('#list', xhr1.response).html());
           }
           xhr1.send();
           finished = true;

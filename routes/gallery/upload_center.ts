@@ -18,6 +18,12 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         const rs = await db(query.queryUnPublishedPhotoWithLimit, [req.session.type,  (pg - 1) * maximum, maximum]);
         const total = (await db(query.countQueryUnPublishedPhotoWithLimit, [req.session.type]))[0]['COUNT(*)'];
 
+
+        if (!rs.length && total) {
+            res.redirect("/gallery/upload_center?pg=" + Math.ceil(total / maximum).toString() + "&max=" + maximum.toString());
+            return;
+        }
+
         res.render('upload_center', {
             photos: rs,
             total: total,

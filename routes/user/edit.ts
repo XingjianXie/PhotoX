@@ -15,6 +15,10 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             return;
         }
         const rs = await db(query.getUserById, [Number(req.params.id)]);
+        if (!rs[0]) {
+            next(createError(404, 'User Not Found'));
+            return;
+        }
         if (req.session.type <= rs[0].type && req.session.userID !== Number(req.params.id)) {
             next(createError(401, 'Unauthorized'));
             return;

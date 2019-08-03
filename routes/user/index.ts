@@ -22,6 +22,11 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             ? (await db(query.countQueryUserWithLimit, [req.session.type]))[0]['COUNT(*)']
             : (await db(query.countSearchUserWithLimited, [req.session.type, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
 
+        if (!rs.length && total) {
+            res.redirect("/user?pg=" + Math.ceil(total / maximum).toString() + "&wd=" + (req.query.wd || '') + "&max=" + maximum.toString());
+            return;
+        }
+
         res.render('user', {
             users: rs,
             total: total,

@@ -116,8 +116,14 @@ html
       script(src="/assets/js/bs-charts.js")
       script(src="/javascripts/jquery.easing.min.js")
       script(src="/assets/js/theme.js")
+    block history
       script.
-        window.onpopstate = function (e) {
-          window.location.reload();
-        };
+        window.addEventListener("pageshow", function (event) {
+          let historyTraversal = event.persisted ||
+                  (window.performance && window.performance.navigation.type === 2);
+          if (historyTraversal) {
+            window.location.reload();
+          }
+        });
+
 
