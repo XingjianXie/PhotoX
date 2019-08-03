@@ -2,8 +2,10 @@
   nav
     - var end = Math.ceil(total / maximum);
     form
-      input.d-none(name='wd', value=wd)
-      input.d-none(name='max', value=maximum)
+      if wd
+        input.d-none(name='wd', value=wd)
+      if max
+        input.d-none(name='max', value=maximum)
       ul.pagination
         if 2 <= current - 2
           li.page-item(class={"active": current === 1})

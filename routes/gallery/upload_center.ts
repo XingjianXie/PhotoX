@@ -14,7 +14,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             return;
         }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
-        const maximum = Math.max(Number(req.query.max) || 500, 1);
+        const maximum = Math.max(Number(req.query.max) || 20, 1);
         const rs = await db(query.queryUnPublishedPhotoWithLimit, [req.session.type,  (pg - 1) * maximum, maximum]);
         const total = (await db(query.countQueryUnPublishedPhotoWithLimit, [req.session.type]))[0]['COUNT(*)'];
 

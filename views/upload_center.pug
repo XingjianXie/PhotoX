@@ -61,12 +61,10 @@ block content
                     form.d-inline-block
                       button.btn.btn-danger.btn-sm(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
                         | Publish
-
-        .row
-          .col-6.align-self-center
-            p(role='status', aria-live='polite') Showing #{ 0 } to #{ 0 } of #{ 0 }
-          .col-6
-            nav.d-flex.justify-content-end.dataTables_paginate.paging_simple_numbers
+        .row.d-block.d-lg-flex
+          .col-sm-12.col-md-6.align-self-center
+            p(role='status', aria-live='polite') Showing #{ (current - 1) * maximum + 1 } to #{(current - 1) * maximum + photos.length} of #{total}
+          include page
       else
         .text-center.mt-5
           .error.mx-auto(data-text= 404)
@@ -75,6 +73,24 @@ block content
 
 append javascripts
   script.
+    function cu_submit(d, ext) {
+      let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
+      const xhr = new XMLHttpRequest();
+      const url = (d.attr('action') || '/gallery/upload_center') + '?' + fd;
+      xhr.open('get', url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          $('#list').html($('#list', xhr.response).html());
+          if ($('#search_form').val())
+            $('#clear_button').removeClass('d-none');
+          else
+            $('#clear_button').addClass('d-none');
+          window.history.pushState(null, null, url);
+        }
+      }
+      xhr.send();
+    }
+
     function upload() {
       const formData = new FormData();
       const files = document.getElementById('uploadInput').files;
@@ -125,3 +141,24 @@ append javascripts
       }
       xhr.send(formData);
     }
+
+append history
+  script.
+    window.addEventListener("popstate", function (e) {
+      const xhr = new XMLHttpRequest();
+      const url = window.location;
+      xhr.open('get', url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          console.log(xhr);
+          $('#list').html($('#list', xhr.response).html());
+          if ($('#search_form').val())
+            $('#clear_button').removeClass('d-none');
+          else
+            $('#clear_button').addClass('d-none');
+          window.history.replaceState(null, null, xhr.responseURL);
+          //alert('AJAX CALLED BY NEW HISTORY EVENT');
+        }
+      }
+      xhr.send();
+    });
