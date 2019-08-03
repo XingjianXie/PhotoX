@@ -18,7 +18,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         const rs = !req.query.wd
             ? await db(query.queryUserWithLimit, [req.session.type, (pg - 1) * maximum, maximum])
             : await db(query.searchUserWithLimited, [req.session.type, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
-        const total = (await db(query.total, []))[0]['FOUND_ROWS()'];
+        const total = (await db(query.total, []))[0]['total'];
 
         if (!rs.length) {
             if (total)

@@ -7,8 +7,9 @@ export default {
     deleteUser: 'DELETE FROM user WHERE id=?',
     resetUserType: 'UPDATE user SET type=? WHERE id=?',
     resetUserName: 'UPDATE user SET name=? WHERE id=?',
-    total: 'SELECT FOUND_ROWS()',
+    total: 'SELECT FOUND_ROWS() AS total',
     addPhoto: 'INSERT INTO photo(uploader_id, type, date) VALUES(?, 0, now())',
     updatePhoto: 'UPDATE photo SET type=1 WHERE id=?',
     publishPhoto: 'UPDATE photo SET type=2, name=? WHERE id=?',
+    queryUnPublishedPhotoWithLimit: 'SELECT SQL_CALC_FOUND_ROWS photo.id as id, photo.type as type, photo.name as name, photo.uploader_id as uploader_id, user.type as uploader_type, user.name as uploader_name FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.type <= ? AND (photo.type = 0 OR photo.type = 1) LIMIT ?,?',
 };

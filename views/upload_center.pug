@@ -24,7 +24,7 @@ block content
   .card.shadow
     .card-header.py-3
       p.text-primary.m-0.font-weight-bold Photo
-    .card-body
+    #list.card-body
       .table-responsive.table.mt-2(role='grid')
         table.table.my-0
           thead
@@ -32,7 +32,13 @@ block content
               th ID
               th Name
               th Uploader
+
           tbody
+            each val in photos
+              tr
+                th= val['id']
+                th= val['name'] || 'Untitled'
+                th= val['uploader_name'] + ' (' + val['uploader_id'] + ')'
 
       .row
         .col-6.align-self-center
@@ -74,6 +80,16 @@ append javascripts
         if (xhr.readyState === XMLHttpRequest.DONE) {
           $('#t1').html("Finished");
           $('#t2').html("Finished");
+          const xhr1 = new XMLHttpRequest();
+          xhr1.open('get', '/gallery/upload_center', true);
+          xhr1.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+              var parser = new DOMParser();
+              var xmlDoc = parser.parseFromString(xhr1.responseText, "text/html");
+              $('#list').html($('#list', xmlDoc).html());
+            }
+          }
+          xhr1.send();
         }
       }
     }

@@ -8,12 +8,28 @@ import * as util from "util";
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
-    router.get('/', (req, res) => {
+    router.get('/', async(req, res, next) => {
         if (!req.session || !req.session.sign) {
             res.redirect('/');
             return;
         }
-        res.render('upload_center');
+        const pg = Math.max(Number(req.query.pg) || 1, 1);
+        const maximum = Math.max(Number(req.query.max) || 500, 1);
+        const rs = await db(query.queryUnPublishedPhotoWithLimit, [req.session.type,  (pg - 1) * maximum, maximum]);
+        const total = (await db(query.total, []))[0]['total'];
+
+        if (!rs.length) {
+            if (total)
+                res.redirect("/gallery/upload_center?pg=" + Math.ceil(total / maximum).toString() + "&max=" + maximum.toString());
+            next(createError(404, 'Photo Not Found'));
+            return;
+        }
+        res.render('upload_center', {
+            photos: rs,
+            total: total,
+            current: pg,
+            maximum: maximum,
+        });
     });
     router.post('/', multer.array("photo", Infinity), async(req, res, next) => {
         if (!req.session || !req.session.sign) {
