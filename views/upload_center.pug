@@ -30,6 +30,7 @@ block content
           thead
             tr
               th ID
+              th Preview
               th Name
               th Uploader
 
@@ -37,6 +38,8 @@ block content
             each val in photos
               tr
                 th= val['id']
+                th
+                  img.mr-2(width="150" src="/uploads/" + val['id'] + ".png")
                 th= val['name'] || 'Untitled'
                 th= val['uploader_name'] + ' (' + val['uploader_id'] + ')'
 
