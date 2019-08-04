@@ -15,8 +15,12 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 20, 1);
-        const rs = await db(query.queryUnPublishedPhotoWithLimit, [req.session.type, req.session.userID,  (pg - 1) * maximum, maximum]);
-        const total = (await db(query.countQueryUnPublishedPhotoWithLimit, [req.session.type, req.session.userID]))[0]['COUNT(*)'];
+        const rs = !req.query.wd
+            ? await db(query.queryUnPublishedPhotoWithLimit, [req.session.type, req.session.userID, (pg - 1) * maximum, maximum])
+            : await db(query.searchUnPublishedPhotoWithLimit, [req.session.type, req.session.userID, req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
+        const total = !req.query.wd
+            ? (await db(query.countQueryUnPublishedPhotoWithLimit, [req.session.type, req.session.userID]))[0]['COUNT(*)']
+            : (await db(query.countSearchUnPublishedPhotoWithLimit, [req.session.type, req.session.userID, req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
 
 
         if (!rs.length && total) {

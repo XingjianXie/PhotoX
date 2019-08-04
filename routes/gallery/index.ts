@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from "multer";
 import upload_center from "./upload_center";
+import _delete from "./delete";
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
@@ -13,5 +14,6 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         res.render('gallery');
     });
     router.use('/upload_center', upload_center(db, multer));
+    router.use('/delete', _delete(db));
     return router;
 };
