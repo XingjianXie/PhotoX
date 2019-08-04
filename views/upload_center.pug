@@ -49,7 +49,10 @@ block content
                       'background-size': 'cover',
                       'background-position': '50%'
                     })
-                  th= val.uploader_name + ' (' + val.uploader_id + ')'
+                  if val.uploader_deleted
+                    th= val.uploader_name + ' (DELETED)'
+                  else
+                    th= val.uploader_name + ' (' + val.uploader_id + ')'
                   th= val.type === 0 ? "Converting" : "Unpublished"
                   th
                     form.d-inline-block
