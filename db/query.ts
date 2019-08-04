@@ -13,6 +13,6 @@ export default {
     addPhoto: 'INSERT INTO photo(uploader_id, type, date) VALUES(?, 0, now())',
     updatePhoto: 'UPDATE photo SET type=1 WHERE id=?',
     publishPhoto: 'UPDATE photo SET type=2, name=? WHERE id=?',
-    queryUnPublishedPhotoWithLimit: 'SELECT photo.id as id, photo.type as type, photo.name as name, photo.uploader_id as uploader_id, user.type as uploader_type, user.name as uploader_name FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.type <= ? AND (photo.type = 0 OR photo.type = 1) LIMIT ?,?',
+    queryUnPublishedPhotoWithLimit: 'SELECT photo.id as id, photo.type as type, photo.name as name, photo.uploader_id as uploader_id, user.type as uploader_type, user.name as uploader_name FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.type <= ? AND (photo.type = 0 OR photo.type = 1) ORDER BY photo.id DESC LIMIT ?,?',
     countQueryUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.type <= ? AND (photo.type = 0 OR photo.type = 1)',
 };

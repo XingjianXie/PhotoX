@@ -64,6 +64,7 @@ block content
                     =' '
                     form.d-inline-block(method='post' action='/user/delete')
                       input.d-none(value=val.id, name='userID')
+                      input.d-none(value='1', name='confirm')
                       button.btn.btn-danger.btn-sm(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
                         | Delete
         .row.d-block.d-lg-flex
@@ -90,7 +91,7 @@ append javascripts
             $('#clear_button').removeClass('d-none');
           else
             $('#clear_button').addClass('d-none');
-          window.history.pushState(null, null, url);
+          window.history.pushState(null, null, xhr.responseURL);
         }
       }
       xhr.send();

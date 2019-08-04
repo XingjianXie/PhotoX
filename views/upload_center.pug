@@ -32,7 +32,6 @@ block content
               tr
                 th ID
                 th Preview
-                th Name
                 th Uploader
                 th Status
                 th Options
@@ -50,17 +49,17 @@ block content
                       'background-size': 'cover',
                       'background-position': '50%'
                     })
-                  th= val['name'] || 'Untitled'
-                  th= val['uploader_name'] + ' (' + val['uploader_id'] + ')'
-                  th= val['type'] === 0 ? "Converting" : "Unpublished"
+                  th= val.uploader_name + ' (' + val.uploader_id + ')'
+                  th= val.type === 0 ? "Converting" : "Unpublished"
                   th
                     form.d-inline-block
-                      button.btn.btn-danger.btn-sm(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
-                        | Delete
-                    =' '
-                    form.d-inline-block
-                      button.btn.btn-danger.btn-sm(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                      button.btn.btn-danger.btn-sm(onclick="location='/gallery/publish/" + val.id + "'; return false;", disabled=val.uploader_type >= session.type && val.uploader_id !== session.userID)
                         | Publish
+                    =' '
+                    form.d-inline-block(method='post' action='/gallery/delete')
+                      input.d-none(value=val.id, name='photoID')
+                      button.btn.btn-danger.btn-sm(type='submit', disabled=val.uploader_type >= session.type && val.uploader_id !== session.userID)
+                        | Delete
         .row.d-block.d-lg-flex
           .col-sm-12.col-md-6.align-self-center
             p(role='status', aria-live='polite') Showing #{ (current - 1) * maximum + 1 } to #{(current - 1) * maximum + photos.length} of #{total}
@@ -85,7 +84,7 @@ append javascripts
             $('#clear_button').removeClass('d-none');
           else
             $('#clear_button').addClass('d-none');
-          window.history.pushState(null, null, url);
+          window.history.pushState(null, null, xhr.responseURL);
         }
       }
       xhr.send();

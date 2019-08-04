@@ -1,0 +1,39 @@
+extends layout
+
+block title
+  title= msg
+
+block menu
+  li.nav-item(role='presentation')
+    a.nav-link.active.disabled
+      i.fas.fa-exclamation-circle
+      span= msg
+
+block content
+  .text-center.mt-5
+    .error.mx-auto(data-text= 306)
+      p.m-0= 306
+    p.text-dark.mb-5.lead= msg
+    p.text-black-50.mb-0= inf1
+    p.mb-0.text-danger= inf2
+    form.d-inline-block(method='post')
+      -for(let t in data)
+        input.d-none(name=t, value=data[t])
+      a.mr-3(href="#", onclick="history.back(); return false;") Back
+      a.ml-3.text-danger(href="#", onclick="cu_submit($(this).parents('form')); return false;") Continue
+
+
+append javascripts
+  script.
+    function cu_submit(d) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('post', window.location, true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          $('#content').html($('#content', xhr.response).html());
+          window.history.replaceState(null, null, xhr.responseURL);
+        }
+      }
+      xhr.send(d.serialize());
+    }

@@ -6,6 +6,7 @@ import createError from "http-errors";
 export default (session_map : any, db : (sql : string, values : any) => Promise<any[]>) => {
     const router = express.Router();
     router.post('/', async(req, res, next) => {
+        console.log(req.body);
         if (!req.session || !req.session.sign || !req.session.type) {
             next(createError(401, 'Unauthorized'));
             return;
@@ -25,6 +26,17 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         }
         if (rs[0].type === 127) {
             next(createError(401, 'Unauthorized'));
+            return;
+        }
+        if (req.body.confirm === '1') {
+            let data1 = req.body;
+            data1.confirm = '0';
+            res.render('confirm', {
+                msg: 'Delete Confirmation',
+                inf1: 'Are you sure to delete user ' + req.body.userID + '?',
+                inf2: 'YOU MAY NOT UNDO THIS ACTION',
+                data: data1
+            });
             return;
         }
         await new Promise((resolve, reject) => {
