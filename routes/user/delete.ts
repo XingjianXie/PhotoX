@@ -33,14 +33,24 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             data1.confirm = '0';
             res.render('confirm', {
                 msg: 'Delete Confirmation',
-                inf1: 'Are you sure to delete user ' + req.body.userID + '?',
+                inf1: 'Are you sure to delete your own user?',
+                inf2: 'YOU MAY NOT UNDO THIS ACTION',
+                data: data1
+            });
+            return;
+        } else if (req.body.confirm === '2') {
+            let data1 = req.body;
+            data1.confirm = '0';
+            res.render('confirm', {
+                msg: 'Delete Confirmation',
+                inf1: 'Are you sure to delete user ' + rs[0].name + ' (' + rs[0].id + ')?',
                 inf2: 'YOU MAY NOT UNDO THIS ACTION',
                 data: data1
             });
             return;
         }
-        await new Promise((resolve, reject) => {
-            req.sessionStore!.destroy(session_map[Number(req.body.userID)], (err) => {
+        await new Promise(async (resolve, reject) => {
+            req.sessionStore!.destroy((await session_map[Number(req.body.userID)]), (err) => {
                 if(err) reject(err);
                 else resolve();
             });

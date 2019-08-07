@@ -27,13 +27,19 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             return;
         }
 
+        let new_map : any = {};
+        for (const value of rs) {
+            new_map[value.id] = await session_map[value.id];
+        };
+
+        console.log(new_map);
         res.render('user', {
             users: rs,
             total: total,
             current: pg,
             maximum: maximum,
             wd: req.query.wd,
-            map: session_map,
+            map: new_map
         });
     });
     router.use('/delete', _delete(session_map, db));

@@ -36,8 +36,8 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             return;
         }
         if (ps_make(req.body.pwd, rs[0].passrd) === rs[0].passcode) {
-            await new Promise((resolve, reject) => {
-                req.sessionStore!.destroy(session_map[Number(req.body.id)], (err) => {
+            await new Promise(async (resolve, reject) => {
+                req.sessionStore!.destroy((await session_map[Number(req.body.id)]), (err) => {
                     if(err) reject(err);
                     else resolve();
                 });

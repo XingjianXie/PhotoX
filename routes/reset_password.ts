@@ -56,8 +56,8 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
         if (req.session.type > rs[0].type || ps_make(req.body.pwd_old, rs[0].passrd) === rs[0].passcode) {
             const ps_new = ps_create(req.body.pwd_new);
             await db(query.resetPassword, [ ps_new[0], ps_new[1], id]);
-            await new Promise((resolve, reject) => {
-                req.sessionStore!.destroy(session_map[id], (err) => {
+            await new Promise(async (resolve, reject) => {
+                req.sessionStore!.destroy((await session_map[id]), (err) => {
                     if(err) reject(err);
                     else resolve();
                 });

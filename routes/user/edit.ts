@@ -60,8 +60,29 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             next(createError(400, 'Type or Name Required'));
             return;
         }
-        await new Promise((resolve, reject) => {
-            req.sessionStore!.destroy(session_map[Number(req.params.id)], (err) => {
+        if (req.body.confirm === '1') {
+            let data1 = req.body;
+            data1.confirm = '0';
+            res.render('confirm', {
+                msg: 'Edit User Confirmation',
+                inf1: 'Are you sure to downgrade your type?',
+                inf2: 'YOU MAY NOT UNDO THIS ACTION',
+                data: data1
+            });
+            return;
+        } else if (req.body.confirm === '2') {
+            let data1 = req.body;
+            data1.confirm = '0';
+            res.render('confirm', {
+                msg: 'Edit User Confirmation',
+                inf1: 'Are you sure to make a user have the same permission with you?',
+                inf2: 'YOU MAY NOT UNDO THIS ACTION',
+                data: data1
+            });
+            return;
+        }
+        await new Promise(async (resolve, reject) => {
+            req.sessionStore!.destroy((await session_map[Number(req.params.id)]), (err) => {
                 if(err) reject(err);
                 else resolve();
             });

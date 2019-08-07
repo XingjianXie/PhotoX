@@ -1,4 +1,6 @@
 import express from 'express';
+require(`express-async-errors`);
+
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
@@ -9,14 +11,28 @@ import db from "./db/db";
 import {Store} from "express-session";
 import {mkdir} from "fs";
 import * as util from "util";
+import {promisify, types} from "util";
 
 const redisStore = require('connect-redis')(session);
 const multer = require("multer");
 
-require(`express-async-errors` );
 const app = express();
-const store : Store = new redisStore({ host: require('./db/RedisConfig').host, port: require('./db/RedisConfig').port, client: redis.createClient() });
-let session_map : any = {};
+const redis_client = redis.createClient({ host: require('./db/RedisConfig').host, port: require('./db/RedisConfig').port });
+const store : Store = new redisStore({ client: redis_client });
+const session_map : any = new Proxy({}, {
+    get(target, index) {
+        console.log(index);
+        return promisify(redis_client.get).bind(redis_client)('mark07x_session_map:' + index.toString());
+    },
+    set(target, index, value, receiver) {
+        if (value === undefined)
+            redis_client.del('mark07x_session_map:' + index.toString());
+        else
+            redis_client.set('mark07x_session_map:' + index.toString(), value);
+        return true;
+    }
+});
+//let session_map : any = {};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -51,15 +67,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
     res.locals.session = req.session;
-    res.locals.typeName = (x: number) => {
-        switch (x) {
-            case 0: return 'Editor';
-            case 1: return 'Admin';
-            case 2: return 'Super Admin';
-            case 127: return 'System';
-            default: return 'Unknown';
+    res.locals.typeName = new Proxy({}, {
+        get(target, index) {
+            if (!isNaN(Number(index))) {
+                switch (Number(index)) {
+                    case 0: return 'Editor';
+                    case 1: return 'Admin';
+                    case 2: return 'Super Admin';
+                    case 127: return 'System';
+                    default: return 'Unknown';
+                }
+            }
         }
-    };
+    });
 
     res.locals.url = req.url;
     next();

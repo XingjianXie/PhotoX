@@ -34,6 +34,17 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(400, 'Password Required'));
             return;
         }
+        if (req.body.confirm === '1') {
+            let data1 = req.body;
+            data1.confirm = '0';
+            res.render('confirm', {
+                msg: 'Add User Confirmation',
+                inf1: 'Are you sure to add a user who have the same permission with you?',
+                inf2: 'YOU MAY NOT UNDO THIS ACTION',
+                data: data1
+            });
+            return;
+        }
         const password = ps_create(req.body.pwd);
         const rs = await db(query.addUser, [req.body.name, req.body.type, password[0], password[1]]);
         res.status(201);

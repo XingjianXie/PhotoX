@@ -22,8 +22,8 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             next(createError(401, 'Unauthorized'));
             return;
         }
-        await new Promise((resolve, reject) => {
-            req.sessionStore!.destroy(session_map[Number(req.body.userID)], (err) => {
+        await new Promise(async (resolve, reject) => {
+            req.sessionStore!.destroy((await session_map[Number(req.body.userID)]), (err) => {
                 if(err) reject(err);
                 else resolve();
             });

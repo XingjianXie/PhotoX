@@ -46,7 +46,7 @@ block content
                   else
                     th= val.id
                   th= val.name
-                  th= typeName(val.type)
+                  th= typeName[val.type]
 
                   th.d-none.d-sm-block
                     form.d-inline-block(method='post', action='/user/logout')
@@ -64,7 +64,7 @@ block content
                     =' '
                     form.d-inline-block(method='post' action='/user/delete')
                       input.d-none(value=val.id, name='userID')
-                      input.d-none(value='1', name='confirm')
+                      input.d-none(value= val.id === session.userID ? '1' : '2', name='confirm')
                       button.btn.btn-danger.btn-sm(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
                         | Delete
         .row.d-block.d-lg-flex
