@@ -28,28 +28,33 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
                 return;
             }
             if (req.body.pwd_old && Number(req.body.id) !== req.session.userID) {
+                db(query.log, [req.session.userID, "User", Number(req.body.id), "Reset Password", false, "Reason: Unauthorized"]);
                 next(createError(401, 'Unauthorized'));
                 return;
             }
             id = Number(req.body.id);
         } else {
             if (req.body.id) {
+                db(query.log, [req.session.userID, "User", Number(req.body.id), "Reset Password", false, "Reason: Unauthorized"]);
                 next(createError(401, 'Unauthorized'));
                 return;
             }
             if (!req.body.pwd_old) {
+                db(query.log, [req.session.userID, "User", req.session.userID, "Reset Password", false, "Reason: Bad Request"]);
                 next(createError(400, 'Old Password Required'));
                 return;
             }
             id = req.session.userID;
         }
         if (!req.body.pwd_new) {
+            db(query.log, [req.session.userID, "User", id, "Reset Password", false, "Reason: Bad Request"]);
             next(createError(400, 'New Password Required'));
             return;
         }
 
         const rs = await db(query.getUserById, [id]);
         if (rs.length === 0) {
+            db(query.log, [req.session.userID, "User", id, "Reset Password", false, "Reason: User Not Found"]);
             next(createError(404, 'User Not Found'));
             return;
         }
@@ -64,7 +69,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             });
             session_map[id] = undefined;
 
-            db(query.log, [req.session.userID, "User", id, "Reset Password", null]);
+            db(query.log, [req.session.userID, "User", id, "Reset Password", true, null]);
 
             if (id === req.session.userID) {
                 res.status(200);
@@ -84,6 +89,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
                 });
             }
         } else {
+            db(query.log, [req.session.userID, "User", id, "Reset Password", false, "Reason: Unauthorized"]);
             next(createError(401, 'Password or Permission Unauthorized'));
         }
     });

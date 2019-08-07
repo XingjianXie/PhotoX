@@ -23,14 +23,17 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             return;
         }
         if (req.session.type < Number(req.body.type)) {
+            db(query.log, [req.session.userID, "User", null, "Create", false, "Reason: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (!req.body.name) {
+            db(query.log, [req.session.userID, "User", null, "Create", false, "Reason: Bad Request"]);
             next(createError(400, 'Name Required'));
             return;
         }
         if (!req.body.pwd) {
+            db(query.log, [req.session.userID, "User", null, "Create", false, "Reason: Bad Request"]);
             next(createError(400, 'Password Required'));
             return;
         }
@@ -48,7 +51,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         const password = ps_create(req.body.pwd);
         const id = (await db(query.addUser, [req.body.name, req.body.type, password[0], password[1]])).insertId;
 
-        db(query.log, [req.session.userID, "User", id, "Create", null]);
+        db(query.log, [req.session.userID, "User", id, "Create", true, null]);
 
         res.status(201);
         res.render('message', {

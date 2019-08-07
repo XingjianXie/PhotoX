@@ -15,10 +15,12 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         }
         const rs = await db(query.getUserById, [Number(req.body.userID)]);
         if (req.session.type <= rs[0].type && req.session.userID !== Number(req.body.userID)) {
+            db(query.log, [req.session.userID, "User", rs[0].id, "Kick Out", false, "Reason: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
+            db(query.log, [req.session.userID, "User", rs[0].id, "Kick Out", false, "Reason: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }
@@ -29,6 +31,9 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             });
         });
         session_map[req.body.userID] = undefined;
+
+        db(query.log, [req.session.userID, "User", rs[0].id, "Kick Out", true, null]);
+
         res.status(200);
         if (Number(req.body.userID) === req.session.userID) {
             res.status(200);

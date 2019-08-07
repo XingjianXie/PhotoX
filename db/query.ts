@@ -19,5 +19,5 @@ export default {
     getPhotoById: 'SELECT photo.id as id, photo.type as type, photo.name as name, photo.uploader_id as uploader_id, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.id = ? AND photo.deleted = 0',
     getDownloadByPhotoId: 'SELECT * from download where photo_id = ?',
     deletePhoto: 'UPDATE photo SET deleted = 1 WHERE id = ?',
-    log: 'INSERT INTO log(operator, target_type, target, action, extra_message) VALUES(?, ?, ?, ?, ?)'
+    log: 'INSERT INTO log(operator, target_type, target, action, success, extra_message) VALUES(?, ?, ?, ?, ?, ?)'
 };

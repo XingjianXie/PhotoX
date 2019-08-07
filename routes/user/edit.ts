@@ -16,14 +16,17 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         }
         const rs = await db(query.getUserById, [Number(req.params.id)]);
         if (!rs[0]) {
+            db(query.log, [req.session.userID, "User", Number(req.params.id), "Edit", false, "Reason: User Not Found"]);
             next(createError(404, 'User Not Found'));
             return;
         }
         if (req.session.type <= rs[0].type && req.session.userID !== Number(req.params.id)) {
+            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Reason: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
+            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Reason: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }
@@ -44,26 +47,35 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             return;
         }
         const rs = await db(query.getUserById, [Number(req.params.id)]);
-        if (req.session.type <= rs[0].type && req.session.userID !== Number(req.params.id)) {
+        if (!rs[0]) {
+            db(query.log, [req.session.userID, "User", Number(req.params.id), "Edit", false, "Reason: User Not Found"]);
+            next(createError(404, 'User Not Found'));
+            return;
+        }
+        if (req.session.type <= rs[0].type && req.session.userID !== rs[0].id) {
+            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Reason: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
+            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Reason: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (req.session.type < Number(req.body.type)) {
+            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Reason: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (!req.body.name && !req.body.type) {
+            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Reason: Bad Request"]);
             next(createError(400, 'Type or Name Required'));
             return;
         }
         if (req.body.confirm === '1') {
             let data1 = req.body;
             data1.confirm = '0';
-            if(req.session.userID === Number(req.params.id) && Number(req.body.type) < req.session.type) {
+            if(req.session.userID === rs[0].id && Number(req.body.type) < req.session.type) {
                 res.render('confirm', {
                     msg: 'Edit User Confirmation',
                     inf1: 'Are you sure to downgrade your type?',
@@ -72,7 +84,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
                 });
                 return;
             }
-            else if(req.session.userID !== Number(req.params.id) && Number(req.body.type) === req.session.type) {
+            else if(req.session.userID !== rs[0].id && Number(req.body.type) === req.session.type) {
                 res.render('confirm', {
                     msg: 'Edit User Confirmation',
                     inf1: 'Are you sure to make ' + rs[0].name + ' (' + res.locals.typeName[rs[0].type] + ') have the same type with you?',
@@ -83,23 +95,23 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             }
         }
         await new Promise(async (resolve, reject) => {
-            req.sessionStore!.destroy((await session_map[Number(req.params.id)]), (err) => {
+            req.sessionStore!.destroy((await session_map[rs[0].id]), (err) => {
                 if(err) reject(err);
                 else resolve();
             });
         });
-        session_map[Number(req.params.id)] = undefined;
+        session_map[rs[0].id] = undefined;
 
         if (req.body.type) {
-            await db(query.resetUserType, [Number(req.body.type), Number(req.params.id)]);
-            db(query.log, [req.session!.userID, "User", Number(req.params.id), "Reset Type", "Previous Type: " + res.locals.typeName[rs[0].type]]);
+            await db(query.resetUserType, [Number(req.body.type), rs[0].id]);
+            db(query.log, [req.session!.userID, "User", rs[0].id, "Reset Type", true, "Previous Type: " + res.locals.typeName[rs[0].type]]);
         }
         if (req.body.name) {
-            await db(query.resetUserName, [req.body.name, Number(req.params.id)]);
-            db(query.log, [req.session!.userID, "User", Number(req.params.id), "Reset Name", "Previous Name: " + rs[0].name]);
+            await db(query.resetUserName, [req.body.name, rs[0].id]);
+            db(query.log, [req.session!.userID, "User", rs[0].id, "Reset Name", true, "Previous Name: " + rs[0].name]);
         }
 
-        if (Number(req.params.id) === req.session.userID) {
+        if (rs[0].id === req.session.userID) {
             res.status(200);
             res.render('message', {
                 code: 200,
