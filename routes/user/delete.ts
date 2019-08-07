@@ -43,7 +43,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             data1.confirm = '0';
             res.render('confirm', {
                 msg: 'Delete Confirmation',
-                inf1: 'Are you sure to delete user ' + rs[0].name + ' (' + rs[0].id + ')?',
+                inf1: 'Are you sure to delete ' + res.locals.typename[rs[0].type] +' ' + rs[0].name + ' (' + rs[0].id + ')?',
                 inf2: 'YOU MAY NOT UNDO THIS ACTION',
                 data: data1
             });

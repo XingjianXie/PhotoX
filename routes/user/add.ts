@@ -39,7 +39,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             data1.confirm = '0';
             res.render('confirm', {
                 msg: 'Add User Confirmation',
-                inf1: 'Are you sure to add a user who have the same permission with you?',
+                inf1: 'Are you sure to add a user who have the same type with you?',
                 inf2: 'YOU MAY NOT UNDO THIS ACTION',
                 data: data1
             });

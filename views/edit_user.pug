@@ -1,11 +1,11 @@
 extends layout
 
 block title
-  title Edit #{typeName[u.type]} #{u.id} "#{u.name}"
+  title Edit #{typeName[u.type]} #{u.name} (#{u.id})
 
 block top
-  h3.text-dark.mb-0.m-2.d-none.d-md-block Edit #{typeName[u.type]} #{u.id} "#{u.name}"
-  h5.text-dark.mb-0.m-2.d-md-none Edit #{u.id}
+  h3.text-dark.mb-0.m-2.d-none.d-md-block Edit #{typeName[u.type]} #{u.name} (#{u.id})
+  h5.text-dark.mb-0.m-2.d-md-none Edit #{u.name}
 
 block topr
   .nav-item
