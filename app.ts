@@ -21,7 +21,6 @@ const redis_client = redis.createClient({ host: require('./db/RedisConfig').host
 const store : Store = new redisStore({ client: redis_client });
 const session_map : any = new Proxy({}, {
     get(target, index) {
-        console.log(index);
         return promisify(redis_client.get).bind(redis_client)('mark07x_session_map:' + index.toString());
     },
     set(target, index, value, receiver) {

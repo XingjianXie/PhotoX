@@ -64,6 +64,8 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             });
             session_map[id] = undefined;
 
+            db(query.log, [req.session.userID, "User", id, "Reset Password", null]);
+
             if (id === req.session.userID) {
                 res.status(200);
                 res.render('message', {

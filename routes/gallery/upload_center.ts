@@ -47,6 +47,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
 
         const t = await Promise.all(req.files.map(async(value) => {
             const id = (await db(query.addPhoto, [req.session!.userID])).insertId;
+            db(query.log, [req.session!.userID, "Photo", id, "Upload", null]);
             try {
                 const bufs : any[] = [];
                 value.stream.on('data', (d) => { bufs.push(d); });
@@ -58,7 +59,8 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                 }));
 
                 await sharp(rs).toFile('public/uploads/' + id + '.png');
-                await db(query.updatePhoto, [id]);
+                await db(query.convertPhoto, [id]);
+                db(query.log, [req.session!.userID, "Photo", id, "Convert", null]);
                 return true;
             } catch(err) {
                 return false;

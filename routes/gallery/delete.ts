@@ -6,7 +6,7 @@ import {create as ps_create} from "../../tools/password";
 export default (db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
     router.post('/', async(req, res, next) => {
-        if (!req.session || !req.session.sign || !req.session.type) {
+        if (!req.session || !req.session.sign) {
             next(createError(401, 'Unauthorized'));
             return;
         }
@@ -33,6 +33,9 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
 
         await db(query.deletePhoto, [Number(req.body.photoID)]);
+
+        db(query.log, [req.session.userID, "Photo", Number(req.body.photoID), "Delete", null]);
+
         res.status(200);
         if (dw.length) {
             res.status(200);

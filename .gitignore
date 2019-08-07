@@ -1,8 +1,8 @@
 # Project
 *.js
 *.map
-!public/
-public/uploads/
+!public/**/*
+public/uploads/**/*
 
 # Logs
 logs

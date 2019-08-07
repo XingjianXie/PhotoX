@@ -22,7 +22,7 @@ block content
           .p-5
             form.user(method="post")
               .form-group.dropdown
-                input#confirm.d-none(value='0', name='confirm')
+                input#confirm.d-none(value='1', name='confirm')
                 input.d-none(name='type', autocomplete="off")
                 input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Type (Unchanged)", onfocus='this.blur()')
                 .dropdown-menu(role='menu')
@@ -55,12 +55,10 @@ append javascripts
       |       $('#warning').removeClass('d-none');
       |       $('#wb').removeClass('btn-primary');
       |       $('#wb').addClass('btn-danger');
-      |       $('#confirm').val('1');
       |     } else {
       |       $('#warning').addClass('d-none');
       |       $('#wb').removeClass('btn-danger');
       |       $('#wb').addClass('btn-primary');
-      |       $('#confirm').val('0');
       |     }
       |   }
     else
@@ -69,12 +67,10 @@ append javascripts
       |       $('#warning').removeClass('d-none');
       |       $('#wb').removeClass('btn-primary');
       |       $('#wb').addClass('btn-danger');
-      |       $('#confirm').val('2');
       |     } else {
       |       $('#warning').addClass('d-none');
       |       $('#wb').removeClass('btn-danger');
       |       $('#wb').addClass('btn-primary');
-      |       $('#confirm').val('2');
       |     }
       |   }
     | }

@@ -34,7 +34,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(400, 'Password Required'));
             return;
         }
-        if (req.body.confirm === '1') {
+        if (req.body.confirm === '1' && req.session.type === Number(req.body.type)) {
             let data1 = req.body;
             data1.confirm = '0';
             res.render('confirm', {
@@ -46,12 +46,15 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             return;
         }
         const password = ps_create(req.body.pwd);
-        const rs = await db(query.addUser, [req.body.name, req.body.type, password[0], password[1]]);
+        const id = (await db(query.addUser, [req.body.name, req.body.type, password[0], password[1]])).insertId;
+
+        db(query.log, [req.session.userID, "User", id, "Create", null]);
+
         res.status(201);
         res.render('message', {
             code: 201,
             msg: "Add Successfully",
-            inf: "Please Remember Your User ID: " + rs.insertId,
+            inf: "Please Remember Your User ID: " + id,
         });
     });
 

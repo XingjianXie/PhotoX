@@ -63,23 +63,24 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         if (req.body.confirm === '1') {
             let data1 = req.body;
             data1.confirm = '0';
-            res.render('confirm', {
-                msg: 'Edit User Confirmation',
-                inf1: 'Are you sure to downgrade your type?',
-                inf2: 'YOU MAY NOT UNDO THIS ACTION',
-                data: data1
-            });
-            return;
-        } else if (req.body.confirm === '2') {
-            let data1 = req.body;
-            data1.confirm = '0';
-            res.render('confirm', {
-                msg: 'Edit User Confirmation',
-                inf1: 'Are you sure to make ' + rs[0].name + ' (' + res.locals.typename[rs[0].type] + ') have the same type with you?',
-                inf2: 'YOU MAY NOT UNDO THIS ACTION',
-                data: data1
-            });
-            return;
+            if(req.session.userID === Number(req.params.id) && Number(req.body.type) < req.session.type) {
+                res.render('confirm', {
+                    msg: 'Edit User Confirmation',
+                    inf1: 'Are you sure to downgrade your type?',
+                    inf2: 'YOU MAY NOT UNDO THIS ACTION',
+                    data: data1
+                });
+                return;
+            }
+            else if(req.session.userID !== Number(req.params.id) && Number(req.body.type) === req.session.type) {
+                res.render('confirm', {
+                    msg: 'Edit User Confirmation',
+                    inf1: 'Are you sure to make ' + rs[0].name + ' (' + res.locals.typeName[rs[0].type] + ') have the same type with you?',
+                    inf2: 'YOU MAY NOT UNDO THIS ACTION',
+                    data: data1
+                });
+                return;
+            }
         }
         await new Promise(async (resolve, reject) => {
             req.sessionStore!.destroy((await session_map[Number(req.params.id)]), (err) => {
@@ -89,10 +90,14 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         });
         session_map[Number(req.params.id)] = undefined;
 
-        if (req.body.type)
+        if (req.body.type) {
             await db(query.resetUserType, [Number(req.body.type), Number(req.params.id)]);
-        if (req.body.name)
+            db(query.log, [req.session!.userID, "User", Number(req.params.id), "Reset Type", "Previous Type: " + res.locals.typeName[rs[0].type]]);
+        }
+        if (req.body.name) {
             await db(query.resetUserName, [req.body.name, Number(req.params.id)]);
+            db(query.log, [req.session!.userID, "User", Number(req.params.id), "Reset Name", "Previous Name: " + rs[0].name]);
+        }
 
         if (Number(req.params.id) === req.session.userID) {
             res.status(200);

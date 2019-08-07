@@ -6,7 +6,6 @@ import createError from "http-errors";
 export default (session_map : any, db : (sql : string, values : any) => Promise<any[]>) => {
     const router = express.Router();
     router.post('/', async(req, res, next) => {
-        console.log(req.body);
         if (!req.session || !req.session.sign || !req.session.type) {
             next(createError(401, 'Unauthorized'));
             return;
@@ -31,22 +30,20 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         if (req.body.confirm === '1') {
             let data1 = req.body;
             data1.confirm = '0';
-            res.render('confirm', {
-                msg: 'Delete Confirmation',
-                inf1: 'Are you sure to delete your own user?',
-                inf2: 'YOU MAY NOT UNDO THIS ACTION',
-                data: data1
-            });
-            return;
-        } else if (req.body.confirm === '2') {
-            let data1 = req.body;
-            data1.confirm = '0';
-            res.render('confirm', {
-                msg: 'Delete Confirmation',
-                inf1: 'Are you sure to delete ' + res.locals.typename[rs[0].type] +' ' + rs[0].name + ' (' + rs[0].id + ')?',
-                inf2: 'YOU MAY NOT UNDO THIS ACTION',
-                data: data1
-            });
+            if(req.session.userID === Number(req.body.userID))
+                res.render('confirm', {
+                    msg: 'Delete Confirmation',
+                    inf1: 'Are you sure to delete your own user?',
+                    inf2: 'YOU MAY NOT UNDO THIS ACTION',
+                    data: data1
+                });
+            else
+                res.render('confirm', {
+                    msg: 'Delete Confirmation',
+                    inf1: 'Are you sure to delete ' + res.locals.typeName[rs[0].type] +' ' + rs[0].name + ' (' + rs[0].id + ')?',
+                    inf2: 'YOU MAY NOT UNDO THIS ACTION',
+                    data: data1
+                });
             return;
         }
         await new Promise(async (resolve, reject) => {
@@ -58,6 +55,9 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         session_map[req.body.userID] = undefined;
 
         await db(query.deleteUser, [Number(req.body.userID)]);
+
+        db(query.log, [req.session!.userID, "User", Number(req.body.userID), "Delete", null]);
+
         res.status(200);
         if (Number(req.body.userID) === req.session.userID) {
             res.status(200);

@@ -47,6 +47,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             req.session!.type = Number(rs[0].type);
             req.session!.name = rs[0].name;
             session_map[Number(req.body.id)] = req.sessionID;
+            db(query.log, [req.session!.userID, null, null, "Login", "IP Address: " + req.ip]);
             res.redirect('/');
         } else {
             next(createError(401, ' Password Unauthorized'));

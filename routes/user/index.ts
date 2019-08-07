@@ -32,7 +32,6 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             new_map[value.id] = await session_map[value.id];
         };
 
-        console.log(new_map);
         res.render('user', {
             users: rs,
             total: total,

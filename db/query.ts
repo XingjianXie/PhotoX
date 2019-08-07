@@ -9,8 +9,8 @@ export default {
     deleteUser: 'UPDATE user SET deleted = 1 WHERE id=?',
     resetUserType: 'UPDATE user SET type=? WHERE id=? AND deleted = 0',
     resetUserName: 'UPDATE user SET name=? WHERE id=? AND deleted = 0',
-    addPhoto: 'INSERT INTO photo(uploader_id, type, date) VALUES(?, 0, now())',
-    updatePhoto: 'UPDATE photo SET type=1 WHERE id=? AND deleted = 0',
+    addPhoto: 'INSERT INTO photo(uploader_id, type) VALUES(?, 0)',
+    convertPhoto: 'UPDATE photo SET type=1 WHERE id=? AND deleted = 0',
     publishPhoto: 'UPDATE photo SET type=2, name=? WHERE id=? AND deleted = 0',
     queryUnPublishedPhotoWithLimit: 'SELECT photo.id as id, photo.type as type, photo.name as name, photo.uploader_id as uploader_id, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE (user.type < ? OR user.id = ?) AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
     countQueryUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE (user.type < ? OR user.id = ?) AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0',
@@ -19,4 +19,5 @@ export default {
     getPhotoById: 'SELECT photo.id as id, photo.type as type, photo.name as name, photo.uploader_id as uploader_id, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.id = ? AND photo.deleted = 0',
     getDownloadByPhotoId: 'SELECT * from download where photo_id = ?',
     deletePhoto: 'UPDATE photo SET deleted = 1 WHERE id = ?',
+    log: 'INSERT INTO log(operator, target_type, target, action, extra_message) VALUES(?, ?, ?, ?, ?)'
 };
