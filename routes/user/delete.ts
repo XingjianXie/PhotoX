@@ -49,6 +49,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
                 });
             return;
         }
+        const userID = req.session.userID;
         await new Promise(async (resolve, reject) => {
             req.sessionStore!.destroy((await session_map[rs[0].id]), (err) => {
                 if(err) reject(err);
@@ -59,10 +60,10 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
 
         await db(query.deleteUser, [rs[0].id]);
 
-        db(query.log, [req.session!.userID, "User", rs[0].id, "Delete", true, null]);
+        db(query.log, [userID, "User", rs[0].id, "Delete", true, null]);
 
         res.status(200);
-        if (rs[0].id === req.session.userID) {
+        if (rs[0].id === userID) {
             res.status(200);
             res.render('message', {
                 code: 200,

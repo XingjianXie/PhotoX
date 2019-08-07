@@ -94,6 +94,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
                 return;
             }
         }
+        const userID = req.session.userID;
         await new Promise(async (resolve, reject) => {
             req.sessionStore!.destroy((await session_map[rs[0].id]), (err) => {
                 if(err) reject(err);
@@ -104,14 +105,14 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
 
         if (req.body.type) {
             await db(query.resetUserType, [Number(req.body.type), rs[0].id]);
-            db(query.log, [req.session!.userID, "User", rs[0].id, "Reset Type", true, "Previous Type: " + res.locals.typeName[rs[0].type]]);
+            db(query.log, [userID, "User", rs[0].id, "Reset Type", true, "Previous Type: " + res.locals.typeName[rs[0].type]]);
         }
         if (req.body.name) {
             await db(query.resetUserName, [req.body.name, rs[0].id]);
-            db(query.log, [req.session!.userID, "User", rs[0].id, "Reset Name", true, "Previous Name: " + rs[0].name]);
+            db(query.log, [userID, "User", rs[0].id, "Reset Name", true, "Previous Name: " + rs[0].name]);
         }
 
-        if (rs[0].id === req.session.userID) {
+        if (rs[0].id === userID) {
             res.status(200);
             res.render('message', {
                 code: 200,

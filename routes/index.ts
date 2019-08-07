@@ -18,7 +18,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
     });
 
     router.use('/login', login(session_map, db));
-    router.use('/logout', logout(session_map));
+    router.use('/logout', logout(session_map, db));
     router.use('/gallery', gallery(db, multer));
     router.use('/user', user(session_map, db));
     router.use('/create_password', create_password());

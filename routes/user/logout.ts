@@ -14,7 +14,12 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             return;
         }
         const rs = await db(query.getUserById, [Number(req.body.userID)]);
-        if (req.session.type <= rs[0].type && req.session.userID !== Number(req.body.userID)) {
+        if (!rs[0]) {
+            db(query.log, [req.session.userID, "User", Number(req.params.id), "Kick Out", false, "Reason: User Not Found"]);
+            next(createError(404, 'User Not Found'));
+            return;
+        }
+        if (req.session.type <= rs[0].type && req.session.userID !== rs[0].id) {
             db(query.log, [req.session.userID, "User", rs[0].id, "Kick Out", false, "Reason: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
@@ -24,18 +29,19 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             next(createError(401, 'Unauthorized'));
             return;
         }
+        const userID = req.session.userID;
         await new Promise(async (resolve, reject) => {
-            req.sessionStore!.destroy((await session_map[Number(req.body.userID)]), (err) => {
+            req.sessionStore!.destroy((await session_map[rs[0].id]), (err) => {
                 if(err) reject(err);
                 else resolve();
             });
         });
-        session_map[req.body.userID] = undefined;
+        session_map[rs[0].id] = undefined;
 
-        db(query.log, [req.session.userID, "User", rs[0].id, "Kick Out", true, null]);
+        db(query.log, [userID, "User", rs[0].id, "Kick Out", true, null]);
 
         res.status(200);
-        if (Number(req.body.userID) === req.session.userID) {
+        if (rs[0].id === userID) {
             res.status(200);
             res.render('message', {
                 code: 200,

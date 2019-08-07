@@ -31,8 +31,8 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             return;
         }
         const rs = await db(query.getUserById, [Number(req.body.id)]);
-        if (!rs.length) {
-            db(query.log, [Number(req.body.id), null, null, "Login", false, "IP Address: " + req.ip + "; Reason: User Not Found"]);
+        if (!rs[0]) {
+            db(query.log, [0, "User", Number(req.body.id), "Login", false, "IP Address: " + req.ip + "; Reason: User Not Found"]);
             next(createError(404, 'User Not Found'));
             return;
         }
@@ -48,10 +48,10 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             req.session!.type = rs[0].type;
             req.session!.name = rs[0].name;
             session_map[rs[0].id] = req.sessionID;
-            db(query.log, [rs[0].id, null, null, "Login", true, "IP Address: " + req.ip]);
+            db(query.log, [0, "User", rs[0].id, "Login", true, "IP Address: " + req.ip]);
             res.redirect('/');
         } else {
-            db(query.log, [rs[0].id, null, null, "Login", false, "IP Address: " + req.ip + "; Reason: Unauthorized"]);
+            db(query.log, [0, "User", rs[0].id, "Login", false, "IP Address: " + req.ip + "; Reason: Unauthorized"]);
             next(createError(401, ' Password Unauthorized'));
         }
     });
