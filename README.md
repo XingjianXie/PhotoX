@@ -47,7 +47,8 @@ source init.sql;
 # Insert System User
 # passcode("5f4dcc3b5aa765d61d8327deb882cf99") is md5("password")
 # passrd("") is salt, so please reset password once login)
-insert into user(name, type, passcode, passrd) values("System", 127, "5f4dcc3b5aa765d61d8327deb882cf99", "");
+insert into user(phone_number, name, type, passcode, passrd)
+values(11111111111, "System", 127, "5f4dcc3b5aa765d61d8327deb882cf99", "");
 ```
 
 ## Debug
