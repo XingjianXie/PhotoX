@@ -44,7 +44,9 @@ use database photox;
 # Import Database File
 source init.sql;
 
-# Insert System User (5f4dcc3b5aa765d61d8327deb882cf99 is md5("password"), passrd is salt, so please reset password once login)
+# Insert System User
+# passcode("5f4dcc3b5aa765d61d8327deb882cf99") is md5("password")
+# passrd("") is salt, so please reset password once login)
 insert into user(name, type, passcode, passrd) values("System", 127, "5f4dcc3b5aa765d61d8327deb882cf99", "");
 ```
 
