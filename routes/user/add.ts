@@ -65,7 +65,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             });
         } catch(e) {
             if (e.code === 'ER_DUP_ENTRY') {
-                db(query.log, [req.session.userID, "User", 0, "Create", false, "Error: Duplicate"]);
+                db(query.log, [req.session.userID, "User", 0, "Create", false, "Error: Duplicate Phone Number"]);
                 next(createError(400, 'Phone Number Has Been Taken'));
             } else throw e;
         }

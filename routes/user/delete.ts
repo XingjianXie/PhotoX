@@ -37,14 +37,14 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
                 res.render('confirm', {
                     msg: 'Delete Confirmation',
                     inf1: 'Are you sure to delete your own user?',
-                    inf2: 'YOU MAY NOT UNDO THIS ACTION',
+                    inf2: 'YOU MAY NOT UNDO THIS ACTION, AND YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
                     data: data1
                 });
             else
                 res.render('confirm', {
                     msg: 'Delete Confirmation',
                     inf1: 'Are you sure to delete ' + res.locals.typeName[rs[0].type] +' ' + rs[0].name + ' (' + rs[0].id + ')?',
-                    inf2: 'YOU MAY NOT UNDO THIS ACTION',
+                    inf2: 'YOU MAY NOT UNDO THIS ACTION, AND YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
                     data: data1
                 });
             return;
