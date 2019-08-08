@@ -39,7 +39,7 @@ mysql -u root -p
 create database photox;
 
 # Switch to PhotoX Database (or any database you want)
-use database photox;
+use photox;
 
 # Import Database File
 source init.sql;
