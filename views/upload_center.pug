@@ -102,8 +102,17 @@ append javascripts
     function upload() {
       const formData = new FormData();
       const files = document.getElementById('uploadInput').files;
-      for (const file of files)
-          formData.append('photo', file);
+      if (files.length > 20) {
+        alert("You can only upload less than 20 photos at once");
+        return;
+      }
+      for (const file of files) {
+        if (files.size >= 1e8) {
+          alert("You can only upload photo less than 100mb");
+          return;
+        }
+        formData.append('photo', file);
+      }
       const xhr = new XMLHttpRequest();
       let finished = false;
 

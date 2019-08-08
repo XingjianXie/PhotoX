@@ -38,11 +38,11 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             next(createError(401, 'Unauthorized'));
             return;
         }
-        if (req.body.type && isNaN(Number(req.body.type)) || (Number(req.body.type)) > 126 || (Number(req.body.type)) < 0) {
+        if (req.body.type && (isNaN(Number(req.body.type)) || (Number(req.body.type)) > 126 || (Number(req.body.type))) < 0) {
             next(createError(400, 'Type Should Be A Number From 0 to 126'));
             return;
         }
-        if (req.body.phone_number && isNaN(Number(req.body.phone_number)) || Number(req.body.phone_number).toString().length !== 11) {
+        if (req.body.phone_number && (isNaN(Number(req.body.phone_number)) || Number(req.body.phone_number).toString().length !== 11)) {
             next(createError(400, 'Phone Number Invalid'));
             return;
         }
@@ -141,7 +141,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         } catch (e) {
             if (e.code === 'ER_DUP_ENTRY') {
                 db(query.log, [userID, "User", rs[0].id, "Reset Phone Number", false, "Error: Duplicate"]);
-                next(createError(400, 'Phone Number Has Been Taken'));
+                next(createError(400, 'Not Completely Finished: Phone Number Has Been Taken'));
             } else throw e;
         }
     });

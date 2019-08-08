@@ -27,6 +27,27 @@ cp db/RedisConfig.js.template db/RedisConfig.js
 vim db/RedisConfig.js
 ```
 
+## Init Database
+```shell script
+# Chdir to Database Folder
+cd db/
+
+# Login to Root User (or any user you want, permission is required)
+mysql -u root -p
+
+# Create PhotoX Database (or any database you want)
+create database photox;
+
+# Switch to PhotoX Database (or any database you want)
+use database photox;
+
+# Import Database File
+source init.sql;
+
+# Insert System User (5f4dcc3b5aa765d61d8327deb882cf99 is md5("password"), passrd is salt, so please reset password once login)
+insert into user(name, type, passcode, passrd) values("System", 127, "5f4dcc3b5aa765d61d8327deb882cf99", "");
+```
+
 ## Debug
 ```shell script
 # Set Environment to Development
