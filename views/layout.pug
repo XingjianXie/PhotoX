@@ -60,6 +60,11 @@ html
                   a.nav-link(href='/user', class= {active: url.indexOf('/user') === 0})
                     i.fas.fa-user
                     span User
+              if session.type === 127
+                li.nav-item(role='presentation')
+                  a.nav-link(href='/log', class= {active: url.indexOf('/log') === 0})
+                    i.fas.fa-book
+                    span Log
           .text-center.d-none.d-md-inline
             button#sidebarToggle.btn.rounded-circle.border-0(type='button')
       #content-wrapper.d-flex.flex-column

@@ -18,7 +18,7 @@ block content
     p.mb-0.text-danger= inf2
     form.d-inline-block(method='post')
       -for(let t in data)
-        input.d-none(name=t, value=data[t])
+        input.d-none(name=t, value=data[t], autocomplete="off")
       a.mr-3(href="#", onclick="history.back(); return false;") Back
       a.ml-3.text-danger(href="#", onclick="cu_submit($(this).parents('form')); return false;") Continue
 

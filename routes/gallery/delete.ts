@@ -36,7 +36,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
 
         await db(query.deletePhoto, [rs[0].id]);
 
-        db(query.log, [req.session.userID, "Photo", rs[0].id, "Photo", true, null]);
+        db(query.log, [req.session.userID, "Photo", rs[0].id, "Delete", true, null]);
 
         res.status(200);
         if (dw.length) {

@@ -24,7 +24,7 @@ block content
               .form-group.dropdown
                 input#confirm.d-none(value='1', name='confirm')
                 input.d-none(name='type', autocomplete="off")
-                input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Type (Unchanged)", onfocus='this.blur()')
+                input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Type (Unchanged)", onfocus='this.blur()', autocomplete="off")
                 .dropdown-menu(role='menu')
                   -let t = 0;
                   while t <= Math.min(session.type, 2)

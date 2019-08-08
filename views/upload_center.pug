@@ -19,7 +19,7 @@ block topr
     a#upload.nav-link(onclick="document.querySelector('#uploadInput').click(); return false;" href='#')
       span.d-inline.mr-2.text-gray-600.small Upload
     form#uploadForm.d-none(method="post", enctype="multipart/form-data")
-      input#uploadInput(type="file", name="photo", accept='image/*', onchange="upload()", multiple)
+      input#uploadInput(type="file", name="photo", accept='image/*', onchange="upload()", multiple, autocomplete="off")
   .nav-item
     a.nav-link(onclick="history.back(); return false;", href='#')
       span.d-inline.mr-2.text-gray-600.small Back
@@ -65,8 +65,8 @@ block content
                         | Publish
                     =' '
                     form.d-inline-block(method='post' action='/gallery/delete')
-                      input.d-none(value=val.id, name='photoID')
-                      input.d-none(value='1', name='confirm')
+                      input.d-none(value=val.id, name='photoID', autocomplete="off")
+                      input.d-none(value='1', name='confirm', autocomplete="off")
                       button.btn.btn-danger.btn-sm(type='submit', disabled=val.uploader_type >= session.type && val.uploader_id !== session.userID)
                         | Delete
         .row.d-block.d-lg-flex

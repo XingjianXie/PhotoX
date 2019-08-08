@@ -29,10 +29,10 @@ block content
                   h4.text-dark.mb-4 Welcome To PhotoX
                 form.user(method="post")
                   .form-group
-                    input#input1.form-control.form-control-user(type="text", placeholder="User ID", name="id", oninput="input(0)", disabled)
+                    input#input1.form-control.form-control-user(type="text", placeholder="User ID", name="id", oninput="input(0)", disabled, autocomplete="off")
                   .form-group
-                    input#input2.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input(1)", disabled)
-                  button#login.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, onclick="$(this).attr('disabled', true); submit();") Please Enable JavaScript to Login
+                    input#input2.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input(1)", disabled, autocomplete="off")
+                  button#login.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled) Please Enable JavaScript to Login
 
 append javascripts
   script.
@@ -40,10 +40,12 @@ append javascripts
     $('#input1').removeAttr('disabled');
     $('#input2').removeAttr('disabled');
     function input(x) {
-      if ($('[name=id]').val() && $('[name=pwd]').val())
-        $('[type=submit]').removeAttr('disabled');
+      if ($('#input1').val() && $('#input2').val())
+        $('#login').removeAttr('disabled');
       else
-        $('[type=submit]').attr('disabled', true);
-      if(!x)
-        $('[name=pwd]').val('');
+        $('#login').attr('disabled', true);
+      if(!x) {
+        $('#input2').val('');
+        input(1);
+      }
     }

@@ -3,43 +3,43 @@
     - var end = Math.ceil(total / maximum);
     form
       if wd
-        input.d-none(name='wd', value=wd)
+        input.d-none(name='wd', value=wd, autocomplete="off")
       if max
-        input.d-none(name='max', value=maximum)
+        input.d-none(name='max', value=maximum, autocomplete="off")
       ul.pagination
         if 2 <= current - 2
           li.page-item(class={"active": current === 1})
-            input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=1)
+            input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=1, autocomplete="off")
         if 3 < current - 2
           li.page-item(disabled)
             button.page-link(disabled) ...
         if 3 === current - 2
           li.page-item(class={"active": current === 2})
-            input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=2)
+            input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=2, autocomplete="off")
         - var t = Math.max(1, current - 2);
         while t <= Math.min(end, current + 2)
           li.page-item(class={"active": current === t})
-            input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=t)
+            input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=t, autocomplete="off")
             - t++
         if end - 2 > current + 2
           li.page-item(disabled)
             button.page-link(disabled) ...
         if end - 2 === current + 2
           li.page-item(class={"active": current === end - 1})
-            input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=end - 1)
+            input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=end - 1, autocomplete="off")
         if end - 1 >= current + 2
           li.page-item(class={"active": current === end})
-            input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=end)
+            input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=end, autocomplete="off")
 .col-12.d-sm-none.justify-content-end
   nav
     - var end = Math.ceil(total / maximum);
     form
-      input.d-none(name='wd', value=wd)
-      input.d-none(name='max', value=maximum)
+      input.d-none(name='wd', value=wd, autocomplete="off")
+      input.d-none(name='max', value=maximum, autocomplete="off")
       ul.pagination
         li.page-item(class={disabled: current === 1})
-          input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=current - 1)
+          input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=current - 1, autocomplete="off")
         li.page-item.active
-          input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=current)
+          input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=current, autocomplete="off")
         li.page-item(class={disabled: current === end})
-          input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=current + 1)
+          input.page-link(onclick="cu_submit($(this).parents('form'), $(this))", type='button', name='pg', value=current + 1, autocomplete="off")

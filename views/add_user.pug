@@ -22,8 +22,8 @@ block content
           .p-5
             form.user(method="post")
               .form-group.dropdown
-                input#confirm.d-none(value='1', name='confirm')
-                input.d-none(name='type')
+                input#confirm.d-none(value='1', name='confirm', autocomplete="off")
+                input.d-none(name='type', autocomplete="off")
                 input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Type", onfocus='this.blur()', autocomplete="off")
                 .dropdown-menu(role='menu')
                   -let t = 0;
