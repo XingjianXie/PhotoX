@@ -107,7 +107,7 @@ append javascripts
         return;
       }
       for (const file of files) {
-        if (files.size >= 1e8) {
+        if (file.size >= 1e8) {
           alert("You can only upload photo less than 100mb");
           return;
         }
