@@ -16,17 +16,17 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         }
         const rs = await db(query.getUserById, [Number(req.body.userID)]);
         if (!rs[0]) {
-            db(query.log, [req.session.userID, "User", Number(req.body.userID), "Delete", false, "Reason: User Not Found"]);
+            db(query.log, [req.session.userID, "User", Number(req.body.userID), "Delete", false, "Error: User Not Found"]);
             next(createError(404, 'User Not Found'));
             return;
         }
         if (req.session.type <= rs[0].type && req.session.userID !== Number(req.body.userID)) {
-            db(query.log, [req.session.userID, "User", rs[0].id, "Delete", false, "Reason: Unauthorized"]);
+            db(query.log, [req.session.userID, "User", rs[0].id, "Delete", false, "Error: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
-            db(query.log, [req.session.userID, "User", rs[0].id, "Delete", false, "Reason: Unauthorized"]);
+            db(query.log, [req.session.userID, "User", rs[0].id, "Delete", false, "Error: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }

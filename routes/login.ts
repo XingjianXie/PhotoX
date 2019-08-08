@@ -18,21 +18,20 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             res.redirect('/');
             return;
         }
-        if (!req.body.id) {
-            next(createError(400, 'User ID Required'));
+        if (!req.body.phone_number) {
+            next(createError(400, 'Phone Number Required'));
             return;
         }
         if (!req.body.pwd) {
             next(createError(400, 'Password Required'));
             return;
         }
-        if (isNaN(Number(req.body.id))) {
-            next(createError(400, 'User ID Should Be A Number'));
+        if (isNaN(Number(req.body.phone_number)) || Number(req.body.phone_number).toString().length != 11) {
+            next(createError(400, 'Phone Number Invalid'));
             return;
         }
-        const rs = await db(query.getUserById, [Number(req.body.id)]);
+        const rs = await db(query.getUserByPhoneNumber, [Number(req.body.phone_number)]);
         if (!rs[0]) {
-            db(query.log, [0, "User", Number(req.body.id), "Login", false, "IP Address: " + req.ip + "; Reason: User Not Found"]);
             next(createError(404, 'User Not Found'));
             return;
         }
@@ -51,7 +50,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             db(query.log, [0, "User", rs[0].id, "Login", true, "IP Address: " + req.ip]);
             res.redirect('/');
         } else {
-            db(query.log, [0, "User", rs[0].id, "Login", false, "IP Address: " + req.ip + "; Reason: Unauthorized"]);
+            db(query.log, [0, "User", rs[0].id, "Login", false, "IP Address: " + req.ip + "; Error: Unauthorized"]);
             next(createError(401, ' Password Unauthorized'));
         }
     });

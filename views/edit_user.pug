@@ -36,16 +36,18 @@ block content
                 else
                   #warning.text-danger.d-none You may NOT edit or delete this user once you reset its type
               .form-group
-                input.form-control.form-control-user(type="text", autocomplete="off", placeholder="Name (Unchanged)", name="name", oninput="input(1)")
+                input.form-control.form-control-user(type="text", autocomplete="off", placeholder="Phone Number (Unchanged)", name="phone_number", oninput="input(1)")
               .form-group
-                button#wb.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, onclick='$(this).attr(\'disabled\', true); submit();') Edit
+                input.form-control.form-control-user(type="text", autocomplete="off", placeholder="Name (Unchanged)", name="name", oninput="input(2)")
+              .form-group
+                button#wb.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, onclick='$(this).attr(\'disabled\', true); submit(); return false;') Edit
               .form-group
                 a.btn.btn-primary.btn-block.text-white.btn-user(href='/reset_password?id=' + u.id) Reset Password
 
 append javascripts
   script
     | function input(x) {
-    |   if ($('[name=name]').val() || $('[name=type]').val())
+    |   if ($('[name=name]').val() || $('[name=type]').val() || $('[name=phone_number]').val())
     |     $('[type=submit]').removeAttr('disabled');
     |   else
     |     $('[type=submit]').attr('disabled', '');

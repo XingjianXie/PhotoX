@@ -13,12 +13,12 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         const rs = await db(query.getPhotoById, [Number(req.body.photoID)]);
         const dw = await db(query.getDownloadByPhotoId, [Number(req.body.photoID)]);
         if (!rs[0]) {
-            db(query.log, [req.session.userID, "Photo", Number(req.body.photoID), "Delete", false, "Reason: Photo Not Found"]);
+            db(query.log, [req.session.userID, "Photo", Number(req.body.photoID), "Delete", false, "Error: Photo Not Found"]);
             next(createError(404, 'Photo Not Found'));
             return;
         }
         if (req.session.type <= rs[0].uploader_type && ( req.session.userID !== rs[0].uploader_id || dw.length)) {
-            db(query.log, [req.session.userID, "Photo", rs[0].id, "Delete", false, "Reason: Unauthorized"]);
+            db(query.log, [req.session.userID, "Photo", rs[0].id, "Delete", false, "Error: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }

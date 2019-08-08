@@ -22,18 +22,22 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(400, 'Type Should Be A Number From 0 to 126'));
             return;
         }
+        if (isNaN(Number(req.body.phone_number)) || Number(req.body.phone_number).toString().length !== 11) {
+            next(createError(400, 'Phone Number Invalid'));
+            return;
+        }
         if (req.session.type < Number(req.body.type)) {
-            db(query.log, [req.session.userID, "User", null, "Create", false, "Reason: Unauthorized"]);
+            db(query.log, [req.session.userID, "User", null, "Create", false, "Error: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (!req.body.name) {
-            db(query.log, [req.session.userID, "User", null, "Create", false, "Reason: Bad Request"]);
+            db(query.log, [req.session.userID, "User", null, "Create", false, "Error: Bad Request"]);
             next(createError(400, 'Name Required'));
             return;
         }
         if (!req.body.pwd) {
-            db(query.log, [req.session.userID, "User", null, "Create", false, "Reason: Bad Request"]);
+            db(query.log, [req.session.userID, "User", null, "Create", false, "Error: Bad Request"]);
             next(createError(400, 'Password Required'));
             return;
         }
@@ -49,16 +53,22 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             return;
         }
         const password = ps_create(req.body.pwd);
-        const id = (await db(query.addUser, [req.body.name, req.body.type, password[0], password[1]])).insertId;
+        try {
+            const id = (await db(query.addUser, [req.body.phone_number, req.body.name, req.body.type, password[0], password[1]])).insertId;
+            db(query.log, [req.session.userID, "User", id, "Create", true, null]);
 
-        db(query.log, [req.session.userID, "User", id, "Create", true, null]);
-
-        res.status(201);
-        res.render('message', {
-            code: 201,
-            msg: "Add Successfully",
-            inf: "Please Remember Your User ID: " + id,
-        });
+            res.status(201);
+            res.render('message', {
+                code: 201,
+                msg: "Add Successfully",
+                inf: "Please Remember Your User ID: " + id,
+            });
+        } catch(e) {
+            if (e.code === 'ER_DUP_ENTRY') {
+                db(query.log, [req.session.userID, "User", 0, "Create", false, "Error: Duplicate"]);
+                next(createError(400, 'Phone Number Has Been Taken'));
+            } else throw e;
+        }
     });
 
     return router;

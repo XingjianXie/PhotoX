@@ -1,15 +1,17 @@
 export default {
     //User
-    addUser: 'INSERT INTO user(name, type, passcode, passrd) VALUES(?,?,?,?)',
+    addUser: 'INSERT INTO user(phone_number, name, type, passcode, passrd) VALUES(?,?,?,?,?)',
     queryUserWithLimit: 'SELECT * FROM user WHERE type <= ? AND deleted = 0 LIMIT ?,?',
     countQueryUserWithLimit: 'SELECT COUNT(*) FROM user WHERE type <= ? AND deleted = 0',
     getUserById: 'SELECT * FROM user WHERE id=? AND deleted = 0',
-    searchUserWithLimited: 'SELECT * FROM user WHERE type <= ? AND (POSITION(? IN name) OR POSITION(? IN id)) AND deleted = 0 LIMIT ?,?',
-    countSearchUserWithLimited: 'SELECT COUNT(*) FROM user WHERE type <= ? AND (POSITION(? IN name) OR POSITION(? IN id)) AND deleted = 0',
+    getUserByPhoneNumber: 'SELECT * FROM user WHERE phone_number=? AND deleted = 0',
+    searchUserWithLimited: 'SELECT * FROM user WHERE type <= ? AND (id=? OR phone_number=? OR name=?) AND deleted = 0 LIMIT ?,?',
+    countSearchUserWithLimited: 'SELECT COUNT(*) FROM user WHERE type <= ? AND (id=? OR phone_number=? OR name=?) AND deleted = 0',
     resetPassword: 'UPDATE user SET passcode=?, passrd=? WHERE id=? AND deleted = 0',
-    deleteUser: 'UPDATE user SET deleted = 1 WHERE id=?',
+    deleteUser: 'UPDATE user SET deleted = 1 WHERE id=? AND deleted = 0',
     resetUserType: 'UPDATE user SET type=? WHERE id=? AND deleted = 0',
     resetUserName: 'UPDATE user SET name=? WHERE id=? AND deleted = 0',
+    resetUserPhoneNumber: 'UPDATE user SET phone_number=? WHERE id=? AND deleted = 0',
 
     //Photo
     addPhoto: 'INSERT INTO photo(uploader_id, type) VALUES(?, 0)',

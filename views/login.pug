@@ -29,7 +29,7 @@ block content
                   h4.text-dark.mb-4 Welcome To PhotoX
                 form.user(method="post")
                   .form-group
-                    input#input1.form-control.form-control-user(type="text", placeholder="User ID", name="id", oninput="input(0)", disabled, autocomplete="off")
+                    input#input1.form-control.form-control-user(type="text", placeholder="Phone Number", name="phone_number", oninput="input(0)", disabled, autocomplete="off")
                   .form-group
                     input#input2.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input(1)", disabled, autocomplete="off")
                   button#login.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled) Please Enable JavaScript to Login
@@ -40,7 +40,7 @@ append javascripts
     $('#input1').removeAttr('disabled');
     $('#input2').removeAttr('disabled');
     function input(x) {
-      if ($('#input1').val() && $('#input2').val())
+      if ($('#input1').val() && $('#input2').val() && !isNaN(Number($('#input1').val())) && Number($('#input1').val()).toString().length === 11)
         $('#login').removeAttr('disabled');
       else
         $('#login').attr('disabled', true);
