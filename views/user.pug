@@ -73,6 +73,14 @@ block content
           include page
       else
         .text-center.mt-5
+          style.
+            .error:before {
+              background: #ffffff
+            }
+
+            .error:after {
+              background: #ffffff
+            }
           .error.mx-auto(data-text= 404)
             p.m-0.d-inline-block= 404
           p.text-dark.mb-5.lead User Not Found
