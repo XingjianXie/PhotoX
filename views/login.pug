@@ -29,9 +29,9 @@ block content
                   h4.text-dark.mb-4 Welcome To PhotoX
                 form.user(method="post")
                   .form-group
-                    input#input1.form-control.form-control-user(type="text", placeholder="Phone Number", name="phone_number", oninput="input(0)", disabled, autocomplete="off")
+                    input#input1.form-control.form-control-user(type="text", placeholder="Phone Number", name="phone_number", oninput="input(0)", disabled, autocomplete="off", maxlength=11)
                   .form-group
-                    input#input2.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input(1)", disabled, autocomplete="off")
+                    input#input2.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input(1)", disabled, autocomplete="off", maxlength=30)
                   button#login.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled) Please Enable JavaScript to Login
 
 append javascripts

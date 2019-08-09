@@ -9,7 +9,7 @@ block top
 
   form.form-inline(onsubmit='cu_submit($(this)); return false;')
     #topbar_form.m-2.d-none.d-sm-block
-      input#search_form.form-control.form-control-sm(type='text', autocomplete="off", placeholder='ID, Operator or Target', oninput="cu_submit($(this).parents('form'))", name='wd', value=wd)
+      input#search_form.form-control.form-control-sm(type='text', autocomplete="off", maxlength=30, placeholder='ID, Operator or Target', oninput="cu_submit($(this).parents('form'))", name='wd', value=wd)
 
     .ml-5.d-none.d-lg-block
       label
