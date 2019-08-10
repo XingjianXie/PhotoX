@@ -63,7 +63,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                 if (!metadata.width) throw "Can't get the size";
 
                 await t.toFile('public/uploads/' + id + '.png');
-                await t.resize(Math.min(metadata.width, 800)).toFile('public/uploads/' + id + '.preview.png');
+                await t.resize(Math.min(metadata.width, 800)).toFile('public/uploads/' + id + '.preview.jpg');
 
                 //console.log(t);
 

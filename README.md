@@ -44,12 +44,12 @@ use photox;
 # Import Database File
 source init.sql;
 
-# Insert System User
-# passcode("5f4dcc3b5aa765d61d8327deb882cf99") is md5("password")
-# passrd("") is salt, so please reset password once login)
-# Please replace "11111111111" by your own phone number
-insert into user(phone_number, name, type, passcode, passrd)
-values(11111111111, "System", 127, "5f4dcc3b5aa765d61d8327deb882cf99", "");
+# Update the Phone Number of System User
+# Once You Finish This Step, You Could Login to System User
+# By Using Your Phone Number
+# And Password "Password"
+# Then You Should Reset Your Password
+update user set phone_number = "(YOUR PHONE NUMBER)" where id = 0;
 ```
 
 ## Debug
