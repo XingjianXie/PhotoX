@@ -21,8 +21,8 @@ block content
         .card-body.p-0
           .p-5
             form.user(method="post")
+              input#confirm.d-none(value='1', name='confirm', autocomplete="off", maxlength=30)
               .form-group.dropdown
-                input#confirm.d-none(value='1', name='confirm', autocomplete="off", maxlength=30)
                 input.d-none(name='type', autocomplete="off", maxlength=30)
                 input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Type", onfocus='this.blur()', autocomplete="off", maxlength=30)
                 .dropdown-menu(role='menu')

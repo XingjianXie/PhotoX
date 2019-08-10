@@ -175,14 +175,12 @@ append history
       xhr.open('get', url, true);
       xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
-          console.log(xhr);
           $('#list').html($('#list', xhr.response).html());
           if ($('#search_form').val())
             $('#clear_button').removeClass('d-none');
           else
             $('#clear_button').addClass('d-none');
           window.history.replaceState(null, null, xhr.responseURL);
-          //alert('AJAX CALLED BY NEW HISTORY EVENT');
         }
       }
       xhr.send();

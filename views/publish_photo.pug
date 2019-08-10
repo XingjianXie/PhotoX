@@ -1,0 +1,68 @@
+extends layout
+
+block title
+  title Publish Photo
+
+block top
+  h3.text-dark.mb-0.m-2.d-none.d-md-inline Publish Photo #{p.id}
+  h5.text-dark.mb-0.m-2.d-md-none Publish Photo #{p.id}
+
+block topr
+  .nav-item
+    a.nav-link(onclick="history.back(); return false;", href='#')
+      span.d-inline.mr-2.text-gray-600.small Back
+
+block content
+  .row.justify-content-center
+    .col-sm-12.col-md-11.col-lg-9.col-xl-6
+      .card.shadow-lg.o-hidden.border-0.my-5
+        .card-header.py-3
+          p.text-primary.m-0.font-weight-bold Publish Form
+        .card-body.p-0
+          .p-5
+            form.user(method="post")
+              input#confirm.d-none(value='1', name='confirm', autocomplete="off", maxlength=30)
+              .form-group.dropdown
+                input.d-none(name='category', autocomplete="off", maxlength=30)
+                input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Category", onfocus='this.blur()', autocomplete="off", maxlength=30)
+                .dropdown-menu(role='menu')
+                  each c in category
+                    a.dropdown-item(role='presentation', onclick="$('#type0').val('" + c.name + "'); $('[name=category]').val(" + c.id + "); input(); return false;")= c.name
+              .form-group
+                input.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput="input()", autocomplete="off", maxlength=30)
+
+              -let i = 1
+              while i <= 10
+                .form-group
+                  input.form-control.form-control-user(type="text", placeholder="Face " + i.toString() + " in Photo", name="mark" + i.toString(), oninput="input(" + i.toString() +")", autocomplete="off", maxlength=30)
+                -i++
+
+              .form-group
+                button#wb.btn.btn-danger.btn-block.text-white.btn-user(type="submit", disabled, onclick='$(this).attr(\'disabled\', true); submit(); return false;') Publish
+
+append javascripts
+  script.
+    function input(x) {
+      if ($('[name=category]').val() && $('[name=name]').val())
+        $('[type=submit]').removeAttr('disabled');
+      else
+        $('[type=submit]').attr('disabled', '');
+      if (x) {
+        let current_space = 1;
+        for (let i = 1; i <= 10; i++) {
+          if (i == current_space && $('[name=mark' + i.toString() + ']').val()) {
+            current_space++;
+            continue;
+          }
+          if ($('[name=mark' + i.toString() + ']').val()) {
+            $('[name=mark' + current_space.toString() + ']').val($('[name=mark' + i.toString() + ']').val());
+            $('[name=mark' + i.toString() + ']').val('');
+            current_space++;
+          }
+        }
+        for (let i = 1; i <= 10; i++)
+          if (i <= current_space) $('[name=mark' + i.toString() + ']').removeClass('d-none');
+          else $('[name=mark' + i.toString() + ']').addClass('d-none');
+      }
+    }
+    input(1);

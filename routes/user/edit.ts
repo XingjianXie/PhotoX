@@ -91,7 +91,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             else if(req.session.userID !== rs[0].id && Number(req.body.type) === req.session.type) {
                 res.render('confirm', {
                     msg: 'Edit User Confirmation',
-                    inf1: 'Are you sure to make ' + rs[0].name + ' (' + res.locals.typeName[rs[0].type] + ') have the same type with you?',
+                    inf1: 'Are you sure to make ' + res.locals.typeName[rs[0].type] + ' ' + rs[0].name + ' (' + rs[0].id + ') have the same type with you?',
                     inf2: 'YOU MAY NOT UNDO THIS ACTION',
                     data: data1
                 });
