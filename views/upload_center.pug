@@ -46,13 +46,7 @@ block content
                 tr
                   th= val['id']
                   th
-                    div(style={
-                      "background-image": "url(/uploads/" + val['id'] + ".png)",
-                      height: '120px',
-                      width: '120px',
-                      'background-size': 'cover',
-                      'background-position': '50%'
-                    })
+                    img(src="/uploads/" + val['id'] + ".preview.png", width=100)
                   if session.type
                     if val.uploader_deleted
                       th= val.uploader_name + ' (' + val.uploader_id + ', DELETED)'

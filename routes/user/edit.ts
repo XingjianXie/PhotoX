@@ -136,6 +136,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
                     code: 200,
                     msg: "Update Successfully",
                     inf: "The user just edited will be logout",
+                    bk2: true
                 });
             }
         } catch (e) {

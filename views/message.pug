@@ -17,5 +17,7 @@ block content
     p.text-black-50.mb-0#inf= inf
     if home
       a(href="/") ← Back To Home
-    else
+    else if (!bk2)
       a(href="#", onclick="history.back(); return false;") ← Back
+    else
+      a(href="#", onclick="history.go(-2); return false;") ← Back

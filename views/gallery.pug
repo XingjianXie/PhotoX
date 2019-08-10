@@ -13,7 +13,50 @@ block topr
       span.d-inline.mr-2.text-gray-600.small Upload Center
 
 block content
-  .row
-    .col-6
+  if photos.length
+    .row.d-none.d-xl-flex
+      .col
+        -for (let i = 0; i < photos.length; i+=3)
+          .card.shadow.mb-4
+            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-body.p-0
+              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.png")
+      .col
+        -for (let i = 1; i < photos.length; i+=3)
+          .card.shadow.mb-4
+            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-body.p-0
+              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.png")
+      .col
+        -for (let i = 2; i < photos.length; i+=3)
+          .card.shadow.mb-4
+            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-body.p-0
+              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.png")
 
-    .col-6
+    .row.d-none.d-md-flex.d-xl-none
+      .col
+        -for (let i = 0; i < photos.length; i+=2)
+          .card.shadow.mb-4
+            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-body.p-0
+              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.png")
+      .col
+        -for (let i = 1; i < photos.length; i+=2)
+          .card.shadow.mb-4
+            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-body.p-0
+              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.png")
+
+    .row.d-flex.d-md-none
+      .col
+        -for (let i = 0; i < photos.length; i++)
+          .card.shadow.mb-4
+            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-body.p-0
+              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.png")
+  else
+    .text-center.mt-5
+      .error.mx-auto(data-text= 404)
+        p.m-0.d-inline-block= 404
+      p.text-dark.mb-5.lead Photo Not Found

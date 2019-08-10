@@ -62,6 +62,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
                 code: 201,
                 msg: "Add Successfully",
                 inf: "Please Remember Your User ID: " + id,
+                bk2: true
             });
         } catch(e) {
             if (e.code === 'ER_DUP_ENTRY') {

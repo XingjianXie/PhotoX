@@ -58,7 +58,15 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                     });
                 }));
 
-                await sharp(rs).toFile('public/uploads/' + id + '.png');
+                const t = sharp(rs);
+                const metadata = await t.metadata();
+                if (!metadata.width) throw "Can't get the size";
+
+                await t.toFile('public/uploads/' + id + '.png');
+                await t.resize(Math.min(metadata.width, 800)).toFile('public/uploads/' + id + '.preview.png');
+
+                //console.log(t);
+
                 await db(query.convertPhoto, [id]);
                 db(query.log, [req.session!.userID, "Photo", id, "Convert", true, null]);
                 return true;

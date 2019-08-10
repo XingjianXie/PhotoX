@@ -26,7 +26,6 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             return;
         }
         const category = await db(query.queryCategory, []);
-        console.log(category);
         res.render('publish_photo', {
             category, p: rs[0]
         });
@@ -68,12 +67,21 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             return;
         }
 
-        //await db(query.deletePhoto, [rs[0].id]);
+        await db(query.publishPhoto, [req.body.name, req.body.category, rs[0].id]);
+        db(query.log, [req.session.userID, "Photo", rs[0].id, "Publish", true, null]);
 
-        //db(query.log, [req.session.userID, "Photo", rs[0].id, "Delete", true, null]);
+        for (let i = 1; i <= 10; i++) {
+            if (!req.body['mark' + i.toString()]) break;
+            await db(query.addMark, [rs[0].id, req.body['mark' + i.toString()]]);
+            db(query.log, [req.session.userID, "Photo", rs[0].id, "Assign to Face", true, 'Face: ' + req.body['mark' + i.toString()]]);
+        }
 
         res.status(200);
-
+        res.render('message', {
+            code: 200,
+            msg: "Publish Successfully",
+            bk2: true
+        });
     });
 
     return router;

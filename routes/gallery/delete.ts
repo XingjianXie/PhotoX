@@ -45,7 +45,6 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
                 code: 200,
                 msg: "Delete Successfully",
                 inf: "The user download this photo will be noticed",
-                home: true
             });
         }
         else {
