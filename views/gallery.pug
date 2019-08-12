@@ -18,19 +18,25 @@ block content
       .col
         -for (let i = 0; i < photos.length; i+=3)
           .card.shadow.mb-4
-            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-header.py-2
+              = photos[i].name + ' by ' + photos[i].uploader_name
+              .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
               img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
       .col
         -for (let i = 1; i < photos.length; i+=3)
           .card.shadow.mb-4
-            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-header.py-2
+              = photos[i].name + ' by ' + photos[i].uploader_name
+              .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
               img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
       .col
         -for (let i = 2; i < photos.length; i+=3)
           .card.shadow.mb-4
-            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-header.py-2
+              = photos[i].name + ' by ' + photos[i].uploader_name
+              .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
               img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
 
@@ -38,13 +44,17 @@ block content
       .col
         -for (let i = 0; i < photos.length; i+=2)
           .card.shadow.mb-4
-            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-header.py-2
+              = photos[i].name + ' by ' + photos[i].uploader_name
+              .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
               img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
       .col
         -for (let i = 1; i < photos.length; i+=2)
           .card.shadow.mb-4
-            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-header.py-2
+              = photos[i].name + ' by ' + photos[i].uploader_name
+              .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
               img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
 
@@ -52,7 +62,9 @@ block content
       .col
         -for (let i = 0; i < photos.length; i++)
           .card.shadow.mb-4
-            .card-header.py-2= photos[i].name + ' by ' + photos[i].uploader_name
+            .card-header.py-2
+              = photos[i].name + ' by ' + photos[i].uploader_name
+              .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
               img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
   else

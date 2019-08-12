@@ -1,4 +1,4 @@
-import express = require('express');
+import express from 'express';
 import {MemoryStore} from "express-session";
 import query from "../../db/query";
 import createError from "http-errors";
@@ -65,7 +65,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         res.status(200);
         if (rs[0].id === userID) {
             res.status(200);
-            res.render('message', {
+            res.render('notification', {
                 code: 200,
                 msg: "Delete Successfully",
                 inf: "Your account is deleted",
@@ -74,7 +74,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         }
         else {
             res.status(200);
-            res.render('message', {
+            res.render('notification', {
                 code: 200,
                 msg: "Delete Successfully",
                 inf: "The user just deleted will be logout",

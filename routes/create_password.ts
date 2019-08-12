@@ -1,4 +1,4 @@
-import express = require('express');
+import express from 'express';
 import {create as ps_create} from "../tools/password";
 
 export default () => {

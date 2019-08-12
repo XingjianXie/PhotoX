@@ -1,4 +1,4 @@
-import express = require('express');
+import express from 'express';
 import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
@@ -58,7 +58,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             db(query.log, [req.session.userID, "User", id, "Create", true, null]);
 
             res.status(201);
-            res.render('message', {
+            res.render('notification', {
                 code: 201,
                 msg: "Add Successfully",
                 inf: "Please Remember Your User ID: " + id,

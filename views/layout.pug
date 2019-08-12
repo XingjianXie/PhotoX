@@ -52,6 +52,10 @@ html
                   i.fas.fa-images
                   span Gallery
               li.nav-item(role='presentation')
+                a.nav-link(href='/message', class= {active: url.indexOf('/message') === 0})
+                  i.fas.fa-comment-alt
+                  span Message
+              li.nav-item(role='presentation')
                 a.nav-link(href='/reset_password', class= {active: url.indexOf('/reset_password') === 0})
                   i.fas.fa-key
                   span Reset Password

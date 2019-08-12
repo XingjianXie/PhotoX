@@ -74,7 +74,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
 
             if (id === userID) {
                 res.status(200);
-                res.render('message', {
+                res.render('notification', {
                     code: 200,
                     msg: "Update Successfully",
                     inf: "Please login again",
@@ -83,7 +83,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             }
             else {
                 res.status(200);
-                res.render('message', {
+                res.render('notification', {
                     code: 200,
                     msg: "Update Successfully",
                     inf: "The user just reset password will be logout",

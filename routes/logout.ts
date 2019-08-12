@@ -1,4 +1,4 @@
-import express = require('express');
+import express from 'express';
 import query from "../db/query";
 
 export default (session_map : any, db : (sql : string, values : any) => Promise<any[]>) => {

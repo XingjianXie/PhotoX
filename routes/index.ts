@@ -10,6 +10,7 @@ import user from './user/index';
 import create_password from './create_password'
 import reset_password from './reset_password'
 import log from './log'
+import message from './message'
 
 export default (session_map : any, db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
@@ -25,6 +26,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
     router.use('/create_password', create_password());
     router.use('/reset_password', reset_password(session_map, db));
     router.use('/log', log(db));
+    router.use('/message', message(db));
 
     router.use((req, res, next) => {
         next(createError(404));
@@ -32,7 +34,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
 
     router.use((err : any, req: express.Request, res: express.Response, next: Function) => {
         res.status(err.status || 500);
-        res.render('message', {
+        res.render('notification', {
             code: err.status || 500,
             msg: err.message,
             inf: req.app.get('env') === 'development' ? err.stack : null,

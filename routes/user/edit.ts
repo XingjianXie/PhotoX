@@ -1,4 +1,4 @@
-import express = require('express');
+import express from 'express';
 import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
@@ -123,7 +123,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             }
             if (rs[0].id === userID) {
                 res.status(200);
-                res.render('message', {
+                res.render('notification', {
                     code: 200,
                     msg: "Update Successfully",
                     inf: "Please login again",
@@ -132,7 +132,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             }
             else {
                 res.status(200);
-                res.render('message', {
+                res.render('notification', {
                     code: 200,
                     msg: "Update Successfully",
                     inf: "The user just edited will be logout",

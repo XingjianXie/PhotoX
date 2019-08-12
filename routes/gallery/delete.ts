@@ -1,4 +1,4 @@
-import express = require('express');
+import express from 'express';
 import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
@@ -41,7 +41,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         res.status(200);
         if (dw.length) {
             res.status(200);
-            res.render('message', {
+            res.render('notification', {
                 code: 200,
                 msg: "Delete Successfully",
                 inf: "The user download this photo will be noticed",
@@ -49,7 +49,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         else {
             res.status(200);
-            res.render('message', {
+            res.render('notification', {
                 code: 200,
                 msg: "Delete Successfully",
             });

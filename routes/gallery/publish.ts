@@ -1,4 +1,4 @@
-import express = require('express');
+import express from 'express';
 import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
@@ -77,7 +77,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
 
         res.status(200);
-        res.render('message', {
+        res.render('notification', {
             code: 200,
             msg: "Publish Successfully",
             bk2: true

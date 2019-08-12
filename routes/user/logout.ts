@@ -1,4 +1,4 @@
-import express = require('express');
+import express from 'express';
 import createError from "http-errors";
 import query from "../../db/query";
 
@@ -43,7 +43,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         res.status(200);
         if (rs[0].id === userID) {
             res.status(200);
-            res.render('message', {
+            res.render('notification', {
                 code: 200,
                 msg: "Logout Successfully",
                 inf: "Your are logout now",
@@ -52,7 +52,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         }
         else {
             res.status(200);
-            res.render('message', {
+            res.render('notification', {
                 code: 200,
                 msg: "Logout Successfully",
             });
