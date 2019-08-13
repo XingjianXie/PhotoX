@@ -12,6 +12,7 @@ import {Store} from "express-session";
 import {mkdir} from "fs";
 import * as util from "util";
 import {promisify, types} from "util";
+import query from "./db/query";
 
 const redisStore = require('connect-redis')(session);
 const multer = require("multer");
@@ -64,8 +65,10 @@ app.use("/uploads", (req, res, next) => {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => {
+app.use(async(req, res, next) => {
     res.locals.session = req.session;
+    if (req.session && req.session.sign)
+        res.locals.unreadMeessageLength = (await db(query.countQueryMyUnreadMessage, [req.session.userID, req.session.userID]))[0]['COUNT(*)'];
     res.locals.typeName = new Proxy({}, {
         get(target, index) {
             if (!isNaN(Number(index))) {

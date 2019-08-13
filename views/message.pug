@@ -28,13 +28,14 @@ block content
         each val in messages
           .card.my-3
             .card-header
-              .d-inline= (!val.read ? "New " : " ") + "Message " + val.id + " from " + val.from_name + " (" + val.from + ")"
-              form.d-inline.float-right.m-0(method='post', action='/message/mark_as_read')
-                input.d-none(value=val.id, name='messageID', autocomplete="off", maxlength=30)
-                button.btn.btn-primary.btn-sm(type='submit', disabled=val.read)
-                  | Mark as Read
-              .d-block= val.update_time.toLocaleString()
-            .card-body= val.content
+              .d-inline(class = {'text-primary': val.read !== val.id})= (val.read !== val.id ? "New " : " ") + "Message " + val.id + " from " + val.from_name + " (" + val.from + ")"
+              if val.read !== val.id
+                form.d-inline.float-right.m-0(method='post', action='/message/mark_as_read')
+                  input.d-none(value=val.id, name='messageID', autocomplete="off", maxlength=30)
+                  button.btn.btn-primary.btn-sm(type='submit', onclick='read($(this).parents("form")); return false;')
+                    | Mark as Read
+              .d-block(class = {'text-primary': val.read !== val.id})= val.update_time.toLocaleString()
+            .card-body(class = {'text-primary': val.read !== val.id})= val.content
 
 
         .row.d-block.d-lg-flex
@@ -73,6 +74,28 @@ append javascripts
       }
       xhr.send();
     }
+
+    function read(d) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('post','/message/mark_as_read', true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          const xhr1 = new XMLHttpRequest();
+          xhr1.open('get', window.location.href, true);
+          xhr1.onreadystatechange = function () {
+            if (xhr1.readyState === XMLHttpRequest.DONE) {
+              $('#list').html($('#list', xhr1.response).html());
+              $('#message_nav').html($('#message_nav', xhr1.response).html());
+            }
+          }
+          xhr1.send();
+        }
+      }
+      xhr.send(d.serialize());
+    }
+
+
 
 
 append history

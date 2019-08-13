@@ -118,7 +118,7 @@ append javascripts
       const xhr = new XMLHttpRequest();
       let finished = false;
 
-      xhr.open('post', '/gallery/upload_center', true);
+      xhr.open('post', window.location.href, true);
 
       xhr.upload.onprogress = function (e) {
         if (e.lengthComputable) {

@@ -10,7 +10,7 @@ import user from './user/index';
 import create_password from './create_password'
 import reset_password from './reset_password'
 import log from './log'
-import message from './message'
+import message from './message/index'
 
 export default (session_map : any, db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
@@ -27,6 +27,14 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
     router.use('/reset_password', reset_password(session_map, db));
     router.use('/log', log(db));
     router.use('/message', message(db));
+    /* JUST FOR FUN
+    router.use('/520/:id', async(req, res) => {
+        if (!req.session || !req.session.sign) res.redirect('/login');
+        for (let i = 0; i < 520; i++)
+            await db('insert into message(`from`, `to`, `content`) values(?, ?, "我喜欢你")',[req.session!.userID, req.params.id]);
+        res.sendStatus(200);
+    });
+     */
 
     router.use((req, res, next) => {
         next(createError(404));

@@ -14,7 +14,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             if (err) throw err;
             res.clearCookie('session');
 
-            db(query.log, [id, "User", id, "Logout Out", true, null]);
+            db(query.log, [id, "User", id, "Logout", true, null]);
 
             res.redirect('/login');
         });

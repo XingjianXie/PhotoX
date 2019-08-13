@@ -51,10 +51,12 @@ html
                 a.nav-link(href='/gallery', class= {active: url.indexOf('/gallery') === 0})
                   i.fas.fa-images
                   span Gallery
-              li.nav-item(role='presentation')
+              li#message_nav.nav-item(role='presentation')
                 a.nav-link(href='/message', class= {active: url.indexOf('/message') === 0})
                   i.fas.fa-comment-alt
                   span Message
+                  if unreadMeessageLength
+                    span.float-right.bg-danger.rounded.px-2= unreadMeessageLength
               li.nav-item(role='presentation')
                 a.nav-link(href='/reset_password', class= {active: url.indexOf('/reset_password') === 0})
                   i.fas.fa-key

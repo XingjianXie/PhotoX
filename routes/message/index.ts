@@ -1,6 +1,7 @@
 import express from 'express';
-import query from "../db/query";
+import query from "../../db/query";
 import createError from "http-errors";
+import mark_as_read from "./mark_as_read";
 
 export default (db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
@@ -31,5 +32,6 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             wd: req.query.wd,
         });
     });
+    router.use('/mark_as_read', mark_as_read(db));
     return router;
 };
