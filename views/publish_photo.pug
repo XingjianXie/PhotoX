@@ -27,12 +27,12 @@ block content
               .p-4.p-lg-5
                 form.user(method="post")
                   input#confirm.d-none(value='1', name='confirm', autocomplete="off", maxlength=30)
-                  .form-group.dropdown
+                  .form-group
                     input.d-none(name='category', autocomplete="off", maxlength=30)
                     input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Category", onfocus='this.blur()', autocomplete="off", maxlength=30)
                     .dropdown-menu(role='menu')
                       each c in category
-                        a.dropdown-item(role='presentation', onclick="$('#type0').val('" + c.name + "'); $('[name=category]').val(" + c.id + "); input(); return false;")= c.name
+                        a.dropdown-item(href='#', role='presentation', onclick="$('#type0').val('" + c.name + "'); $('[name=category]').val(" + c.id + "); input(); return false;")= c.name
                   .form-group
                     input.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput="input()", autocomplete="off", maxlength=30)
 

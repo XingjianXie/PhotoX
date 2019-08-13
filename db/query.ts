@@ -36,6 +36,7 @@ export default {
 
     //Message
     addMessage: 'INSERT INTO message(`from`, `to`, `content`) values(?, ?, ?)',
+    getMyUnreadMessage: 'SELECT message.* FROM `message` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE (`to`=? OR `to` IS NULL) AND (read.user IS NULL) AND (message.id=?)',
     queryMyMessageWithLimit: 'SELECT message.*, user.name AS from_name, `read`.message AS `read` FROM `message` LEFT OUTER JOIN user ON user.id=message.`from` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE `to`=? OR `to` IS NULL ORDER BY (`read` IS NOT NULL), id DESC LIMIT ?,?',
     countQueryMyMessageWithLimit: 'SELECT COUNT(*) FROM `message` LEFT OUTER JOIN user ON user.id=message.`from` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE `to`=? OR `to` IS NULL',
     queryMyUnreadMessage: 'SELECT message.* FROM `message` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE (`to`=? OR `to` IS NULL) AND (read.user IS NULL)',

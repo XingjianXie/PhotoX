@@ -28,7 +28,7 @@ block content
                 .dropdown-menu(role='menu')
                   -let t = 0;
                   while t <= Math.min(session.type, 2)
-                    a.dropdown-item(role='presentation', onclick="$('#type0').val('" + typeName[t] + "'); $('[name=type]').val(" + t + "); input(0)")= typeName[t]
+                    a.dropdown-item(href='#', role='presentation', onclick="$('#type0').val('" + typeName[t] + "'); $('[name=type]').val(" + t + "); input(0)")= typeName[t]
                     -t++;
                 #warning.text-danger.d-none You may NOT edit or delete this user once you create it
               .form-group

@@ -19,6 +19,12 @@ block top
           option(selected= maximum === 10) 10
           option(selected= maximum === 25) 25
 
+block topr
+  if unreadMeessageLength
+    .nav-item
+      a.nav-link(href='#', onclick='read(); return false;')
+        span.d-inline.mr-2.text-gray-600.small Mark All as Read
+
 block content
   .card.shadow
     .card-header.py-3
@@ -92,7 +98,7 @@ append javascripts
           xhr1.send();
         }
       }
-      xhr.send(d.serialize());
+      xhr.send(d ? d.serialize() : null);
     }
 
 
