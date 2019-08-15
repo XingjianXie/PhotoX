@@ -22,7 +22,7 @@ block content
           .row.d-inline.d-lg-flex
             .col-10.col-lg-6.m-auto
               .p-2
-                img.col-12(src="/uploads/" + p.id + ".preview.jpg")
+                .bkimg.col-12(style={'background-image' : 'url(' + "/uploads/" + p.id + ".preview.jpg" + ')', 'background-size' : '100%'}, rel-height=p.height, rel-width=p.width)
             .col-12.col-lg-6.m-auto
               .p-4.p-lg-5
                 form.user(method="post")
@@ -33,6 +33,8 @@ block content
                     .dropdown-menu(role='menu')
                       each c in category
                         a.dropdown-item(href='#', role='presentation', onclick="$('#type0').val('" + c.name + "'); $('[name=category]').val(" + c.id + "); input(); return false;")= c.name
+                      if session.type
+                      a.dropdown-item(href='#', role='presentation') Edit...
                   .form-group
                     input.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput="input()", autocomplete="off", maxlength=30)
 

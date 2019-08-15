@@ -62,6 +62,10 @@ block content
                       button.btn.btn-primary.btn-sm(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
                         | Edit
                     =' '
+                    form.d-inline-block
+                      button.btn.btn-primary.btn-sm(onclick="location='/message/new?id=" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                        | Message
+                    =' '
                     form.d-inline-block(method='post' action='/user/delete')
                       input.d-none(value=val.id, name='userID', autocomplete="off", maxlength=30)
                       input.d-none(value='1', name='confirm', autocomplete="off", maxlength=30)

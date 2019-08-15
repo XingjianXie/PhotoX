@@ -22,7 +22,7 @@ block content
               = photos[i].name + ' by ' + photos[i].uploader_name
               .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
-              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
+              .bkimg(style={'background-image' : 'url(' + "/uploads/" + photos[i].id + ".preview.jpg" + ')', 'background-size' : '100%'}, rel-height=photos[i].height, rel-width=photos[i].width)
       .col
         -for (let i = 1; i < photos.length; i+=3)
           .card.shadow.mb-4
@@ -30,7 +30,8 @@ block content
               = photos[i].name + ' by ' + photos[i].uploader_name
               .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
-              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
+              .bkimg(style={'background-image' : 'url(' + "/uploads/" + photos[i].id + ".preview.jpg" + ')', 'background-size' : '100%'}, rel-height=photos[i].height, rel-width=photos[i].width)
+
       .col
         -for (let i = 2; i < photos.length; i+=3)
           .card.shadow.mb-4
@@ -38,7 +39,9 @@ block content
               = photos[i].name + ' by ' + photos[i].uploader_name
               .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
-              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
+              .bkimg(style={'background-image' : 'url(' + "/uploads/" + photos[i].id + ".preview.jpg" + ')', 'background-size' : '100%'}, rel-height=photos[i].height, rel-width=photos[i].width)
+
+
 
     .row.d-none.d-md-flex.d-xl-none
       .col
@@ -48,7 +51,7 @@ block content
               = photos[i].name + ' by ' + photos[i].uploader_name
               .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
-              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
+              .bkimg(style={'background-image' : 'url(' + "/uploads/" + photos[i].id + ".preview.jpg" + ')', 'background-size' : '100%'}, rel-height=photos[i].height, rel-width=photos[i].width)
       .col
         -for (let i = 1; i < photos.length; i+=2)
           .card.shadow.mb-4
@@ -56,7 +59,7 @@ block content
               = photos[i].name + ' by ' + photos[i].uploader_name
               .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
-              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
+              .bkimg(style={'background-image' : 'url(' + "/uploads/" + photos[i].id + ".preview.jpg" + ')', 'background-size' : '100%'}, rel-height=photos[i].height, rel-width=photos[i].width)
 
     .row.d-flex.d-md-none
       .col
@@ -66,7 +69,8 @@ block content
               = photos[i].name + ' by ' + photos[i].uploader_name
               .d-block= photos[i].update_time.toLocaleString()
             .card-body.p-0
-              img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
+              //img.p-0.col-12.rounded-bottom(src="/uploads/" + photos[i].id + ".preview.jpg")
+              .bkimg(style={'background-image' : 'url(' + "/uploads/" + photos[i].id + ".preview.jpg" + ')', 'background-size' : '100%'}, rel-height=photos[i].height, rel-width=photos[i].width)
   else
     .text-center.mt-5
       .error.mx-auto(data-text= 404)

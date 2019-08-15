@@ -80,7 +80,7 @@ html
               button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3(type='button')
                 i.fas.fa-bars
               block top
-              .nav.navbar-nav.flex-nowrap.ml-auto
+              #topr.nav.navbar-nav.flex-nowrap.ml-auto
                 block topr
                 .topbar-divider
                 .nav-item.dropdown.no-arrow
@@ -135,6 +135,15 @@ html
           if (historyTraversal) {
             window.location.reload();
           }
+        });
+
+        $('.bkimg').height(function () {
+          return $(this).width() / $(this).attr('rel-width') * $(this).attr('rel-height');
+        });
+        $(window).resize(function () {
+          $('.bkimg').height(function () {
+            return $(this).width() / $(this).attr('rel-width') * $(this).attr('rel-height');
+          });
         });
 
 

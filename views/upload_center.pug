@@ -46,7 +46,7 @@ block content
                 tr
                   th= val['id']
                   th
-                    img(src="/uploads/" + val['id'] + ".preview.jpg", width=100)
+                    .bkimg(style={'background-image' : 'url(' + "/uploads/" + val.id + ".preview.jpg" + ')', 'background-size' : '100%', width: '100px'}, rel-height=val.height, rel-width=val.width)
                   if session.type
                     if val.uploader_deleted
                       th= val.uploader_name + ' (' + val.uploader_id + ', DELETED)'

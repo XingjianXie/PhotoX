@@ -1,0 +1,49 @@
+extends layout
+
+block title
+  title New Message
+
+block top
+  h3.text-dark.mb-0.m-2.d-none.d-md-inline New Message
+  h5.text-dark.mb-0.m-2.d-md-none New Message
+
+block topr
+  .nav-item
+    a.nav-link(onclick="history.back(); return false;", href='#')
+      span.d-inline.mr-2.text-gray-600.small Back
+
+block content
+  .row.justify-content-center
+    .col-sm-12.col-md-11.col-lg-9.col-xl-6
+      .card.shadow-lg.o-hidden.border-0.my-5
+        .card-header.py-3
+          p.text-primary.m-0.font-weight-bold Send Form
+        .card-body.p-0
+          .p-5
+            form.user(method="post")
+              .form-group
+                input.form-control.form-control-user(type="text", placeholder="User ID", name="id", oninput='input(0)', autocomplete="off", maxlength=30, value=pre)
+              .form-group
+                textarea.form-control.form-control-user(style={"border-radius":"1.7rem"},rows="5",type="text", placeholder="Content", name="content", oninput='input(1)', autocomplete="off", maxlength=2000)
+              .form-group
+              button.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, onclick='$(this).attr(\'disabled\', true); submit();') Send
+
+
+append javascripts
+  script.
+    function input(x) {
+      if ($('[name=content]').val())
+        $('[type=submit]').removeAttr('disabled');
+      else
+        $('[type=submit]').attr('disabled', '');
+    }
+
+  script.
+    (() => {
+      const onload1 = onload;
+      onload = function (ev) {
+        if (onload1)
+          onload1.call(this, ev);
+        input(0);
+      };
+    })();

@@ -16,7 +16,7 @@ export default {
 
     //Photo
     addPhoto: 'INSERT INTO photo(uploader_id, type) VALUES(?, 0)',
-    convertPhoto: 'UPDATE photo SET type=1 WHERE id=? AND deleted = 0',
+    convertPhoto: 'UPDATE photo SET type=1, height=?, width=? WHERE id=? AND deleted = 0',
     publishPhoto: 'UPDATE photo SET type=2, name=?, category=? WHERE id=? AND deleted = 0',
     getPhotoById: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.id = ? AND photo.deleted = 0',
     deletePhoto: 'UPDATE photo SET deleted = 1 WHERE id = ?',
@@ -43,6 +43,12 @@ export default {
     countQueryMyUnreadMessage: 'SELECT COUNT(*) FROM `message` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE (`to`=? OR `to` IS NULL) AND (read.user IS NULL)',
     searchMyMessageWithLimit: 'SELECT message.*, user.name AS from_name, `read`.message AS `read` FROM `message` LEFT OUTER JOIN user ON user.id=message.`from` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE (`to`=? OR `to` IS NULL) AND (POSITION(? IN user.name) OR POSITION(? IN message.`from`) OR POSITION(? IN `content`) OR POSITION(? IN message.id)) ORDER BY (`read` IS NOT NULL), id DESC LIMIT ?,?',
     countSearchMyMessageWithLimit: 'SELECT COUNT(*) FROM `message` LEFT OUTER JOIN user ON user.id=message.`from` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE (`to`=? OR `to` IS NULL) AND (POSITION(? IN user.name) OR POSITION(? IN message.`from`) OR POSITION(? IN `content`) OR POSITION(? IN message.id))',
+
+    querySentMessageWithLimit: 'SELECT message.*, user.name AS to_name FROM `message` LEFT OUTER JOIN user ON user.id=message.`to` WHERE `from`=? ORDER BY id DESC LIMIT ?,?',
+    countQuerySentMessageWithLimit: 'SELECT COUNT(*) FROM `message` LEFT OUTER JOIN user ON user.id=message.`to` WHERE `from`=?',
+    searchSentMessageWithLimit: 'SELECT message.*, user.name AS to_name FROM `message` LEFT OUTER JOIN user ON user.id=message.`to` WHERE `from`=? AND (POSITION(? IN user.name) OR POSITION(? IN message.`to`) OR POSITION(? IN `content`) OR POSITION(? IN message.id)) ORDER BY id DESC LIMIT ?,?',
+    countSearchSentMessageWithLimit: 'SELECT COUNT(*) FROM `message` LEFT OUTER JOIN user ON user.id=message.`to` WHERE `from`=? AND (POSITION(? IN user.name) OR POSITION(? IN message.`to`) OR POSITION(? IN `content`) OR POSITION(? IN message.id))',
+
 
     //Read
     readMessage: 'INSERT INTO `read`(user, message) values(?,?)',

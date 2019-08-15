@@ -67,7 +67,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
 
                 //console.log(t);
 
-                await db(query.convertPhoto, [id]);
+                await db(query.convertPhoto, [metadata.height, metadata.width, id]);
                 db(query.log, [req.session!.userID, "Photo", id, "Convert", true, null]);
                 return true;
             } catch(err) {
