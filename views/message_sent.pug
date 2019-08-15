@@ -64,7 +64,7 @@ block content
 append javascripts
   script.
     function cu_submit(d, ext) {
-      let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
+      let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '') + '&sent=1';
       const xhr = new XMLHttpRequest();
       const url = (d.attr('action') || '/message') + '?' + fd;
       xhr.open('get', url, true);
