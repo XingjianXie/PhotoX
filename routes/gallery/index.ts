@@ -14,7 +14,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 5, 1);
-        const rs = !req.query.wd
+        const rs : any[] = !req.query.wd
             ? await db(query.queryPublishedPhotoWithLimit, [(pg - 1) * maximum, maximum])
             : await db(query.searchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
         const total = !req.query.wd
@@ -27,8 +27,13 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             return;
         }
 
+        const mark = await Promise.all(rs.map((val) => {
+            return db(query.getMarkByPhotoId, [val.id]);
+        }));
+
         res.render('gallery', {
             photos: rs,
+            faces: mark,
             total: total,
             current: pg,
             maximum: maximum,

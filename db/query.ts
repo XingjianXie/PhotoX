@@ -58,6 +58,7 @@ export default {
 
     //Mark
     addMark: 'INSERT INTO mark(photo_id, mark_name) values(?, ?)',
+    getMarkByPhotoId : 'SELECT * FROM mark WHERE photo_id=?',
 
     //Log
     log: 'INSERT INTO log(operator, target_type, target, action, success, extra_message) VALUES(?, ?, ?, ?, ?, ?)',

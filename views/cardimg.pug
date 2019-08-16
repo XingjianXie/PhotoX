@@ -1,0 +1,10 @@
+.card.shadow.mb-4
+  .card-header.py-2
+    = photos[i].name + ' by ' + photos[i].uploader_name
+    .d-block= photos[i].update_time.toLocaleString()
+    if (faces[i].length)
+       i.fas.fa-user-alt
+       each val in faces[i]
+         = ' ' + val.mark_name
+  .card-body.p-0
+    .bkimg(style={'background-image': 'url(' + "/uploads/" + photos[i].id + ".preview.jpg" + ')','background-size': '100%'}, rel-height=photos[i].height, rel-width=photos[i].width)
