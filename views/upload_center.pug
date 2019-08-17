@@ -91,6 +91,7 @@ append javascripts
       xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           $('#list').html($('#list', xhr.response).html());
+          imgheight();
           if ($('#search_form').val())
             $('#clear_button').removeClass('d-none');
           else
@@ -125,13 +126,6 @@ append javascripts
           if (e.loaded === e.total) {
             $('#t1').html("Converting...");
             $('#t2').html("Converting...");
-            const xhr2 = new XMLHttpRequest();
-            xhr2.open('get', '/gallery/upload_center', true);
-            xhr2.onreadystatechange = function () {
-              if (xhr2.readyState === XMLHttpRequest.DONE && !finished)
-                $('#list').html($('#list', xhr2.response).html());
-            }
-            xhr2.send();
             $('#progressbar').removeClass('d-lg-block');
           } else {
             const percentage = ((e.loaded / e.total) * 100);
@@ -151,8 +145,10 @@ append javascripts
           const xhr1 = new XMLHttpRequest();
           xhr1.open('get', '/gallery/upload_center', true);
           xhr1.onreadystatechange = function() {
-            if (xhr1.readyState === XMLHttpRequest.DONE)
+            if (xhr1.readyState === XMLHttpRequest.DONE) {
               $('#list').html($('#list', xhr1.response).html());
+              imgheight();
+            }
           }
           xhr1.send();
           finished = true;
@@ -170,6 +166,7 @@ append history
       xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           $('#list').html($('#list', xhr.response).html());
+          imgheight();
           if ($('#search_form').val())
             $('#clear_button').removeClass('d-none');
           else

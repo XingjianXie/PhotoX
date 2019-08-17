@@ -14,31 +14,102 @@ block topr
 
 block content
   if photos.length
-    .row.d-none.d-xl-flex
+    #row4img.row.d-none.d-xl-flex
       .col
-        -for (let i = 0; i < photos.length; i+=3)
-          include cardimg
+        include cardimg
       .col
-        -for (let i = 1; i < photos.length; i+=3)
-          include cardimg
       .col
-        -for (let i = 2; i < photos.length; i+=3)
-          include cardimg
+      .col
 
-    .row.d-none.d-md-flex.d-xl-none
+    #row3img.row.d-none.d-lg-flex.d-xl-none
       .col
-        -for (let i = 0; i < photos.length; i+=2)
-          include cardimg
+        include cardimg
       .col
-        -for (let i = 1; i < photos.length; i+=2)
-          include cardimg
+      .col
 
-    .row.d-flex.d-md-none
+    #row2img.row.d-none.d-md-flex.d-lg-none
       .col
-        -for (let i = 0; i < photos.length; i++)
-          include cardimg
+        include cardimg
+      .col
+
+    #row1img.row.d-flex.d-md-none
+      .col
+        include cardimg
+
+    #row0img.row.d-none
+      .col
+        include cardimg
+
   else
     .text-center.mt-5
       .error.mx-auto(data-text= 404)
         p.m-0.d-inline-block= 404
       p.text-dark.mb-5.lead Photo Not Found
+
+
+append javascripts
+  script.
+    function rowNh(n, i,end) {
+      if (end == -1)
+        return 0;
+      let obj = $('#row'+n.toString()+'img > .col').eq(i).children().eq(end !== undefined ? end : -1);
+      return obj.length ? obj.position().top + obj.outerHeight() : 0;
+    }
+
+    function stream(flash) {
+      if (flash) {
+        for (const fx of [2, 3, 4]) {
+          $('#row' + fx.toString() + 'img > .col').eq(0).html(
+                  $('#row0img > .col').eq(0).html()
+          );
+          imgheight();
+          for (let x = 1; x < fx; x++) {
+            $('#row' + fx.toString() + 'img > .col').eq(x).html('');
+          }
+        }
+      }
+      for (const fx of [2,3,4]) {
+        const sorted = $('#row'+fx.toString()+'img > .col').eq(0).children().sort(function (a, b) {
+          return $(b).outerHeight() - $(a).outerHeight();
+        });
+
+        let send0 = -1;
+
+        for (let v of sorted) {
+          let minimum = rowNh(fx, 0, send0);
+          let flag = 0;
+          for (let x = 1; x < fx; x++)
+            if (minimum > rowNh(fx, x)) {
+              minimum = rowNh(fx, x);
+              flag = x;
+            }
+          let newSort = $('#row'+fx.toString()+'img > .col').eq(flag);
+          let flagt = true;
+          let len = flag ? newSort.children().length : send0 + 1;
+          for (let t = 0; t < len; t++) {
+            if (Number(newSort.children().eq(t).children('.mtime').html())
+              < $(v).children('.mtime').html()) {
+              newSort.children().eq(t).before(v);
+              flagt = false;
+              break;
+            }
+          }
+          if (flagt) {
+            if (!len)
+              newSort.prepend(v);
+            else
+              newSort.children().eq(len - 1).after(v);
+          }
+
+
+          if (!flag) send0++;
+        }
+      }
+    }
+
+    $(window).on("load", function() { stream(false) });
+
+    $(window).resize("resize", function () {
+      stream(true);
+    });
+

@@ -13,7 +13,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             return;
         }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
-        const maximum = Math.max(Number(req.query.max) || 5, 1);
+        const maximum = Math.max(Number(req.query.max) || 20, 1);
         const rs : any[] = !req.query.wd
             ? await db(query.queryPublishedPhotoWithLimit, [(pg - 1) * maximum, maximum])
             : await db(query.searchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);

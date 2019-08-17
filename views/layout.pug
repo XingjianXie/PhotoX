@@ -127,6 +127,19 @@ html
       script(src="/assets/js/bs-charts.js")
       script(src="/javascripts/jquery.easing.min.js")
       script(src="/assets/js/theme.js")
+      script.
+        function imgheight() {
+          $('.bkimg').height(function () {
+            return Math.round($(this).width() / $(this).attr('rel-width') * $(this).attr('rel-height'));
+          });
+        }
+        $(window).on("load", function () {
+          imgheight();
+        });
+        $(window).resize(function () {
+          imgheight();
+        });
+
     block history
       script.
         window.addEventListener("pageshow", function (event) {
@@ -135,15 +148,6 @@ html
           if (historyTraversal) {
             window.location.reload();
           }
-        });
-
-        $('.bkimg').height(function () {
-          return $(this).width() / $(this).attr('rel-width') * $(this).attr('rel-height');
-        });
-        $(window).resize(function () {
-          $('.bkimg').height(function () {
-            return $(this).width() / $(this).attr('rel-width') * $(this).attr('rel-height');
-          });
         });
 
 
