@@ -41,7 +41,7 @@ block content
             .card-header
               .d-inline= (val.to === null ? "[Group Message] " : "") + "Message " + val.id + (val.to === null ? "" : (" to " + val.to_name + " (" + val.to + ")"))
               .d-block= val.update_time.toLocaleString()
-            .card-body= val.content
+            .card-body!= val.content
 
 
         .row.d-block.d-lg-flex
@@ -71,6 +71,7 @@ append javascripts
       xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           $('#list').html($('#list', xhr.response).html());
+          imgheight();
           if ($('#search_form').val())
             $('#clear_button').removeClass('d-none');
           else

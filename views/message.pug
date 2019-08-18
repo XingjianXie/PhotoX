@@ -40,14 +40,14 @@ block content
         each val in messages
           .card.my-3
             .card-header
-              .d-inline(class = {'text-primary': val.read !== val.id})= (val.to === null ? "[Group Message] " : "") + (val.read !== val.id ? "New " : " ") + "Message " + val.id + " from " + val.from_name + " (" + val.from + ")"
+              .d-inline(class = {'text-primary': val.read !== val.id, 'text-gray-500' : val.read === val.id})= (val.to === null ? "[Group Message] " : "") + (val.read !== val.id ? "New " : " ") + "Message " + val.id + " from " + val.from_name + " (" + val.from + ")"
               if val.read !== val.id
                 form.d-inline.float-right.m-0(method='post', action='/message/mark_as_read')
                   input.d-none(value=val.id, name='messageID', autocomplete="off", maxlength=30)
                   button.btn.btn-primary.btn-sm(type='submit', onclick='read($(this).parents("form")); return false;')
                     | Mark as Read
-              .d-block(class = {'text-primary': val.read !== val.id})= val.update_time.toLocaleString()
-            .card-body(class = {'text-primary': val.read !== val.id})= val.content
+              .d-block(class = {'text-primary': val.read !== val.id, 'text-gray-500' : val.read === val.id})= val.update_time.toLocaleString()
+            .card-body.text-dark!= val.content
 
 
         .row.d-block.d-lg-flex
@@ -77,6 +77,7 @@ append javascripts
       xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           $('#list').html($('#list', xhr.response).html());
+          imgheight();
           if ($('#search_form').val())
             $('#clear_button').removeClass('d-none');
           else
@@ -100,6 +101,7 @@ append javascripts
               $('#list').html($('#list', xhr1.response).html());
               $('#message_nav').html($('#message_nav', xhr1.response).html());
               $('#topr').html($('#topr', xhr1.response).html());
+              imgheight();
             }
           }
           xhr1.send();

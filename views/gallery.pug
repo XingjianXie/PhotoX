@@ -14,31 +14,29 @@ block topr
 
 block content
   if photos.length
-    #row4img.row.d-none.d-xl-flex
-      .col
-        include cardimg
-      .col
-      .col
-      .col
-
-    #row3img.row.d-none.d-lg-flex.d-xl-none
+    #row3img.d-none.d-xl-flex
       .col
         include cardimg
       .col
       .col
 
-    #row2img.row.d-none.d-md-flex.d-lg-none
+    #row2img.d-none.d-md-flex.d-xl-none
       .col
         include cardimg
       .col
 
-    #row1img.row.d-flex.d-md-none
+    #row1img.d-flex.d-md-none
       .col
         include cardimg
 
-    #row0img.row.d-none
+    #row0img.d-none
       .col
         include cardimg
+
+    .row.d-block.d-lg-flex
+      .col-sm-12.col-md-6.align-self-center
+        p(role='status', aria-live='polite') Showing #{ (current - 1) * maximum + 1 } to #{(current - 1) * maximum + photos.length} of #{total}
+      include page
 
   else
     .text-center.mt-5
@@ -58,7 +56,7 @@ append javascripts
 
     function stream(flash) {
       if (flash) {
-        for (const fx of [2, 3, 4]) {
+        for (const fx of [2, 3]) {
           $('#row' + fx.toString() + 'img > .col').eq(0).html(
                   $('#row0img > .col').eq(0).html()
           );
@@ -87,8 +85,8 @@ append javascripts
           let flagt = true;
           let len = flag ? newSort.children().length : send0 + 1;
           for (let t = 0; t < len; t++) {
-            if (Number(newSort.children().eq(t).children('.mtime').html())
-              < $(v).children('.mtime').html()) {
+            if (Number(newSort.children().eq(t).children('.card-body').children('.mtime').html())
+              < $(v).children('.card-body').children('.mtime').html()) {
               newSort.children().eq(t).before(v);
               flagt = false;
               break;

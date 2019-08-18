@@ -1,12 +1,21 @@
 each p, i in photos
   .cardimg.card.shadow.mb-4
-    .mtime.d-none= p.update_time.getTime()
     .card-header.py-2
-      = p.name + ' by ' + p.uploader_name
-      .d-block= p.update_time.toLocaleString()
+      .d-block
+        i.fas.fa-image
+        = '  ' + p.name + ' by ' + p.uploader_name
+      .d-block
+        i.fas.fa-upload
+        = '  ' + p.update_time.toLocaleString()
+      if (p.exif_time)
+        .d-block
+          i.fas.fa-camera-retro
+          = '  ' + p.exif_time.toLocaleString()
       if (faces[i].length)
-         i.fas.fa-user-alt
-         each val, index in faces[i]
-           = (index ? ', ' : ' ') + val.mark_name
+        .d-block
+          i.fas.fa-user-alt
+          each val, index in faces[i]
+            = (index ? ', ' : '  ') + val.mark_name
     .card-body.p-0
-      .bkimg(style={'background-image': 'url(' + "/uploads/" + p.id + ".preview.jpg" + ')','background-size': '100%'}, rel-height=p.height, rel-width=p.width)
+      .mtime.d-none= p.update_time.getTime()/1000
+      .bkimg.rounded-bottom(style={'background-image': 'url(' + "/uploads/" + p.id + ".preview.jpg" + ')','background-size': '100%'}, rel-height=p.height, rel-width=p.width)

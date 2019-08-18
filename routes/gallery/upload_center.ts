@@ -5,6 +5,8 @@ import query from "../../db/query";
 import createError from "http-errors";
 import {mkdir, unlink} from "fs";
 import * as util from "util";
+import md5 from "md5";
+const exif = require('exif-reader');
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
@@ -46,37 +48,50 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         }
 
         const t = await Promise.all(req.files.map(async(value) => {
-            const id = (await db(query.addPhoto, [req.session!.userID])).insertId;
-            db(query.log, [req.session!.userID, "Photo", id, "Upload", true, null]);
+            const bufs : any = [];
+            value.stream.on('data', (d) => { bufs.push(d); });
+
+            const buffer = await (new Promise<Buffer>(function (resolve, reject) {
+                value.stream.on('end', () => {
+                    resolve(Buffer.concat(bufs))
+                });
+            }));
+            const photo_md5 =  md5(buffer);
             try {
-                const bufs : any[] = [];
-                value.stream.on('data', (d) => { bufs.push(d); });
+                const id = (await db(query.addPhoto, [req.session!.userID, photo_md5])).insertId;
+                db(query.log, [req.session!.userID, "Photo", id, "Upload", true, null]);
 
-                const rs = await (new Promise<Buffer>(function (resolve, reject) {
-                    value.stream.on('end', () => {
-                        resolve(Buffer.concat(bufs))
-                    });
-                }));
-
-                const t = sharp(rs);
+                const t = sharp(buffer);
                 const metadata = await t.metadata();
                 if (!metadata.width) throw "Can't get the size";
 
-                await t.toFile('public/uploads/' + id + '.png');
-                await t.resize(Math.min(metadata.width, 800)).toFile('public/uploads/' + id + '.preview.jpg');
+                await t.withMetadata().toFile('public/uploads/' + id + '.jpg');
+                await t.clone().resize(Math.min(metadata.width, 400)).toFile('public/uploads/' + id + '.preview.jpg');
 
-                //console.log(t);
+                await db(query.convertPhoto, [metadata.height, metadata.width, exif(metadata.exif).exif.DateTimeOriginal ? exif(metadata.exif).exif.DateTimeOriginal.getTime()/1000 + (new Date()).getTimezoneOffset() * 60: null, id]);
 
-                await db(query.convertPhoto, [metadata.height, metadata.width, id]);
                 db(query.log, [req.session!.userID, "Photo", id, "Convert", true, null]);
-                return true;
+                return "";
             } catch(err) {
-                db(query.log, [req.session!.userID, "Photo", id, "Convert", false, null]);
+                console.log(err);
+                if (err.code === "ER_DUP_ENTRY") {
+                    const rs = await db(query.getPhotoByMd5, [photo_md5]);
+                    await db(query.addMessage, [
+                        0,
+                        req.session!.userID,
+                        (
+                            "The photo you uploaded has been uploaded by "+ rs[0].uploader_name + " (" + rs[0].uploader_id + "). " + "<br>"
+                            + '<div class="bkimg rounded" style="background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
+                        )
+                    ]);
+                    db(query.log, [req.session!.userID, "Photo", null, "Convert", false, null]);
+                }
+
                 return false;
             }
         }));
-
         res.send(t);
+
     });
     return router;
 };

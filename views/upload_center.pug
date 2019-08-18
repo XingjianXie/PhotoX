@@ -147,6 +147,8 @@ append javascripts
           xhr1.onreadystatechange = function() {
             if (xhr1.readyState === XMLHttpRequest.DONE) {
               $('#list').html($('#list', xhr1.response).html());
+              $('#message_nav').html($('#message_nav', xhr1.response).html());
+              $('#uploadInput').val('');
               imgheight();
             }
           }

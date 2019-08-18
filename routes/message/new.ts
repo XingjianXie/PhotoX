@@ -2,6 +2,7 @@ import express from 'express';
 import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
+import {AllHtmlEntities} from 'html-entities';
 
 export default (db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
@@ -28,7 +29,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(404, 'User Not Found'));
             return;
         }
-        await db(query.addMessage, [req.session.userID, req.body.id ? req.body.id : null, req.body.content]);
+        await db(query.addMessage, [req.session.userID, req.body.id ? req.body.id : null, new AllHtmlEntities().encode(req.body.content).replace(/\n/g, "<br>")]);
         res.status(200);
         res.render('notification', {
             code: 200,

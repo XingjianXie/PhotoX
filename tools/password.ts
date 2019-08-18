@@ -1,4 +1,4 @@
-import {Md5} from "ts-md5";
+import md5 from 'md5';
 import crypto = require("crypto");
 
 export const create = (text : string): string[] => {
@@ -10,7 +10,7 @@ export const create = (text : string): string[] => {
         + sec2.substr(0, 5)
         + sec3.substr(0, 5)
         + sec4.substr(0, 5);
-    return [Md5.hashStr(text + sec).toString(), sec];
+    return [md5(text + sec), sec];
 };
 
-export const make = (text : string, sec : string): string => Md5.hashStr(text + sec).toString();
+export const make = (text : string, sec : string): string => md5(text + sec);
