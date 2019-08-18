@@ -9,7 +9,7 @@ block top
   if session.type
     form.form-inline(onsubmit='cu_submit($(this)); return false;')
       #topbar_form.m-2.d-none.d-sm-block
-        input#search_form.form-control.form-control-sm(type='text', autocomplete="off", maxlength=30, placeholder='ID or Uploader', oninput="cu_submit($(this).parents('form'))", name='wd', value=wd)
+        input#search_form.form-control.form-control-sm(type='text', autocomplete="off", spellcheck="false", maxlength=30, placeholder='ID or Uploader', oninput="cu_submit($(this).parents('form'))", name='wd', value=wd)
   #progressbar.my-auto.col-3.d-none.m-2
     .progress
       .progress-bar
@@ -19,7 +19,7 @@ block topr
     a#upload.nav-link(onclick="document.querySelector('#uploadInput').click(); return false;" href='#')
       span.d-inline.mr-2.text-gray-600.small Upload
     form#uploadForm.d-none(method="post", enctype="multipart/form-data")
-      input#uploadInput(type="file", name="photo", accept='image/*', onchange="upload()", multiple, autocomplete="off", maxlength=30)
+      input#uploadInput(type="file", name="photo", accept='image/*', onchange="upload()", multiple, autocomplete="off", spellcheck="false", maxlength=30)
   .nav-item
     a.nav-link(onclick="history.back(); return false;", href='#')
       span.d-inline.mr-2.text-gray-600.small Back
@@ -59,8 +59,8 @@ block content
                         | Publish
                     =' '
                     form.d-inline-block(method='post' action='/gallery/delete')
-                      input.d-none(value=val.id, name='photoID', autocomplete="off", maxlength=30)
-                      input.d-none(value='1', name='confirm', autocomplete="off", maxlength=30)
+                      input.d-none(value=val.id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
+                      input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
                       button.btn.btn-danger.btn-sm(type='submit', disabled=val.uploader_type >= session.type && val.uploader_id !== session.userID)
                         | Delete
         .row.d-block.d-lg-flex

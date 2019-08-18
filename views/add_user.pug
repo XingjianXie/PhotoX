@@ -21,10 +21,10 @@ block content
         .card-body.p-0
           .p-5
             form.user(method="post")
-              input#confirm.d-none(value='1', name='confirm', autocomplete="off", maxlength=30)
+              input#confirm.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
               .form-group.dropdown
-                input.d-none(name='type', autocomplete="off", maxlength=30)
-                input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Type", onfocus='this.blur()', autocomplete="off", maxlength=30)
+                input.d-none(name='type', autocomplete="off", spellcheck="false", maxlength=30)
+                input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Type", onfocus='this.blur()', autocomplete="off", spellcheck="false", maxlength=30)
                 .dropdown-menu(role='menu')
                   -let t = 0;
                   while t <= Math.min(session.type, 2)
@@ -32,13 +32,13 @@ block content
                     -t++;
                 #warning.text-danger.d-none You may NOT edit or delete this user once you create it
               .form-group
-                input.form-control.form-control-user(type="text", autocomplete="off", maxlength=30, placeholder="Phone Number", name="phone_number", oninput="input(1)")
+                input.form-control.form-control-user(type="text", autocomplete="off", spellcheck="false", maxlength=30, placeholder="Phone Number", name="phone_number", oninput="input(1)")
               .form-group
-                input.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput="input(2)", autocomplete="off", maxlength=30)
+                input.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput="input(2)", autocomplete="off", spellcheck="false", maxlength=30)
               .form-group
-                input.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input(3)", autocomplete="off", maxlength=30)
+                input.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input(3)", autocomplete="off", spellcheck="false", maxlength=30)
               .form-group
-                button#wb.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, onclick='$(this).attr(\'disabled\', true); submit(); return false;') Add
+                button#wb.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled) Add
 
 append javascripts
   script
