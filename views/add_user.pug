@@ -48,8 +48,6 @@ append javascripts
     |   else
     |     $('[type=submit]').attr('disabled', '');
     |   if (!x) {
-    |     $('[name=name]').val('');
-    |     $('[name=pwd]').val('');
     |     if ($('[name=type]').val() === '#{session.type}') {
     |       $('#warning').removeClass('d-none');
     |       $('#wb').removeClass('btn-primary');

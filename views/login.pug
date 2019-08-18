@@ -39,13 +39,10 @@ append javascripts
     $('#loginButton').html('Login');
     $('#input1').removeAttr('disabled');
     $('#input2').removeAttr('disabled');
+    $('#loginButton').removeAttr('disabled');
     function input(x) {
       if ($('#input1').val() && $('#input2').val() && !isNaN(Number($('#input1').val())) && Number($('#input1').val()).toString().length === 11)
         $('#loginButton').removeAttr('disabled');
       else
         $('#loginButton').attr('disabled', true);
-      if(!x) {
-        $('#input2').val('');
-        input(1);
-      }
     }
