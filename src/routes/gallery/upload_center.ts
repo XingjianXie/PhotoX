@@ -6,6 +6,7 @@ import createError from "http-errors";
 import {mkdir, unlink} from "fs";
 import * as util from "util";
 import md5 from "md5";
+import path from "path";
 const exif = require('exif-reader');
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
@@ -65,8 +66,8 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                 const metadata = await t.metadata();
                 if (!metadata.width) throw "Can't get the size";
 
-                await t.withMetadata().toFile('public/uploads/' + id + '.jpg');
-                await t.clone().resize(Math.min(metadata.width, 400)).toFile('public/uploads/' + id + '.preview.jpg');
+                await t.withMetadata().toFile(path.join(req.app.get('root'), 'uploads', id + '.jpg'));
+                await t.clone().resize(Math.min(metadata.width, 400)).toFile(path.join(req.app.get('root'), 'uploads', id + '.preview.jpg'));
 
                 await db(query.convertPhoto, [metadata.height, metadata.width, exif(metadata.exif).exif.DateTimeOriginal ? exif(metadata.exif).exif.DateTimeOriginal.getTime()/1000 + (new Date()).getTimezoneOffset() * 60: null, id]);
 

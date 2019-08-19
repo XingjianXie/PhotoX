@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "start": "node bin/www.js",
-    "debug": "nodemon bin/www.ts"
+    "start": "node src/www.js",
+    "debug": "nodemon src/www.ts"
   },
   "dependencies": {
     "connect-redis": "^3.4.2",

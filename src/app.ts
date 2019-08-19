@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import session from "express-session";
 import redis from 'redis';
-import index from './routes/index';
+import index from './routes';
 import db from "./db/db";
 import {Store} from "express-session";
 import {mkdir} from "fs";
@@ -18,6 +18,7 @@ const redisStore = require('connect-redis')(session);
 const multer = require("multer");
 
 const app = express();
+app.set('root', path.join(__dirname, '../'));
 const redis_client = redis.createClient({ host: require('./db/RedisConfig').host, port: require('./db/RedisConfig').port });
 const store : Store = new redisStore({ client: redis_client });
 const session_map : any = new Proxy({}, {
@@ -35,7 +36,7 @@ const session_map : any = new Proxy({}, {
 //let session_map : any = {};
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', 'views');
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
@@ -56,6 +57,7 @@ app.use(session({
         return true;
     }
 }));
+/*
 app.use("/uploads", (req, res, next) => {
     if (!req.session || !req.session.sign) {
         res.redirect('/');
@@ -63,7 +65,8 @@ app.use("/uploads", (req, res, next) => {
     }
     next();
 });
-app.use(express.static(path.join(__dirname, 'public')));
+ */
+app.use(express.static(path.join(app.get('root'), 'public')));
 
 app.use(async(req, res, next) => {
     res.locals.session = req.session;
@@ -87,8 +90,7 @@ app.use(async(req, res, next) => {
     next();
 });
 
-util.promisify(mkdir)('public/uploads')
-    .catch(err => { if (err.code != 'EEXIST') throw err });
+util.promisify(mkdir)(path.join(app.get('root'), 'uploads')).catch(err => { if (err.code != 'EEXIST') throw err });
 app.use(index(session_map, db, multer( { limits: { fileSize: 1e8 } } )));
 
 export default app;
