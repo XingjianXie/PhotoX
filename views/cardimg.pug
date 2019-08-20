@@ -12,6 +12,7 @@ each p, i in photos
         .d-block
           i.fas.fa-camera-retro
           = '  ' + p.exif_time.toLocaleString()
+    .card-header.py-2
       if (faces[i].length)
         .d-block
           i.fas.fa-user-alt
