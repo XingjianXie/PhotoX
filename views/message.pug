@@ -40,7 +40,10 @@ block content
         each val in messages
           .card.my-3
             .card-header
-              .d-inline(class = {'text-primary': val.read !== val.id})= (val.to === null ? "[Group Message] " : "") + (val.read !== val.id ? "New " : " ") + "Message " + val.id + " from " + val.from_name + " (" + val.from + ")"
+              .i.fas(class={'text-primary': val.read !== val.id, 'fa-user': val.to !== null, 'fa-users': val.to === null})
+              .d-inline(class = {'text-primary': val.read !== val.id})= (val.to === null ? " Group Message" : " Private Message")
+            .card-header
+              .d-inline(class = {'text-primary': val.read !== val.id})=(val.read !== val.id ? "New " : " ") + "Message " + val.id + " from " + val.from_name + " (" + val.from + ")"
               if val.read !== val.id
                 form.d-inline.float-right.m-0(method='post', action='/message/mark_as_read')
                   input.d-none(value=val.id, name='messageID', autocomplete="off", spellcheck="false", maxlength=30)

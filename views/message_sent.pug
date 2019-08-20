@@ -39,7 +39,10 @@ block content
         each val in messages
           .card.my-3
             .card-header
-              .d-inline= (val.to === null ? "[Group Message] " : "") + "Message " + val.id + (val.to === null ? "" : (" to " + val.to_name + " (" + val.to + ")"))
+              .i.fas(class={'fa-user': val.to !== null, 'fa-users': val.to === null})
+              .d-inline= (val.to === null ? " Group Message" : " Private Message")
+            .card-header
+              .d-inline="Message " + val.id + (val.to === null ? "" : (" to " + val.to_name + " (" + val.to + ")"))
               .d-block= val.update_time.toLocaleString()
             .card-body!= val.content
 
