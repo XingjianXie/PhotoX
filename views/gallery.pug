@@ -47,6 +47,26 @@ block content
 
 append javascripts
   script.
+    function cu_submit(d, ext) {
+      let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
+      const xhr = new XMLHttpRequest();
+      const url = (d.attr('action') || '/gallery') + '?' + fd;
+      xhr.open('get', url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          $('#main_content').html($('#main_content', xhr.response).html());
+          imgheight();
+          stream(false);
+          if ($('#search_form').val())
+            $('#clear_button').removeClass('d-none');
+          else
+            $('#clear_button').addClass('d-none');
+          window.history.pushState(null, null, xhr.responseURL);
+        }
+      }
+      xhr.send();
+    }
+
     function rowNh(n, i,end) {
       if (end == -1)
         return 0;
@@ -105,9 +125,33 @@ append javascripts
       }
     }
 
-    $(window).on("load", function() { stream(false) });
+    $(window).on("load", function() {
+      imgheight();
+      stream(false);
+    });
 
     $(window).resize("resize", function () {
+      imgheight();
       stream(true);
     });
 
+append history
+  script.
+    window.addEventListener("popstate", function (e) {
+      const xhr = new XMLHttpRequest();
+      const url = window.location;
+      xhr.open('get', url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          $('#main_content').html($('#main_content', xhr.response).html());
+          imgheight();
+          stream(false);
+          if ($('#search_form').val())
+            $('#clear_button').removeClass('d-none');
+          else
+            $('#clear_button').addClass('d-none');
+          window.history.replaceState(null, null, xhr.responseURL);
+        }
+      }
+      xhr.send();
+    });

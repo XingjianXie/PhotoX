@@ -55,13 +55,12 @@ block content
                   th= val.type === 0 ? "Converting" : "Unpublished"
                   th.d-none.d-sm-block
                     form.d-inline-block
-                      button.btn.btn-danger.btn-sm(onclick="location='/gallery/publish/" + val.id + "'; return false;", disabled=val.uploader_type >= session.type && val.uploader_id !== session.userID)
+                      button.btn.btn-danger.btn-sm.mx-1(onclick="location='/gallery/publish/" + val.id + "'; return false;", disabled=val.uploader_type >= session.type && val.uploader_id !== session.userID)
                         | Publish
-                    =' '
                     form.d-inline-block(method='post' action='/gallery/delete')
                       input.d-none(value=val.id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
                       input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
-                      button.btn.btn-danger.btn-sm(type='submit', disabled=val.uploader_type >= session.type && val.uploader_id !== session.userID)
+                      button.btn.btn-danger.btn-sm.mx-1(type='submit', disabled=val.uploader_type >= session.type && val.uploader_id !== session.userID)
                         | Delete
         .row.d-block.d-lg-flex
           .col-sm-12.col-md-6.align-self-center

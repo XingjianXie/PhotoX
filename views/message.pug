@@ -122,6 +122,7 @@ append history
       xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           $('#list').html($('#list', xhr.response).html());
+          imgheight();
           if ($('#search_form').val())
             $('#clear_button').removeClass('d-none');
           else

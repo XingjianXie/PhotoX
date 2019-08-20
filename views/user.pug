@@ -52,24 +52,23 @@ block content
                     form.d-inline-block(method='post', action='/user/logout')
                       input.d-none(value=val.id, name='userID', autocomplete="off", spellcheck="false", maxlength=30)
                       if map[val.id]
-                        button.btn.btn-primary.btn-sm(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
+                        button.btn.btn-primary.btn-sm.mx-1(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
                           | Logout
                       else
-                        button.btn.btn-primary.btn-sm(disabled)
+                        button.btn.btn-primary.btn-sm.mx-1(disabled)
                           | Offline
-                    =' '
                     form.d-inline-block
-                      button.btn.btn-primary.btn-sm(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                      button.btn.btn-primary.btn-sm.mx-1(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
                         | Edit
                     =' '
                     form.d-inline-block
-                      button.btn.btn-primary.btn-sm(onclick="location='/message/new?id=" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                      button.btn.btn-primary.btn-sm.mx-1(onclick="location='/message/new?id=" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
                         | Message
                     =' '
                     form.d-inline-block(method='post' action='/user/delete')
                       input.d-none(value=val.id, name='userID', autocomplete="off", spellcheck="false", maxlength=30)
                       input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
-                      button.btn.btn-danger.btn-sm(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
+                      button.btn.btn-danger.btn-sm.mx-1(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
                         | Delete
         .row.d-block.d-lg-flex
           .col-sm-12.col-md-6.align-self-center
