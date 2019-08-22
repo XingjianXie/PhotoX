@@ -3,6 +3,7 @@ import multer from "multer";
 import upload_center from "./upload_center";
 import _delete from "./delete";
 import publish from "./publish";
+import recall from "./recall";
 import query from '../../db/query';
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
@@ -42,10 +43,12 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             total: total,
             current: pg,
             maximum: maximum,
+            uploadsLength: (await db(query.countUnPublishedPhotoWithLimit, [req.session.userID]))[0]['COUNT(*)'],
         });
     });
     router.use('/upload_center', upload_center(db, multer));
     router.use('/publish', publish(db));
     router.use('/delete', _delete(db));
+    router.use('/recall', recall(db));
     return router;
 };

@@ -17,27 +17,31 @@ export default {
     //Photo
     addPhoto: 'INSERT INTO photo(uploader_id, md5, type) VALUES(?, ?, 0)',
     convertPhoto: 'UPDATE photo SET type=1, height=?, width=?, exif_time=FROM_UNIXTIME(?) WHERE id=? AND deleted = 0',
-    publishPhoto: 'UPDATE photo SET type=2, name=?, category=? WHERE id=? AND deleted = 0',
+    publishPhoto: 'UPDATE photo SET type=2, name=?, category=? WHERE id=? AND type=1 AND deleted = 0',
     getPhotoById: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.id = ? AND photo.deleted = 0',
+    getPublishedPhotoById: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.id = ? AND photo.type = 2 AND photo.deleted = 0',
     getPhotoByMd5: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.md5 = ? AND photo.deleted = 0',
     deletePhoto: 'UPDATE photo SET deleted = 1 WHERE id = ?',
+    recallPhoto: 'UPDATE photo SET type = 1 WHERE id = ? AND type=2',
 
-    queryUnPublishedPhotoWithLimit: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE (user.type < ? OR user.id = ?) AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
-    countQueryUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE (user.type < ? OR user.id = ?) AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0',
-    searchUnPublishedPhotoWithLimit: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE (user.type < ? OR user.id = ?) AND (photo.type = 0 OR photo.type = 1) AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
-    countSearchUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE (user.type < ? OR user.id = ?) AND (photo.type = 0 OR photo.type = 1) AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0',
+    countUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo WHERE photo.uploader_id = ? AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0',
+    queryUnPublishedPhotoWithLimit: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.id = ? AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
+    countQueryUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.id = ? AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0',
+    searchUnPublishedPhotoWithLimit: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.id = ? AND (photo.type = 0 OR photo.type = 1) AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
+    countSearchUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.id = ? AND (photo.type = 0 OR photo.type = 1) AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0',
 
-    queryPublishedPhotoWithLimit: 'SELECT photo.*, category.name as category_name, category.owner as category_owner, photo.uploader_id, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id LEFT OUTER JOIN category ON photo.category=category.id WHERE photo.type = 2 AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
+    queryPublishedPhotoWithLimit: 'SELECT photo.*, category.name as category_name, category.owner as category_owner, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id LEFT OUTER JOIN category ON photo.category=category.id WHERE photo.type = 2 AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
     countQueryPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.type = 2 AND photo.deleted = 0',
-    searchPublishedPhotoWithLimit: 'SELECT photo.*, category.name as category_name, category.owner as category_owner, photo.uploader_id, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id LEFT OUTER JOIN category ON photo.category=category.id WHERE photo.type = 2 AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
+    searchPublishedPhotoWithLimit: 'SELECT photo.*, category.name as category_name, category.owner as category_owner, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id LEFT OUTER JOIN category ON photo.category=category.id WHERE photo.type = 2 AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
     countSearchPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE AND photo.type = 2 AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0',
 
     //Download
+    downloadPhoto: 'INSERT INTO download values(UUID(), ?, ?)',
     getDownloadByPhotoId: 'SELECT download.*, user.name AS user_name from download LEFT OUTER JOIN user ON user.id=download.user where photo = ?',
 
     //Message
     addMessage: 'INSERT INTO message(`from`, `to`, `content`) values(?, ?, ?)',
-    getMyUnreadMessage: 'SELECT message.* FROM `message` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE (`to`=? OR `to` IS NULL) AND (read.user IS NULL) AND (message.id=?)',
+    countMyUnreadMessage: 'SELECT message.* FROM `message` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE (`to`=? OR `to` IS NULL) AND (read.user IS NULL) AND (message.id=?)',
     queryMyMessageWithLimit: 'SELECT message.*, user.name AS from_name, `read`.message AS `read` FROM `message` LEFT OUTER JOIN user ON user.id=message.`from` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE `to`=? OR `to` IS NULL ORDER BY (`read` IS NOT NULL), id DESC LIMIT ?,?',
     countQueryMyMessageWithLimit: 'SELECT COUNT(*) FROM `message` LEFT OUTER JOIN user ON user.id=message.`from` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE `to`=? OR `to` IS NULL',
     queryMyUnreadMessage: 'SELECT message.* FROM `message` LEFT OUTER JOIN `read` ON message.id=`read`.message AND read.user=? WHERE (`to`=? OR `to` IS NULL) AND (read.user IS NULL)',

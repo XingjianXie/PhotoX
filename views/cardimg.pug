@@ -4,6 +4,9 @@ each p, i in photos
       .d-block
         i.fas.fa-image
         = '  ' + p.name + " (" + p.id + ') by ' + p.uploader_name + " (" + p.uploader_id + ")"
+      .d-block
+        i.fas.fa-bookmark
+        = '  ' + p.category_name
     .card-header.py-2
       .d-block
         i.fas.fa-upload
@@ -28,8 +31,11 @@ each p, i in photos
       button.btn.btn-primary.btn-sm.mx-1
         | Download
       if photos[i].uploader_id === session.userID || photos[i].uploader_type < session.type
-        button.btn.btn-danger.btn-sm.mx-1(disabled=downloads[i].length !== 0 && !session.type)
-          | Recall
+        form.d-inline-block(method='post' action='/gallery/recall')
+          input.d-none(value=photos[i].id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
+          input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
+          button.btn.btn-danger.btn-sm.mx-1(type='submit', disabled=downloads[i].length !== 0 && !session.type)
+            | Recall
         form.d-inline-block(method='post' action='/gallery/delete')
           input.d-none(value=photos[i].id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
           input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)

@@ -11,6 +11,8 @@ block topr
   .nav-item
     a.nav-link(href='/gallery/upload_center')
       span.d-inline.mr-2.text-gray-600.small Upload Center
+      if uploadsLength
+        span.float-right.bg-danger.rounded.px-2.text-white= uploadsLength
 
 block content
   if photos.length

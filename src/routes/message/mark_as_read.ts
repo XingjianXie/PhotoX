@@ -15,7 +15,7 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
                 next(createError(400, 'Message ID Should Be A Number'));
                 return;
             }
-            const rs = await db(query.getMyUnreadMessage, [req.session.userID, req.session.userID, Number(req.body.messageID)]);
+            const rs = await db(query.countMyUnreadMessage, [req.session.userID, req.session.userID, Number(req.body.messageID)]);
             if (!rs[0]) {
                 db(query.log, [req.session.userID, "Message", rs[0].id, "Read", false, "Error: Message Not Found"]);
                 next(createError(404, 'Message Not Found'));

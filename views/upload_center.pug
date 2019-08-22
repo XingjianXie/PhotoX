@@ -36,8 +36,6 @@ block content
               tr
                 th ID
                 th Preview
-                if session.type
-                  th Uploader
                 th Status
                 th.d-none.d-sm-block Options
 
@@ -47,11 +45,6 @@ block content
                   th= val['id']
                   th
                     .bkimg(style={'background-image' : 'url(' + "/uploads/" + val.id + ".preview.jpg" + ')', 'background-size' : '100%', width: '100px'}, rel-height=val.height, rel-width=val.width)
-                  if session.type
-                    if val.uploader_deleted
-                      th= val.uploader_name + ' (' + val.uploader_id + ', DELETED)'
-                    else
-                      th= val.uploader_name + ' (' + val.uploader_id + ')'
                   th= val.type === 0 ? "Converting" : "Unpublished"
                   th.d-none.d-sm-block
                     form.d-inline-block
