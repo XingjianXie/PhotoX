@@ -28,7 +28,7 @@ each p, i in photos
       button.btn.btn-primary.btn-sm.mx-1
         | Download
       if photos[i].uploader_id === session.userID || photos[i].uploader_type < session.type
-        button.btn.btn-danger.btn-sm.mx-1(disabled=downloads[i].length !== 0 || !session.type)
+        button.btn.btn-danger.btn-sm.mx-1(disabled=downloads[i].length !== 0 && !session.type)
           | Recall
         form.d-inline-block(method='post' action='/gallery/delete')
           input.d-none(value=photos[i].id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
