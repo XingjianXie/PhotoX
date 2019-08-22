@@ -31,9 +31,14 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             return db(query.getMarkByPhotoId, [val.id]);
         }));
 
+        const download = await Promise.all(rs.map((val) => {
+            return db(query.getDownloadByPhotoId, [val.id]);
+        }));
+
         res.render('gallery', {
             photos: rs,
             faces: mark,
+            downloads: download,
             total: total,
             current: pg,
             maximum: maximum,

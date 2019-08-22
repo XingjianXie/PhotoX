@@ -3,7 +3,7 @@ each p, i in photos
     .card-header.py-2
       .d-block
         i.fas.fa-image
-        = '  ' + p.name + ' by ' + p.uploader_name + " (" + p.uploader_id + ")"
+        = '  ' + p.name + " (" + p.id + ') by ' + p.uploader_name + " (" + p.uploader_id + ")"
     .card-header.py-2
       .d-block
         i.fas.fa-upload
@@ -12,19 +12,29 @@ each p, i in photos
         .d-block
           i.fas.fa-camera-retro
           = '  ' + p.exif_time.toLocaleString()
-    .card-header.py-2
-      if (faces[i].length)
+    if (faces[i].length)
+      .card-header.py-2
         .d-block
           i.fas.fa-user-alt
           each val, index in faces[i]
             = (index ? ', ' : '  ') + val.mark_name
+    if (downloads[i].length)
+      .card-header.py-2
+        .d-block
+          i.fas.fa-download
+          each val, index in downloads[i]
+            = (index ? ', ' : '  ') + val.user_name + ' (' + val.user + ')'
     .card-header.py-2
       button.btn.btn-primary.btn-sm.mx-1
         | Download
-      button.btn.btn-danger.btn-sm.mx-1
-        | Recall
-      button.btn.btn-danger.btn-sm.mx-1
-        | Delete
+      if photos[i].uploader_id === session.userID || photos[i].uploader_type < session.type
+        button.btn.btn-danger.btn-sm.mx-1(disabled=downloads[i].length !== 0 || !session.type)
+          | Recall
+        form.d-inline-block(method='post' action='/gallery/delete')
+          input.d-none(value=photos[i].id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
+          input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
+          button.btn.btn-danger.btn-sm.mx-1(type='submit', disabled=downloads[i].length !== 0 && !session.type)
+            | Delete
     .card-body.p-0
       .mtime.d-none= p.update_time.getTime()/1000
       .bkimg.rounded-bottom(style={'background-image': 'url(' + "/uploads/" + p.id + ".preview.jpg" + ')','background-size': '100%'}, rel-height=p.height, rel-width=p.width)
