@@ -8,8 +8,8 @@ each p, i in photos
         i.fas.fa-bookmark
         = '  ' + p.category_name
     .card-header.py-2
-      .d-block
-        i.fas.fa-upload
+      .d-blocks
+        i.fas.fa-file-upload
         = '  ' + p.update_time.toLocaleString()
       if (p.exif_time)
         .d-block

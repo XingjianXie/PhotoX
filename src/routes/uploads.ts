@@ -14,6 +14,10 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
             next(createError(400, 'Photo ID Should Be A Number'));
             return;
         }
+        if ((await db(query.getSpPreview, [req.session.userID, Number(req.params.id)])).length) {
+            res.sendFile(path.join(req.app.get('root'), "uploads", req.params.id + ".preview.jpg"));
+            return;
+        }
         const rs = await db(query.getPhotoById, [Number(req.params.id)]);
         if (!rs[0]) {
             next(createError(404, 'Photo Not Found'));

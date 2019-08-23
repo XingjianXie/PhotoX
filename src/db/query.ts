@@ -62,8 +62,9 @@ export default {
     queryCategory: 'SELECT category.*, owner, user.name AS owner_name, user.type AS owner_type, user.deleted AS owner_deleted FROM category LEFT OUTER JOIN user ON user.id=category.owner WHERE category.deleted = 0',
 
     //Mark
-    addMark: 'INSERT INTO mark(photo_id, mark_name) values(?, ?)',
+    addMark: 'INSERT INTO mark values(?, ?)',
     getMarkByPhotoId : 'SELECT * FROM mark WHERE photo_id=?',
+    clearMark: 'DELETE FROM mark WHERE photo_id=?',
 
     //Log
     log: 'INSERT INTO log(operator, target_type, target, action, success, extra_message) VALUES(?, ?, ?, ?, ?, ?)',
@@ -71,4 +72,8 @@ export default {
     countQueryLogWithLimit: 'SELECT COUNT(*) FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target WHERE operator_obj.type <= ?',
     searchLogWithLimit: 'SELECT log.*, operator_obj.name AS operator_name, target_type, target, COALESCE(targetP_obj.name, targetU_obj.name, "Message") AS target_name, action, success, extra_message FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target WHERE operator_obj.type <= ? AND (POSITION(? IN log.id) OR POSITION(? IN COALESCE(targetP_obj.name, targetU_obj.name)) OR POSITION(? IN target) OR POSITION(? IN operator_obj.name) OR POSITION(? IN operator) OR POSITION(? IN action)) ORDER BY log.id DESC LIMIT ?,?',
     countSearchLogWithLimit: 'SELECT COUNT(*) FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target WHERE operator_obj.type <= ? AND (POSITION(? IN log.id) OR POSITION(? IN COALESCE(targetP_obj.name, targetU_obj.name)) OR POSITION(? IN target) OR POSITION(? IN operator_obj.name) OR POSITION(? IN operator) OR POSITION(? IN action))',
+
+    //SpPreview
+    addSpPreview: 'INSERT INTO sppreview values(?, ?)',
+    getSpPreview: 'SELECT * FROM sppreview WHERE user=? AND photo=?',
 };

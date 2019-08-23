@@ -35,6 +35,24 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
 
         await db(query.recallPhoto, [rs[0].id]);
+        await db(query.clearMark, [rs[0].id]);
+        const recall_notification = await db(query.getDownloadByPhotoId, [rs[0].id]);
+        for (const val of recall_notification) {
+            await db(query.addSpPreview, [val.user, rs[0].id]);
+            await db(query.addMessage, [0, val.user,
+                (
+                    "The photo you downloaded has been recalled by "+ req.session.name + " (" + req.session.userID + "). " + "<br>"
+                    + '<div class="bkimg rounded" style="background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
+                )
+            ]);
+        }
+        await db(query.addSpPreview, [rs[0].uploader_id, rs[0].id]);
+        await db(query.addMessage, [0, rs[0].uploader_id,
+            (
+                "The photo you uploaded has been recalled by "+ req.session.name + " (" + req.session.userID + "). " + "<br>"
+                + '<div class="bkimg rounded" style="background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
+            )
+        ]);
 
         db(query.log, [req.session.userID, "Photo", rs[0].id, "Recall", true, null]);
 
