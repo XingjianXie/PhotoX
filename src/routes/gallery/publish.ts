@@ -67,7 +67,6 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             return;
         }
 
-        await db(query.deleteSpPreview, [rs[0].id]);
         await db(query.publishPhoto, [req.body.name, req.body.category, rs[0].id]);
         db(query.log, [req.session.userID, "Photo", rs[0].id, "Publish", true, null]);
 

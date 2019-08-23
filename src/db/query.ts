@@ -38,6 +38,7 @@ export default {
     //Download
     downloadPhoto: 'INSERT INTO download values(UUID(), ?, ?)',
     getDownloadByPhotoId: 'SELECT download.*, user.name AS user_name from download LEFT OUTER JOIN user ON user.id=download.user where photo = ?',
+    clearDownload: 'DELETE FROM download WHERE photo=?',
 
     //Message
     addMessage: 'INSERT INTO message(`from`, `to`, `content`) values(?, ?, ?)',
@@ -76,5 +77,4 @@ export default {
     //SpPreview
     addSpPreview: 'INSERT INTO sppreview values(?, ?)',
     getSpPreview: 'SELECT * FROM sppreview WHERE user=? AND photo=?',
-    deleteSpPreview: 'DELETE FROM sppreview WHERE photo=?',
 };

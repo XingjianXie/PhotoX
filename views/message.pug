@@ -72,6 +72,8 @@ block content
 
 append javascripts
   script.
+    if (end_callback)
+      end_callback(this);
     function cu_submit(d, ext) {
       let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
       const xhr = new XMLHttpRequest();

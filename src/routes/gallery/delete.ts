@@ -46,6 +46,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
                 )
             ]);
         }
+        await db(query.clearDownload, [rs[0].id]);
         await db(query.addSpPreview, [rs[0].uploader_id, rs[0].id]);
         await db(query.addMessage, [0, rs[0].uploader_id,
             (
