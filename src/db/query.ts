@@ -21,7 +21,7 @@ export default {
     getPhotoById: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.id = ? AND photo.deleted = 0',
     getPublishedPhotoById: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.id = ? AND photo.type = 2 AND photo.deleted = 0',
     getPhotoByMd5: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.md5 = ? AND photo.deleted = 0',
-    deletePhoto: 'UPDATE photo SET deleted = 1 WHERE id = ?',
+    deletePhoto: 'UPDATE photo SET deleted = 1, md5=NULL WHERE id = ?',
     recallPhoto: 'UPDATE photo SET type = 1 WHERE id = ? AND type=2',
 
     countUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo WHERE photo.uploader_id = ? AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0',

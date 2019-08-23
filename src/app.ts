@@ -90,7 +90,6 @@ app.use(async(req, res, next) => {
     next();
 });
 
-util.promisify(mkdir)(path.join(app.get('root'), 'uploads')).catch(err => { if (err.code != 'EEXIST') throw err });
 app.use(index(session_map, db, multer( { limits: { fileSize: 1e8 } } )));
 
 export default app;

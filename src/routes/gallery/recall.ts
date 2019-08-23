@@ -42,7 +42,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             await db(query.addMessage, [0, val.user,
                 (
                     "The photo you downloaded has been recalled by "+ req.session.name + " (" + req.session.userID + "). " + "<br>"
-                    + '<div class="bkimg rounded" style="background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
+                    + '<div class="bkimg rounded" style="width: 100px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
                 )
             ]);
         }
@@ -50,7 +50,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         await db(query.addMessage, [0, rs[0].uploader_id,
             (
                 "The photo you uploaded has been recalled by "+ req.session.name + " (" + req.session.userID + "). " + "<br>"
-                + '<div class="bkimg rounded" style="background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
+                + '<div class="bkimg rounded" style="width: 100px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
             )
         ]);
 

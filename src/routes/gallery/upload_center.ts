@@ -82,7 +82,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                         req.session!.userID,
                         (
                             "The photo you uploaded has been uploaded by "+ rs[0].uploader_name + " (" + rs[0].uploader_id + "). " + "<br>"
-                            + '<div class="bkimg rounded" style="background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
+                            + '<div class="bkimg rounded" style="width: 100px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
                         )
                     ]);
                     db(query.log, [req.session!.userID, "Photo", null, "Convert", false, null]);

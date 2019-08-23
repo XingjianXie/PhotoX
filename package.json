@@ -8,6 +8,7 @@
     "debug": "nodemon src/www.ts"
   },
   "dependencies": {
+    "cluster": "^0.7.7",
     "connect-redis": "^3.4.2",
     "cookie-parser": "~1.4.4",
     "exif-reader": "^1.0.2",
