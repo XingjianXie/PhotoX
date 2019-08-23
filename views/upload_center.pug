@@ -44,7 +44,7 @@ block content
                 tr
                   th= val['id']
                   th
-                    .bkimg(style={'background-image' : 'url(' + "/uploads/" + val.id + ".preview.jpg" + ')', 'background-size' : '100%', width: '100px'}, rel-height=val.height, rel-width=val.width)
+                    .bkimg.rounded(style={'background-image' : 'url(' + "/uploads/" + val.id + ".preview.jpg" + ')', 'background-size' : '100%', width: '100px'}, rel-height=val.height, rel-width=val.width)
                   th= val.type === 0 ? "Converting" : "Unpublished"
                   th.d-none.d-sm-block
                     form.d-inline-block

@@ -76,4 +76,5 @@ export default {
     //SpPreview
     addSpPreview: 'INSERT INTO sppreview values(?, ?)',
     getSpPreview: 'SELECT * FROM sppreview WHERE user=? AND photo=?',
+    deleteSpPreview: 'DELETE FROM sppreview WHERE photo=?',
 };

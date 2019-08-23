@@ -5,7 +5,7 @@ import query from "../../db/query";
 import createError from "http-errors";
 import {mkdir, unlink} from "fs";
 import * as util from "util";
-import md5 from "md5";
+import crypto from "crypto";
 import path from "path";
 const exif = require('exif-reader');
 
@@ -57,7 +57,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                     resolve(Buffer.concat(bufs))
                 });
             }));
-            const photo_md5 =  md5(buffer);
+            const photo_md5 = crypto.createHash('md5').update(buffer).digest('base64');
             try {
                 const id = (await db(query.addPhoto, [req.session!.userID, photo_md5])).insertId;
                 db(query.log, [req.session!.userID, "Photo", id, "Upload", true, null]);
@@ -82,7 +82,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                         req.session!.userID,
                         (
                             "The photo you uploaded has been uploaded by "+ rs[0].uploader_name + " (" + rs[0].uploader_id + "). " + "<br>"
-                            + '<div class="bkimg rounded" style="width: 100px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
+                            + '<div class="bkimg rounded" style="width: 200px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
                         )
                     ]);
                     db(query.log, [req.session!.userID, "Photo", null, "Convert", false, null]);

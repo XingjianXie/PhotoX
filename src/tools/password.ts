@@ -1,5 +1,4 @@
-import md5 from 'md5';
-import crypto = require("crypto");
+import crypto from "crypto";
 
 export const create = (text : string): string[] => {
     const sec1 = (Math.random() * 1000000000000000000).toString();
@@ -10,7 +9,7 @@ export const create = (text : string): string[] => {
         + sec2.substr(0, 5)
         + sec3.substr(0, 5)
         + sec4.substr(0, 5);
-    return [md5(text + sec), sec];
+    return [crypto.createHash('md5').update(text + sec).digest('base64'), sec];
 };
 
-export const make = (text : string, sec : string): string => md5(text + sec);
+export const make = (text : string, sec : string): string => crypto.createHash('md5').update(text + sec).digest('base64');
