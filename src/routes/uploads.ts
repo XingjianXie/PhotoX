@@ -34,5 +34,21 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
         //console.log(path.join(req.app.get('root'), "uploads", req.params.id + ".preview.jpg"));
         res.sendFile(path.join(req.app.get('root'), "uploads", req.params.id + ".preview.jpg"));
     });
+    router.get('/:uuid/:id.jpg', async(req, res, next) => {
+        if (!req.session || !req.session.sign) {
+            res.redirect('/');
+            return;
+        }
+        if (isNaN(Number(req.params.id))) {
+            next(createError(400, 'Photo ID Should Be A Number'));
+            return;
+        }
+        const rs = await db(query.download, [req.params.uuid, req.session.userID, Number(req.params.id)]);
+        if (!rs[0]) {
+            next(createError(404, 'Photo Not Found'));
+            return;
+        }
+        res.sendFile(path.join(req.app.get('root'), "uploads", req.params.id + ".jpg"));
+    });
     return router;
 };

@@ -36,8 +36,11 @@ export default {
     countSearchPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE AND photo.type = 2 AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0',
 
     //Download
-    downloadPhoto: 'INSERT INTO download values(UUID(), ?, ?)',
+    addDownload: 'INSERT INTO download values(UUID(), ?, ?)',
     getDownloadByPhotoId: 'SELECT download.*, user.name AS user_name from download LEFT OUTER JOIN user ON user.id=download.user where photo = ?',
+    isDownloadedByUser: 'SELECT * FROM download where user=? and photo=?',
+    download: 'SELECT * FROM download where uuid=? and user=? and photo=?',
+    removeDownload: 'DELETE FROM download WHERE user=? and photo=?',
     clearDownload: 'DELETE FROM download WHERE photo=?',
 
     //Message

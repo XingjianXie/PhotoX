@@ -15,6 +15,7 @@ block topr
         span.float-right.bg-danger.rounded.px-2.text-white= uploadsLength
 
 block content
+  a#predownload.d-none(download)
   if photos.length
     #row3img.d-none.d-xl-flex
       .col
@@ -49,6 +50,53 @@ block content
 
 append javascripts
   script.
+    function unuse(id) {
+      const url = "/gallery/unuse/" + id;
+      const xhr = new XMLHttpRequest();
+      xhr.open('get', url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          const xhr1 = new XMLHttpRequest();
+          xhr1.open('get', window.location.href, true);
+          xhr1.onreadystatechange = function () {
+            if (xhr1.readyState === XMLHttpRequest.DONE) {
+              $('#main_content').html($('#main_content', xhr1.response).html());
+              $('#message_nav').html($('#message_nav', xhr1.response).html());
+              imgheight();
+              stream(false);
+            }
+          }
+          xhr1.send();
+        }
+      }
+      xhr.send();
+    }
+
+    function download(id) {
+      const url = "/gallery/download/" + id;
+      const xhr = new XMLHttpRequest();
+      xhr.open('get', url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status.toString()[0] === '2') {
+          $('#predownload').attr('href', "/uploads/" + xhr.response + "/" + id + '.jpg');
+          document.querySelector('#predownload').click();
+
+          const xhr1 = new XMLHttpRequest();
+          xhr1.open('get', window.location.href, true);
+          xhr1.onreadystatechange = function () {
+            if (xhr1.readyState === XMLHttpRequest.DONE) {
+              $('#main_content').html($('#main_content', xhr1.response).html());
+              $('#message_nav').html($('#message_nav', xhr1.response).html());
+              imgheight();
+              stream(false);
+            }
+          }
+          xhr1.send();
+        }
+      }
+      xhr.send();
+    }
+
     function cu_submit(d, ext) {
       let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
       const xhr = new XMLHttpRequest();

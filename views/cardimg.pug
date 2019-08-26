@@ -28,16 +28,20 @@ each p, i in photos
           each val, index in downloads[i]
             = (index ? ', ' : '  ') + val.user_name + ' (' + val.user + ')'
     .card-header.py-2
-      button.btn.btn-primary.btn-sm.mx-1
-        | Download
-      if photos[i].uploader_id === session.userID || photos[i].uploader_type < session.type
+      button.btn.btn-primary.btn-sm.mx-1(onclick="download("+p.id.toString()+")")
+        = vd[i] ? 'Re-Download' : 'Download'
+      if vd[i]
+        button.btn.btn-primary.btn-sm.mx-1(onclick="unuse(" + p.id.toString() + ")")
+          | Cancel Use
+    if p.uploader_id === session.userID || p.uploader_type < session.type
+      .card-header.py-2
         form.d-inline-block(method='post' action='/gallery/recall')
-          input.d-none(value=photos[i].id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
+          input.d-none(value=p.id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
           input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
           button.btn.btn-danger.btn-sm.mx-1(type='submit', disabled=downloads[i].length !== 0 && !session.type)
             | Recall
         form.d-inline-block(method='post' action='/gallery/delete')
-          input.d-none(value=photos[i].id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
+          input.d-none(value=p.id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
           input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
           button.btn.btn-danger.btn-sm.mx-1(type='submit', disabled=downloads[i].length !== 0 && !session.type)
             | Delete

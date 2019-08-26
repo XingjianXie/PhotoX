@@ -24,10 +24,6 @@ block topr
     .nav-item
       a.nav-link(href='/message/new')
         span.d-inline.mr-2.text-gray-600.small New
-  if unreadMeessageLength
-    .nav-item
-      a.nav-link(href='#', onclick='read(); return false;')
-        span.d-inline.mr-2.text-gray-600.small Read All
 
 block content
   .card.shadow

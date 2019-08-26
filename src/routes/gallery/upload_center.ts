@@ -74,7 +74,6 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                 db(query.log, [req.session!.userID, "Photo", id, "Convert", true, null]);
                 return "";
             } catch(err) {
-                console.log(err);
                 if (err.code === "ER_DUP_ENTRY") {
                     const rs = await db(query.getPhotoByMd5, [photo_md5]);
                     await db(query.addMessage, [

@@ -4,6 +4,8 @@ import upload_center from "./upload_center";
 import _delete from "./delete";
 import publish from "./publish";
 import recall from "./recall";
+import download from "./download";
+import unuse from "./unuse";
 import query from '../../db/query';
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
@@ -36,10 +38,15 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             return db(query.getDownloadByPhotoId, [val.id]);
         }));
 
+        const vd = await Promise.all(rs.map(async(val) => {
+            return !!(await db(query.isDownloadedByUser, [req.session!.userID, val.id])).length;
+        }));
+
         res.render('gallery', {
             photos: rs,
             faces: mark,
             downloads: download,
+            vd: vd,
             total: total,
             current: pg,
             maximum: maximum,
@@ -50,5 +57,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
     router.use('/publish', publish(db));
     router.use('/delete', _delete(db));
     router.use('/recall', recall(db));
+    router.use('/download', download(db));
+    router.use('/unuse', unuse(db));
     return router;
 };
