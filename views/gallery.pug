@@ -7,6 +7,18 @@ block top
   h3.text-dark.mb-0.m-2.d-none.d-md-inline Gallery
   h5.text-dark.mb-0.m-2.d-md-none Gallery
 
+  form.form-inline(onsubmit='cu_submit($(this)); return false;')
+    #topbar_form.m-2.d-none.d-md-block
+      input#search_form.form-control.form-control-sm(type='text', autocomplete="off", spellcheck="false", maxlength=30, placeholder='Photo, Uploader or Face', oninput="cu_submit($(this).parents('form'))", name='wd', value=wd)
+
+    .ml-5.d-none.d-lg-block
+      label
+        | Category 
+        select.form-control.form-control-sm.custom-select.custom-select-sm(onchange="cu_submit($(this).parents('form'))", name='category')
+          option(selected= cur_category === 0, value= 0) All
+          each val in category
+            option(selected= cur_category === val.id, value= val.id)= val.name
+
 block topr
   .nav-item
     a.nav-link(href='/gallery/upload_center')
@@ -97,7 +109,7 @@ append javascripts
       xhr.send();
     }
 
-    function cu_submit(d, ext) {
+    function cu_submit(d, ext, rep) {
       let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
       const xhr = new XMLHttpRequest();
       const url = (d.attr('action') || '/gallery') + '?' + fd;
@@ -111,7 +123,7 @@ append javascripts
             $('#clear_button').removeClass('d-none');
           else
             $('#clear_button').addClass('d-none');
-          window.history.pushState(null, null, xhr.responseURL);
+          rep ? window.history.pushState(null, null, xhr.responseURL) : window.history.replaceState(null, null, xhr.responseURL);
         }
       }
       xhr.send();

@@ -74,7 +74,7 @@ append javascripts
   script.
     if (end_callback)
       end_callback(this);
-    function cu_submit(d, ext) {
+    function cu_submit(d, ext, rep) {
       let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
       const xhr = new XMLHttpRequest();
       const url = (d.attr('action') || '/message') + '?' + fd;
@@ -87,7 +87,7 @@ append javascripts
             $('#clear_button').removeClass('d-none');
           else
             $('#clear_button').addClass('d-none');
-          window.history.pushState(null, null, xhr.responseURL);
+          rep ? window.history.pushState(null, null, xhr.responseURL) : window.history.replaceState(null, null, xhr.responseURL);
         }
       }
       xhr.send();

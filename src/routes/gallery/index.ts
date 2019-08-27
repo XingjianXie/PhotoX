@@ -17,12 +17,13 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 20, 1);
+        const cur_category = Number(req.query.category) || 0;
         const rs : any[] = !req.query.wd
             ? await db(query.queryPublishedPhotoWithLimit, [(pg - 1) * maximum, maximum])
-            : await db(query.searchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
+            : await db(query.searchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
         const total = !req.query.wd
             ? (await db(query.countQueryPublishedPhotoWithLimit, []))[0]['COUNT(*)']
-            : (await db(query.countSearchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
+            : (await db(query.countSearchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
 
 
         if (!rs.length && total) {
@@ -38,6 +39,8 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             };
         }));
 
+        const category = await db(query.queryCategory, []);
+
         res.render('gallery', {
             photos: rs,
             mdata: t,
@@ -45,6 +48,8 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             current: pg,
             maximum: maximum,
             uploadsLength: (await db(query.countUnPublishedPhotoWithLimit, [req.session.userID]))[0]['COUNT(*)'],
+            category: category,
+            cur_category: cur_category
         });
     });
     router.use('/upload_center', upload_center(db, multer));

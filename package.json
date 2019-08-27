@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node src/www.js",
-    "debug": "nodemon src/www.ts"
+    "debug": "nodemon src/www.js"
   },
   "dependencies": {
     "cluster": "^0.7.7",

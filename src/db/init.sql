@@ -49,8 +49,10 @@ DROP TABLE IF EXISTS `download`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `download` (
+  `uuid` char(36) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
   `user` int(10) unsigned NOT NULL,
-  `photo` int(10) unsigned NOT NULL
+  `photo` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -73,7 +75,7 @@ DROP TABLE IF EXISTS `log`;
 CREATE TABLE `log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `operator` int(10) unsigned NOT NULL,
-  `target_type` enum('User','Photo','Message') COLLATE utf8mb4_general_ci NOT NULL,
+  `target_type` enum('User','Photo','Message') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `target` int(10) unsigned DEFAULT NULL,
   `action` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `success` tinyint(1) NOT NULL,
@@ -125,7 +127,7 @@ CREATE TABLE `message` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `from` int(10) unsigned NOT NULL,
   `to` int(10) unsigned DEFAULT NULL,
-  `content` varchar(5000) COLLATE utf8mb4_general_ci NOT NULL,
+  `content` text COLLATE utf8mb4_general_ci,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -198,6 +200,28 @@ LOCK TABLES `read` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `sppreview`
+--
+
+DROP TABLE IF EXISTS `sppreview`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ SET character_set_client = utf8mb4 ;
+CREATE TABLE `sppreview` (
+  `user` int(10) unsigned NOT NULL,
+  `photo` int(10) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sppreview`
+--
+
+LOCK TABLES `sppreview` WRITE;
+/*!40000 ALTER TABLE `sppreview` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sppreview` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -225,7 +249,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (0,'00000000000','System',127,'dc647eb65e6711e155375218212b3964','',0,'2019-08-18 15:46:58','2019-08-18 15:46:58');
+INSERT INTO `user` VALUES (0,'00000000000','System',127,'Azw9dcJStqsM0A8lLNvakw==','74547703214960624824',0,'2019-08-18 07:46:58','2019-08-27 11:48:43');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -238,4 +262,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-08-18 23:47:59
+-- Dump completed on 2019-08-27 19:48:59
