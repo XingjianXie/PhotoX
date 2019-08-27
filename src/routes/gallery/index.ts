@@ -30,23 +30,17 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             return;
         }
 
-        const mark = await Promise.all(rs.map((val) => {
-            return db(query.getMarkByPhotoId, [val.id]);
-        }));
-
-        const download = await Promise.all(rs.map((val) => {
-            return db(query.getDownloadByPhotoId, [val.id]);
-        }));
-
-        const vd = await Promise.all(rs.map(async(val) => {
-            return !!(await db(query.isDownloadedByUser, [req.session!.userID, val.id])).length;
+        const t = await Promise.all(rs.map(async(val) => {
+            return {
+                face: await db(query.getMarkByPhotoId, [val.id]),
+                download: await db(query.getDownloadByPhotoId, [val.id]),
+                vd: !!(await db(query.isDownloadedByUser, [req.session!.userID, val.id])).length
+            };
         }));
 
         res.render('gallery', {
             photos: rs,
-            faces: mark,
-            downloads: download,
-            vd: vd,
+            mdata: t,
             total: total,
             current: pg,
             maximum: maximum,

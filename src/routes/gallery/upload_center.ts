@@ -69,11 +69,12 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                 await t.withMetadata().toFile(path.join(req.app.get('root'), 'uploads', id + '.jpg'));
                 await t.clone().resize(Math.min(metadata.width, 400)).toFile(path.join(req.app.get('root'), 'uploads', id + '.preview.jpg'));
 
-                await db(query.convertPhoto, [metadata.height, metadata.width, exif(metadata.exif).exif.DateTimeOriginal ? exif(metadata.exif).exif.DateTimeOriginal.getTime()/1000 + (new Date()).getTimezoneOffset() * 60: null, id]);
+                await db(query.convertPhoto, [metadata.height, metadata.width, metadata.exif && exif(metadata.exif).exif.DateTimeOriginal ? exif(metadata.exif).exif.DateTimeOriginal.getTime()/1000 + (new Date()).getTimezoneOffset() * 60: null, id]);
 
                 db(query.log, [req.session!.userID, "Photo", id, "Convert", true, null]);
                 return "";
             } catch(err) {
+                console.log(err);
                 if (err.code === "ER_DUP_ENTRY") {
                     const rs = await db(query.getPhotoByMd5, [photo_md5]);
                     await db(query.addMessage, [
