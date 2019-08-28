@@ -18,12 +18,22 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 20, 1);
         const cur_category = Number(req.query.category) || 0;
-        const rs : any[] = !req.query.wd
-            ? await db(query.queryPublishedPhotoWithLimit, [(pg - 1) * maximum, maximum])
-            : await db(query.searchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
-        const total = !req.query.wd
-            ? (await db(query.countQueryPublishedPhotoWithLimit, []))[0]['COUNT(*)']
-            : (await db(query.countSearchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
+        let rs : any[], total : number;
+        if (cur_category) {
+            rs = !req.query.wd
+                ? await db(query.queryPublishedPhotoWithLimitSpecificCategory, [cur_category, (pg - 1) * maximum, maximum])
+                : await db(query.searchPublishedPhotoWithLimitSpecificCategory, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, req.query.wd, cur_category, (pg - 1) * maximum, maximum]);
+            total = !req.query.wd
+                ? (await db(query.countQueryPublishedPhotoWithLimitSpecificCategory, [cur_category]))[0]['COUNT(*)']
+                : (await db(query.countSearchPublishedPhotoWithLimitSpecificCategory, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, req.query.wd, cur_category]))[0]['COUNT(*)'];
+        } else {
+            rs = !req.query.wd
+                ? await db(query.queryPublishedPhotoWithLimit, [(pg - 1) * maximum, maximum])
+                : await db(query.searchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
+            total = !req.query.wd
+                ? (await db(query.countQueryPublishedPhotoWithLimit, []))[0]['COUNT(*)']
+                : (await db(query.countSearchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
+        }
 
 
         if (!rs.length && total) {
