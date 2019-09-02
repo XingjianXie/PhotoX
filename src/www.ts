@@ -1,57 +1,30 @@
 import app from './app';
 import http from 'http';
-import cluster from 'cluster';
-import * as util from "util";
-import {mkdir} from "fs";
-import path from "path";
 
-util.promisify(mkdir)(path.join(app.get('root'), 'uploads')).catch(err => { if (err.code != 'EEXIST') throw err });
-const port = normalizePort(process.env.PORT || '80');
+/**
+ * Get port from environment and store in Express.
+ */
+
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-const numCPUs = require('os').cpus().length;
+/**
+ * Create HTTP server.
+ */
 
-if (cluster.isMaster) {
-  console.log(`主进程 ${process.pid} 正在运行`);
+const server = http.createServer(app);
 
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
-} else {
-  const server = http.createServer(app);
+/**
+ * Listen on provided port, on all network interfaces.
+ */
 
-  server.listen(port);
-  server.on('error', (error: any) => {
-    if (error.syscall !== 'listen') {
-      throw error;
-    }
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
-    const bind = typeof port === 'string'
-        ? 'Pipe ' + port
-        : 'Port ' + port;
-
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
-      case 'EACCES':
-        console.error(bind + ' requires elevated privileges');
-        process.exit(1);
-        break;
-      case 'EADDRINUSE':
-        console.error(bind + ' is already in use');
-        process.exit(1);
-        break;
-      default:
-        throw error;
-    }
-  });
-  server.on('listening', () => {
-    const addr = server.address();
-    const bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr!.port;
-    console.log('Listening on ' + bind);
-  });
-}
+/**
+ * Normalize a port into a number, string, or false.
+ */
 
 function normalizePort(val: string) {
   const port = parseInt(val, 10);
@@ -67,4 +40,44 @@ function normalizePort(val: string) {
   }
 
   return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error : any) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  const bind = typeof port === 'string'
+      ? 'Pipe ' + port
+      : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  const addr = server.address();
+  const bind = typeof addr === 'string'
+      ? 'pipe ' + addr
+      : 'port ' + addr!.port;
+  console.log('Listening on ' + bind);
 }
