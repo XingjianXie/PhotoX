@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "start": "pm2 start src/www.js -i max",
-    "stop": "pm2 stop www",
-    "debug": "nodemon src/www.js"
+    "start": "pm2 start src/photox_main.js -i max",
+    "stop": "pm2 stop photox_main",
+    "debug": "nodemon src/photox_main.js"
   },
   "dependencies": {
     "cluster": "^0.7.7",

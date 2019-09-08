@@ -41,6 +41,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             return;
         }
 
+
         const t = await Promise.all(rs.map(async(val) => {
             return {
                 face: await db(query.getMarkByPhotoId, [val.id]),
@@ -61,6 +62,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             category: category,
             cur_category: cur_category
         });
+        res.sendStatus(200);
     });
     router.use('/upload_center', upload_center(db, multer));
     router.use('/publish', publish(db));
