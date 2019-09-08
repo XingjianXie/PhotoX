@@ -14,7 +14,7 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
             next(createError(400, 'Photo ID Should Be A Number'));
             return;
         }
-        const rs = await db(query.getPhotoById, [Number(req.params.id)]);
+        const rs : any[] = await db(query.getPhotoById, [Number(req.params.id)]);
         if (!rs[0]) {
             next(createError(404, 'Photo Not Found'));
             return;

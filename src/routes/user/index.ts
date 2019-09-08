@@ -15,7 +15,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 5, 1);
-        const rs = !req.query.wd
+        const rs : any[] = !req.query.wd
             ? await db(query.queryUserWithLimit, [req.session.type, (pg - 1) * maximum, maximum])
             : await db(query.searchUserWithLimited, [req.session.type, isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), req.query.wd, (pg - 1) * maximum, maximum]);
         const total = !req.query.wd

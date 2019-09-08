@@ -18,7 +18,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 5, 1);
-        let rs, total;
+        let rs : any[], total : number;
         if (!req.query.sent) {
             rs = !req.query.wd
                 ? await db(query.queryMyMessageWithLimit, [req.session.userID, req.session.userID, (pg - 1) * maximum, maximum])

@@ -14,7 +14,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             next(createError(400, 'User ID Should Be A Number'));
             return;
         }
-        const rs = await db(query.getUserById, [Number(req.body.userID)]);
+        const rs : any[] = await db(query.getUserById, [Number(req.body.userID)]);
         if (!rs[0]) {
             db(query.log, [req.session.userID, "User", Number(req.body.userID), "Delete", false, "Error: User Not Found"]);
             next(createError(404, 'User Not Found'));

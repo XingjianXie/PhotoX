@@ -10,13 +10,13 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(401, 'Unauthorized'));
             return;
         }
-        const rs = await db(query.getPhotoById, [Number(req.body.photoID)]);
+        const rs : any[] = await db(query.getPhotoById, [Number(req.body.photoID)]);
         if (!rs[0]) {
             db(query.log, [req.session.userID, "Photo", Number(req.body.photoID), "Recall", false, "Error: Photo Not Found"]);
             next(createError(404, 'Photo Not Found'));
             return;
         }
-        const dw = await db(query.getDownloadByPhotoId, [Number(req.body.photoID)]);
+        const dw : any[] = await db(query.getDownloadByPhotoId, [Number(req.body.photoID)]);
         if (req.session.type <= rs[0].uploader_type && (req.session.userID !== rs[0].uploader_id || (dw.length && !req.session.type))) {
             db(query.log, [req.session.userID, "Photo", rs[0].id, "Recall", false, "Error: Unauthorized"]);
             next(createError(401, 'Unauthorized'));
@@ -36,7 +36,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
 
         await db(query.recallPhoto, [rs[0].id]);
         await db(query.clearMark, [rs[0].id]);
-        const recall_notification = await db(query.getDownloadByPhotoId, [rs[0].id]);
+        const recall_notification : any[] = await db(query.getDownloadByPhotoId, [rs[0].id]);
         for (const val of recall_notification) {
             await db(query.addSpPreview, [val.user, rs[0].id]);
             await db(query.addMessage, [0, val.user,

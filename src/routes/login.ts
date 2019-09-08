@@ -30,7 +30,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             next(createError(400, 'Phone Number Invalid'));
             return;
         }
-        const rs = await db(query.getUserByPhoneNumber, [Number(req.body.phone_number)]);
+        const rs : any[] = await db(query.getUserByPhoneNumber, [Number(req.body.phone_number)]);
         if (!rs[0]) {
             next(createError(404, 'User Not Found'));
             return;

@@ -14,7 +14,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(400, 'Photo ID Should Be A Number'));
             return;
         }
-        const rs = await db(query.getPhotoById, [Number(req.params.id)]);
+        const rs : any[] = await db(query.getPhotoById, [Number(req.params.id)]);
         if (!rs[0] || rs[0].type !== 1) {
             db(query.log, [req.session.userID, "Photo", Number(req.params.id), "Publish", false, "Error: Photo Not Found"]);
             next(createError(404, 'Photo Not Found'));
@@ -25,7 +25,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(401, 'Unauthorized'));
             return;
         }
-        const category = await db(query.queryCategory, []);
+        const category : any[] = await db(query.queryCategory, []);
         res.render('publish_photo', {
             category, p: rs[0]
         });
@@ -39,7 +39,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(400, 'Photo ID Should Be A Number'));
             return;
         }
-        const rs = await db(query.getPhotoById, [Number(req.params.id)]);
+        const rs : any[] = await db(query.getPhotoById, [Number(req.params.id)]);
         if (!rs[0] || rs[0].type !== 1) {
             db(query.log, [req.session.userID, "Photo", Number(req.body.photoID), "Publish", false, "Error: Photo Not Found"]);
             next(createError(404, 'Photo Not Found'));
@@ -61,7 +61,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             res.render('confirm', {
                 msg: 'Publish Confirmation',
                 inf1: 'Are you sure to publish photo ' + rs[0].id.toString() + '?',
-                inf2: 'YOU MAY NOT UNDO THIS ACTION, AND YOU MAY NOT DELETE IT ONCE SOMEONE DOWNLOAD IT',
+                inf2: (req.session.type ? '' : 'YOU MAY NOT UNDO THIS ACTION ONCE SOMEONE DOWNLOAD IT'),
                 data: data1
             });
             return;

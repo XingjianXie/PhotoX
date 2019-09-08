@@ -52,7 +52,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             return;
         }
 
-        const rs = await db(query.getUserById, [id]);
+        const rs : any[] = await db(query.getUserById, [id]);
         if (!rs.length) {
             db(query.log, [req.session.userID, "User", id, "Reset Password", false, "Error: User Not Found"]);
             next(createError(404, 'User Not Found'));

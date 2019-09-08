@@ -54,7 +54,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         const password = ps_create(req.body.pwd);
         try {
-            const id = (await db(query.addUser, [req.body.phone_number, req.body.name, req.body.type, password[0], password[1]])).insertId;
+            const id : number = (await db(query.addUser, [req.body.phone_number, req.body.name, req.body.type, password[0], password[1]])).insertId;
             db(query.log, [req.session.userID, "User", id, "Create", true, null]);
 
             res.status(201);

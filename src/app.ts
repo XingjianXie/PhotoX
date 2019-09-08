@@ -57,15 +57,7 @@ app.use(session({
         return true;
     }
 }));
-/*
-app.use("/uploads", (req, res, next) => {
-    if (!req.session || !req.session.sign) {
-        res.redirect('/');
-        return;
-    }
-    next();
-});
- */
+
 app.use(express.static(path.join(app.get('root'), 'public')));
 
 app.use(async(req, res, next) => {

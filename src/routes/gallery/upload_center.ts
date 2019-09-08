@@ -18,7 +18,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 5, 1);
-        const rs = !req.query.wd
+        const rs : any[] = !req.query.wd
             ? await db(query.queryUnPublishedPhotoWithLimit, [req.session.userID, (pg - 1) * maximum, maximum])
             : await db(query.searchUnPublishedPhotoWithLimit, [req.session.userID, req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
         const total = !req.query.wd
@@ -59,7 +59,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             }));
             const photo_md5 = crypto.createHash('md5').update(buffer).digest('base64');
             try {
-                const id = (await db(query.addPhoto, [req.session!.userID, photo_md5])).insertId;
+                const id : number = (await db(query.addPhoto, [req.session!.userID, photo_md5])).insertId;
                 db(query.log, [req.session!.userID, "Photo", id, "Upload", true, null]);
 
                 const t = sharp(buffer);
@@ -76,12 +76,13 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             } catch(err) {
                 console.log(err);
                 if (err.code === "ER_DUP_ENTRY") {
-                    const rs = await db(query.getPhotoByMd5, [photo_md5]);
+                    const rs : any[] = await db(query.getPhotoByMd5, [photo_md5]);
+                    await db(query.addSpPreview, [req.session!.userID, rs[0].id]);
                     await db(query.addMessage, [
                         0,
                         req.session!.userID,
                         (
-                            "The photo you uploaded has been uploaded by "+ rs[0].uploader_name + " (" + rs[0].uploader_id + "). " + "<br>"
+                            "The photo you uploaded has been uploaded " + (rs[0].type !==2 ? "(but not published) " : "") + "by "+ rs[0].uploader_name + " (" + rs[0].uploader_id + "). " + "<br>"
                             + '<div class="bkimg rounded" style="width: 200px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
                         )
                     ]);

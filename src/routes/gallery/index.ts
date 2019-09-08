@@ -49,7 +49,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             };
         }));
 
-        const category = await db(query.queryCategory, []);
+        const category : any[] = await db(query.queryCategory, []);
 
         res.render('gallery', {
             photos: rs,
