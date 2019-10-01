@@ -9,7 +9,7 @@ block top
   if session.type
     form.form-inline(onsubmit='cu_submit($(this)); return false;')
       #topbar_form.m-2.d-none.d-sm-block
-        input#search_form.form-control.form-control-sm(type='text', autocomplete="off", spellcheck="false", maxlength=30, placeholder='ID or Uploader', oninput="cu_submit($(this).parents('form'))", name='wd', value=wd)
+        input#search_form.form-control.form-control-sm(type='text', autocomplete="off", spellcheck="false", maxlength=30, placeholder='ID or Uploader', oninput="if ($(this).val() == \"\") { cu_submit($(this).parents('form')); }", name='wd', value=wd)
   #progressbar.my-auto.col-3.d-none.m-2
     .progress
       .progress-bar
