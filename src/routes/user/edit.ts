@@ -31,6 +31,11 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             next(createError(401, 'Unauthorized'));
             return;
         }
+        if (res.locals.config.disable_admin_edit_user) {
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Disabled");
+            next(createError(401, 'Disabled'));
+            return;
+        }
         res.render('edit_user', { u: rs[0] });
     });
 
@@ -75,6 +80,11 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         if (!req.body.name && !req.body.type && !req.body.phone_number) {
             log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Bad Request");
             next(createError(400, 'Type or Name Required'));
+            return;
+        }
+        if (res.locals.config.disable_admin_edit_user) {
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Disabled");
+            next(createError(401, 'Disabled'));
             return;
         }
         if (req.body.confirm === '1') {

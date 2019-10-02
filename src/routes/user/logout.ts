@@ -30,6 +30,11 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             next(createError(401, 'Unauthorized'));
             return;
         }
+        if (res.locals.config.disable_admin_kick_user) {
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Kick Out", false, "Error: Disabled");
+            next(createError(401, 'Disabled'));
+            return;
+        }
         const userID = req.session.userID;
         await new Promise(async (resolve, reject) => {
             req.sessionStore!.destroy((await session_map[rs[0].id]), (err) => {

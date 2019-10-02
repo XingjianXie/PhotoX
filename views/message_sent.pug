@@ -20,7 +20,7 @@ block top
           option(selected= maximum === 25) 25
 
 block topr
-  if session.type
+  if session.type && !config.disable_admin_send_message
     .nav-item
       a.nav-link(href='/message/new')
         span.d-inline.mr-2.text-gray-600.small New

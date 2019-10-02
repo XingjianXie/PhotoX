@@ -28,7 +28,7 @@ CREATE TABLE `category` (
   `owner` int(10) unsigned NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100003 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=100001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +37,7 @@ CREATE TABLE `category` (
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (100000,'Default Category',0,0),(100001,'军训',0,0),(100002,'House',0,0);
+INSERT INTO `category` VALUES (100000,'Default Category',0,0);
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -49,8 +49,8 @@ DROP TABLE IF EXISTS `config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `config` (
-  `name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `value` varchar(5000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `value` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `deletable` tinyint(1) NOT NULL,
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -62,7 +62,7 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES ('allow_register','false',0),('disable_log','false',0);
+INSERT INTO `config` VALUES ('allow_register','false',0),('disable_log','false',0),('disable_admin_reset_password','false',0),('disable_admin_delete_user','false',0),('disable_admin_add_user','false',0),('disable_admin_edit_user','false',0),('disable_admin_kick_user','false',0),('disable_admin_send_message','false',0);
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -287,4 +287,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-02 14:56:51
+-- Dump completed on 2019-10-02 15:39:48

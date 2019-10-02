@@ -31,6 +31,11 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             next(createError(401, 'Unauthorized'));
             return;
         }
+        if (res.locals.config.disable_admin_delete_user) {
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Delete", false, "Error: Disabled");
+            next(createError(401, 'Disabled'));
+            return;
+        }
         if (req.body.confirm === '1') {
             let data1 = req.body;
             data1.confirm = '0';

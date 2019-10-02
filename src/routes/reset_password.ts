@@ -59,6 +59,11 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             next(createError(404, 'User Not Found'));
             return;
         }
+        if (Number(req.body.id) !== req.session.userID && res.locals.config.disable_admin_reset_password) {
+            log(res.locals.config, db, req.session.userID, "User", id, "Reset Password", false, "Error: Disabled");
+            next(createError(401, 'Disabled'));
+            return;
+        }
         if (req.session.type > rs[0].type || ps_make(req.body.pwd_old, rs[0].passrd) === rs[0].passcode) {
             const ps_new = ps_create(req.body.pwd_new);
             await db(query.resetPassword, [ ps_new[0], ps_new[1], id]);

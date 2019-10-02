@@ -58,7 +58,8 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                     resolve(Buffer.concat(bufs))
                 });
             }));
-            const photo_md5 = crypto.createHash('md5').update(buffer).digest('base64');
+            const photo_md5 = res.locals.config.disable_photo_md5 ? null
+                : crypto.createHash('md5').update(buffer).digest('base64');
             try {
                 const id : number = (await db(query.addPhoto, [req.session!.userID, photo_md5])).insertId;
                 log(res.locals.config, db, req.session!.userID, "Photo", id, "Upload", true, null)

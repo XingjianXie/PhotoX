@@ -12,6 +12,10 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             res.redirect('/');
             return;
         }
+        if (res.locals.config.disable_admin_send_message) {
+            next(createError(401, 'Disabled'));
+            return;
+        }
         res.render('new_message', { pre: req.query.id });
     });
 
@@ -36,6 +40,10 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         if (!rs[0]) {
             log(res.locals.config, db, req.session.userID, "User", Number(req.body.id), "Send Message", false, "Error: User Not Found");
             next(createError(404, 'User Not Found'));
+            return;
+        }
+        if (res.locals.config.disable_admin_send_message) {
+            next(createError(401, 'Disabled'));
             return;
         }
         const id : number = (await db(query.addMessage, [req.session.userID, req.body.id ? req.body.id : null, req.body.send_button === "Send" ? new AllHtmlEntities().encode(req.body.content).replace(/\n/g, "<br>") : req.body.content])).insertId;

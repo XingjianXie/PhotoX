@@ -11,6 +11,10 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             res.redirect('/');
             return;
         }
+        if (res.locals.config.disable_admin_add_user) {
+            next(createError(401, 'Disabled'));
+            return;
+        }
         res.render('add_user');
     });
 
@@ -40,6 +44,11 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         if (!req.body.pwd) {
             log(res.locals.config, db, req.session.userID, "User", null, "Create", false, "Error: Bad Request");
             next(createError(400, 'Password Required'));
+            return;
+        }
+        if (res.locals.config.disable_admin_add_user) {
+            log(res.locals.config, db, req.session.userID, "User", null, "Create", false, "Error: Disabled");
+            next(createError(401, 'Disabled'));
             return;
         }
         if (req.body.confirm === '1' && req.session.type === Number(req.body.type)) {
