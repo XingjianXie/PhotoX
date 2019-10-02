@@ -7,6 +7,7 @@ import {mkdir, unlink} from "fs";
 import * as util from "util";
 import crypto from "crypto";
 import path from "path";
+import log from "../../tools/log"
 const exif = require('exif-reader');
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
@@ -60,7 +61,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             const photo_md5 = crypto.createHash('md5').update(buffer).digest('base64');
             try {
                 const id : number = (await db(query.addPhoto, [req.session!.userID, photo_md5])).insertId;
-                db(query.log, [req.session!.userID, "Photo", id, "Upload", true, null]);
+                log(res.locals.config, db, req.session!.userID, "Photo", id, "Upload", true, null)
 
                 const t = sharp(buffer);
                 const metadata = await t.metadata();
@@ -71,7 +72,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
 
                 await db(query.convertPhoto, [metadata.height, metadata.width, metadata.exif && exif(metadata.exif).exif.DateTimeOriginal ? exif(metadata.exif).exif.DateTimeOriginal.getTime()/1000 + (new Date()).getTimezoneOffset() * 60: null, id]);
 
-                db(query.log, [req.session!.userID, "Photo", id, "Convert", true, null]);
+                log(res.locals.config, db, req.session!.userID, "Photo", id, "Convert", true, null);
                 return "";
             } catch(err) {
                 console.log(err);
@@ -86,7 +87,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                             + '<div class="bkimg rounded" style="width: 200px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
                         )
                     ]);
-                    db(query.log, [req.session!.userID, "Photo", null, "Convert", false, null]);
+                    log(res.locals.config, db, req.session!.userID, "Photo", null, "Convert", false, null);
                 }
 
                 return false;

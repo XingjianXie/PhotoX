@@ -2,6 +2,7 @@ import express from 'express';
 import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
+import log from "../../tools/log";
 
 export default (db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
@@ -16,12 +17,12 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         const rs : any[] = await db(query.getPhotoById, [Number(req.params.id)]);
         if (!rs[0] || rs[0].type !== 1) {
-            db(query.log, [req.session.userID, "Photo", Number(req.params.id), "Publish", false, "Error: Photo Not Found"]);
+            log(res.locals.config, db, req.session.userID, "Photo", Number(req.params.id), "Publish", false, "Error: Photo Not Found");
             next(createError(404, 'Photo Not Found'));
             return;
         }
         if (req.session.type <= rs[0].uploader_type && req.session.userID !== rs[0].uploader_id) {
-            db(query.log, [req.session.userID, "Photo", rs[0].id, "Publish", false, "Error: Unauthorized"]);
+            log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Publish", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
@@ -41,17 +42,17 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         const rs : any[] = await db(query.getPhotoById, [Number(req.params.id)]);
         if (!rs[0] || rs[0].type !== 1) {
-            db(query.log, [req.session.userID, "Photo", Number(req.body.photoID), "Publish", false, "Error: Photo Not Found"]);
+            log(res.locals.config, db, req.session.userID, "Photo", Number(req.body.photoID), "Publish", false, "Error: Photo Not Found");
             next(createError(404, 'Photo Not Found'));
             return;
         }
         if (req.session.type <= rs[0].uploader_type && req.session.userID !== rs[0].uploader_id) {
-            db(query.log, [req.session.userID, "Photo", rs[0].id, "Publish", false, "Error: Unauthorized"]);
+            log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Publish", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (!req.body.category || !req.body.name) {
-            db(query.log, [req.session.userID, "Photo", rs[0].id, "Publish", false, "Error: Bad Request"]);
+            log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Publish", false, "Error: Bad Request");
             next(createError(400, 'Type or Name Required'));
             return;
         }
@@ -68,12 +69,12 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
 
         await db(query.publishPhoto, [req.body.name, req.body.category, rs[0].id]);
-        db(query.log, [req.session.userID, "Photo", rs[0].id, "Publish", true, null]);
+        log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Publish", true, null);
 
         for (let i = 1; i <= 10; i++) {
             if (!req.body['mark' + i.toString()]) break;
             await db(query.addMark, [rs[0].id, req.body['mark' + i.toString()]]);
-            db(query.log, [req.session.userID, "Photo", rs[0].id, "Assign to Face", true, 'Face: ' + req.body['mark' + i.toString()]]);
+            log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Assign to Face", true, 'Face: ' + req.body['mark' + i.toString()]);
         }
 
         res.status(200);

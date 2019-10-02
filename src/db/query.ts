@@ -85,4 +85,16 @@ export default {
     //SpPreview
     addSpPreview: 'INSERT INTO sppreview values(?, ?)',
     getSpPreview: 'SELECT * FROM sppreview WHERE user=? AND photo=?',
+
+    //Config
+    config: 'SELECT * from config',
+    addConfig: 'INSERT INTO config VALUES(?, ?, 1)',
+    updateConfig: 'UPDATE config SET value=? where name=?',
+    getConfigByName: 'SELECT * from config WHERE name=?',
+    getDeletableConfigByName: 'SELECT * from config WHERE name=? and deletable=1',
+    deleteConfig: 'DELETE from config WHERE name=? and deletable=1',
+    queryConfigWithLimit: 'SELECT * from config LIMIT ?, ?',
+    countQueryConfigWithLimit: 'SELECT COUNT(*) from config',
+    searchConfigWithLimit: 'SELECT * from config WHERE POSITION(? IN name) LIMIT ?, ?',
+    countSearchConfigWithLimit: 'SELECT COUNT(*) from config WHERE POSITION(? IN name)',
 };

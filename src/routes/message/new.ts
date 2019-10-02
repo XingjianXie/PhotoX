@@ -3,6 +3,7 @@ import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
 import {AllHtmlEntities} from 'html-entities';
+import log from "../../tools/log";
 
 export default (db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
@@ -33,14 +34,13 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         const rs : any[] = await db(query.getUserById, [Number(req.body.id)]);
         if (!rs[0]) {
-            db(query.log, [req.session.userID, "User", Number(req.body.id), "Send Message", false, "Error: User Not Found"]);
+            log(res.locals.config, db, req.session.userID, "User", Number(req.body.id), "Send Message", false, "Error: User Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
         const id : number = (await db(query.addMessage, [req.session.userID, req.body.id ? req.body.id : null, req.body.send_button === "Send" ? new AllHtmlEntities().encode(req.body.content).replace(/\n/g, "<br>") : req.body.content])).insertId;
-        db(query.log, [req.session.userID, "Message", id, "Create", true, "Content: " + req.body.content + ", Html: " + (req.body.send_button === "Send" ? "False" : "True")]);
-        db(query.log, [req.session.userID, "User", req.body.id ? Number(req.body.id) : null, "Send Message", true, "Message ID: " + id.toString()]);
-        res.status(200);
+        log(res.locals.config, db, req.session.userID, "Message", id, "Create", true, "Content: " + req.body.content + ", Html: " + (req.body.send_button === "Send" ? "False" : "True"));
+        log(res.locals.config, db, req.session.userID, "User", req.body.id ? Number(req.body.id) : null, "Send Message", true, "Message ID: " + id.toString());
         res.render('notification', {
             code: 200,
             msg: "Send Successfully",

@@ -2,6 +2,7 @@ import express from 'express';
 import {MemoryStore} from "express-session";
 import query from "../../db/query";
 import createError from "http-errors";
+import log from "../../tools/log";
 
 export default (db : (sql : string, values : any) => Promise<any[]>) => {
     const router = express.Router();
@@ -17,23 +18,23 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
             }
             const rs : any[] = await db(query.getMyUnreadMessageById, [req.session.userID, req.session.userID, Number(req.body.messageID)]);
             if (!rs[0]) {
-                db(query.log, [req.session.userID, "Message", rs[0].id, "Read", false, "Error: Message Not Found"]);
+                log(res.locals.config, db, req.session.userID, "Message", rs[0].id, "Read", false, "Error: Message Not Found");
                 next(createError(404, 'Message Not Found'));
                 return;
             }
 
-            db(query.log, [req.session.userID, "Message", rs[0].id, "Read", true, null]);
+            log(res.locals.config, db, req.session.userID, "Message", rs[0].id, "Read", true, null);
             await db(query.readMessage, [req.session.userID, rs[0].id]);
             res.sendStatus(200);
         } else {
             const rs : any[] = await db(query.queryMyUnreadMessage, [req.session.userID, req.session.userID]);
             if (!rs.length) {
-                db(query.log, [req.session.userID, "Message", null, "Read All", false, "Error: No Message"]);
+                log(res.locals.config, db, req.session.userID, "Message", null, "Read All", false, "Error: No Message");
                 next(createError(404, 'Message Not Found'));
                 return;
             }
 
-            db(query.log, [req.session.userID, "Message", null, "Read All", true, null]);
+            log(res.locals.config, db, req.session.userID, "Message", null, "Read All", true, null);
             for (let v of rs)
                 await db(query.readMessage, [req.session.userID, v.id]);
             res.sendStatus(200);

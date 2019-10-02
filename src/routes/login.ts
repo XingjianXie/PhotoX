@@ -2,6 +2,7 @@ import express from 'express';
 import query from '../db/query';
 import {make as ps_make} from '../tools/password';
 import createError from "http-errors";
+import log from "../tools/log";
 
 export default (session_map : any, db: (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
@@ -47,10 +48,10 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             req.session!.type = rs[0].type;
             req.session!.name = rs[0].name;
             session_map[rs[0].id] = req.sessionID;
-            db(query.log, [0, "User", rs[0].id, "Login", true, "IP Address: " + req.ip]);
+            log(res.locals.config, db, 0, "User", rs[0].id, "Login", true, "IP Address: " + req.ip);
             res.redirect('/');
         } else {
-            db(query.log, [0, "User", rs[0].id, "Login", false, "IP Address: " + req.ip + "; Error: Unauthorized"]);
+            log(res.locals.config, db, 0, "User", rs[0].id, "Login", false, "IP Address: " + req.ip + "; Error: Unauthorized");
             next(createError(401, ' Password Unauthorized'));
         }
     });

@@ -22,7 +22,7 @@ block top
 block content
   .card.shadow
     .card-header.py-3
-      p.text-primary.m-0.font-weight-bold System Log
+      p.text-primary.m-0.font-weight-bold System Log [log is #{config.disable_log ? "disabled" : "enabled"}]
     #list.card-body
       if logs.length
         .table-responsive.table.mt-2(role='grid')

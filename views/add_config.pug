@@ -1,0 +1,42 @@
+extends layout
+
+block title
+  title Add Config
+
+block top
+  h3.text-dark.mb-0.m-2.d-none.d-md-inline Add Config
+  h5.text-dark.mb-0.m-2.d-md-none Add Config
+
+block topr
+  .nav-item
+    a.nav-link(onclick="history.back(); return false;", href='#')
+      span.d-inline.mr-2.text-gray-600.small Back
+
+block content
+  .row.justify-content-center
+    .col-sm-12.col-md-11.col-lg-9.col-xl-6
+      .card.shadow-lg.o-hidden.border-0.my-5
+        .card-header.py-3
+          p.text-primary.m-0.font-weight-bold Add Form
+        .card-body.p-0
+          .p-5
+            form.user(method="post")
+              .form-group
+                input.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput='input()', autocomplete="off", spellcheck="false", maxlength=30)
+              .form-group
+                input.form-control.form-control-user(type="text", placeholder="Value", name="value", oninput='input()', autocomplete="off", spellcheck="false", maxlength=30)
+              .form-group
+                input.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, value="Add")
+
+
+append javascripts
+  script.
+    function input() {
+      if ($('[name=name]').val() && $('[name=value]').val())
+        $('[type=submit]').removeAttr('disabled');
+      else
+        $('[type=submit]').attr('disabled', '');
+    }
+
+  script.
+    $(window).on("load", function () {input()});

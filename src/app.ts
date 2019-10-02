@@ -37,7 +37,7 @@ export default async function create_application() {
 
     app.set('views', 'views');
     app.set('view engine', 'pug');
-    app.enable('view cache');
+    //app.enable('view cache');
 
     app.use(logger('dev'));
     app.use(express.json());
@@ -79,6 +79,15 @@ export default async function create_application() {
         });
 
         res.locals.url = req.url;
+        let config : any = {};
+        for (let obj of await db(query.config, [])) {
+            try {
+                config[obj.name] = JSON.parse(obj.value);
+            } catch {
+                config[obj.name] = null;
+            }
+        }
+        res.locals.config = config;
         next();
     });
 

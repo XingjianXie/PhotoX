@@ -1,15 +1,15 @@
 extends layout
 
 block title
-  title User
+  title Config
 
 block top
-  h3.text-dark.mb-0.m-2.d-none.d-md-inline User
-  h5.text-dark.mb-0.m-2.d-md-none User
+  h3.text-dark.mb-0.m-2.d-none.d-md-inline Config
+  h5.text-dark.mb-0.m-2.d-md-none Config
 
   form.form-inline(onsubmit='cu_submit($(this)); return false;')
     #topbar_form.m-2.d-none.d-sm-block
-      input#search_form.form-control.form-control-sm(type='text', autocomplete="off", spellcheck="false", maxlength=30, placeholder='ID, Phone Number or Name', oninput="if ($(this).val() == \"\") { cu_submit($(this).parents('form')); }", name='wd', value=wd)
+      input#search_form.form-control.form-control-sm(type='text', autocomplete="off", spellcheck="false", maxlength=30, placeholder='Name', oninput="if ($(this).val() == \"\") { cu_submit($(this).parents('form')); }", name='wd', value=wd)
 
     .ml-5.d-none.d-lg-block
       label
@@ -20,57 +20,42 @@ block top
           option(selected= maximum === 25) 25
 
 block topr
-  .nav-item
-    a.nav-link(href='/user/add')
-      span.d-inline.mr-2.text-gray-600.small Add User
+  if session.type
+    .nav-item
+      a.nav-link(href='/config/new')
+        span.d-inline.mr-2.text-gray-600.small Add
 
 block content
   .card.shadow
     .card-header.py-3
-      p.text-primary.m-0.font-weight-bold User Info
+      p.text-primary.m-0.font-weight-bold System Config
     #list.card-body
-      if users.length
+      if configs.length
         .table-responsive.table.mt-2(role='grid')
           table.table.my-0
             thead
               tr
-                th ID
                 th Name
-                th Type
+                th Value
                 th.d-none.d-sm-block Options
             tbody
-              each val in users
+              each val in configs
                 tr
-                  if val.id === session.userID
-                    th= val.id + ' (Me)'
-                  else
-                    th= val.id
                   th= val.name
-                  th= typeName[val.type]
-
+                  th= val.value
                   th.d-none.d-sm-block
-                    form.d-inline-block(method='post', action='/user/logout')
-                      input.d-none(value=val.id, name='userID', autocomplete="off", spellcheck="false", maxlength=30)
-                      if map[val.id]
-                        button.btn.btn-primary.btn-sm.mx-1(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
-                          | Logout
-                      else
-                        button.btn.btn-primary.btn-sm.mx-1(disabled)
-                          | Offline
                     form.d-inline-block
-                      button.btn.btn-primary.btn-sm.mx-1(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                      button.btn.btn-primary.btn-sm.mx-1(onclick="location='/config/edit/" + escape(val.name) + "'; return false;")
                         | Edit
-                    form.d-inline-block
-                      button.btn.btn-primary.btn-sm.mx-1(onclick="location='/message/new?id=" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
-                        | Message
-                    form.d-inline-block(method='post' action='/user/delete')
-                      input.d-none(value=val.id, name='userID', autocomplete="off", spellcheck="false", maxlength=30)
+                    form.d-inline-block(method='post' action='/config/delete')
+                      input.d-none(value=val.name, name='name', autocomplete="off", spellcheck="false", maxlength=30)
                       input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
-                      button.btn.btn-danger.btn-sm.mx-1(type='submit', disabled=val.type >= session.type && val.id !== session.userID)
+                      button.btn.btn-danger.btn-sm.mx-1(type='submit', disabled=(!val.deletable))
                         | Delete
+
         .row.d-block.d-lg-flex
           .col-sm-12.col-md-6.align-self-center
-            p(role='status', aria-live='polite') Showing #{ (current - 1) * maximum + 1 } to #{(current - 1) * maximum + users.length} of #{total}
+            p(role='status', aria-live='polite') Showing #{ (current - 1) * maximum + 1 } to #{(current - 1) * maximum + configs.length} of #{total}
           include page
       else
         .text-center.mt-5
@@ -78,20 +63,19 @@ block content
             .error:before {
               background: #ffffff
             }
-
             .error:after {
               background: #ffffff
             }
           .error.mx-auto(data-text= 404)
             p.m-0.d-inline-block= 404
-          p.text-dark.mb-5.lead User Not Found
+          p.text-dark.mb-5.lead Config Not Found
 
 append javascripts
   script.
     function cu_submit(d, ext, rep) {
       let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
       const xhr = new XMLHttpRequest();
-      const url = (d.attr('action') || '/user') + '?' + fd;
+      const url = (d.attr('action') || '/config') + '?' + fd;
       xhr.open('get', url, true);
       xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {

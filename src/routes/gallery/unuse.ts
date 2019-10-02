@@ -2,6 +2,7 @@ import express from 'express';
 import query from "../../db/query";
 import path from "path"
 import createError from "http-errors";
+import log from "../../tools/log";
 
 export default (db : (sql : string, values : any) => Promise<any[]>) => {
     const router = express.Router();
@@ -31,7 +32,7 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
                     + '<div class="bkimg rounded" style="width: 200px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
                 )
             ]);
-            db(query.log, [req.session.userID, "Photo", rs[0].id, "Cancel Use", true, null]);
+            log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Cancel Use", true, null);
         }
         res.sendStatus(200);
     });

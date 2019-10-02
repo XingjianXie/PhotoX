@@ -71,6 +71,10 @@ html
                   a.nav-link(href='/log', class= {active: url.indexOf('/log') === 0})
                     i.fas.fa-book
                     span Log
+                li.nav-item(role='presentation')
+                  a.nav-link(href='/config', class= {active: url.indexOf('/config') === 0})
+                    i.fas.fa-sort-amount-down
+                    span Config
           .text-center.d-none.d-md-inline
             button#sidebarToggle.btn.rounded-circle.border-0(type='button')
       #content-wrapper.d-flex.flex-column

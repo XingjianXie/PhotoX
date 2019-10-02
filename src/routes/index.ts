@@ -12,6 +12,7 @@ import reset_password from './reset_password'
 import log from './log'
 import message from './message'
 import uploads from './uploads'
+import config from './config'
 
 export default (session_map : any, db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
@@ -29,6 +30,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
     router.use('/log', log(db));
     router.use('/message', message(db));
     router.use('/uploads', uploads(db));
+    router.use('/config', config(db));
     /* JUST FOR FUN
     router.use('/520/:id', async(req, res) => {
         if (!req.session || !req.session.sign) res.redirect('/login');

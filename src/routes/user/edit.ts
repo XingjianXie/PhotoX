@@ -2,6 +2,7 @@ import express from 'express';
 import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
+import log from "../../tools/log";
 
 export default (session_map: any, db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
@@ -16,17 +17,17 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         }
         const rs : any[] = await db(query.getUserById, [Number(req.params.id)]);
         if (!rs[0]) {
-            db(query.log, [req.session.userID, "User", Number(req.params.id), "Edit", false, "Error: User Not Found"]);
+            log(res.locals.config, db, req.session.userID, "User", Number(req.params.id), "Edit", false, "Error: User Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
         if (req.session.type <= rs[0].type && req.session.userID !== Number(req.params.id)) {
-            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized"]);
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
-            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized"]);
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
@@ -52,27 +53,27 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         }
         const rs : any[] = await db(query.getUserById, [Number(req.params.id)]);
         if (!rs[0]) {
-            db(query.log, [req.session.userID, "User", Number(req.params.id), "Edit", false, "Error: User Not Found"]);
+            log(res.locals.config, db, req.session.userID, "User", Number(req.params.id), "Edit", false, "Error: User Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
         if (req.session.type <= rs[0].type && req.session.userID !== rs[0].id) {
-            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized"]);
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
-            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized"]);
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (req.session.type < Number(req.body.type)) {
-            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized"]);
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (!req.body.name && !req.body.type && !req.body.phone_number) {
-            db(query.log, [req.session.userID, "User", rs[0].id, "Edit", false, "Error: Bad Request"]);
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Bad Request");
             next(createError(400, 'Type or Name Required'));
             return;
         }
@@ -110,19 +111,18 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
 
         if (req.body.type) {
             await db(query.resetUserType, [Number(req.body.type), rs[0].id]);
-            db(query.log, [userID, "User", rs[0].id, "Reset Type", true, "Previous Type: " + res.locals.typeName[rs[0].type]]);
+            log(res.locals.config, db, userID, "User", rs[0].id, "Reset Type", true, "Previous Type: " + res.locals.typeName[rs[0].type]);
         }
         if (req.body.name) {
             await db(query.resetUserName, [req.body.name, rs[0].id]);
-            db(query.log, [userID, "User", rs[0].id, "Reset Name", true, "Previous Name: " + rs[0].name]);
+            log(res.locals.config, db, userID, "User", rs[0].id, "Reset Name", true, "Previous Name: " + rs[0].name);
         }
         try {
             if (req.body.phone_number) {
                 await db(query.resetUserPhoneNumber, [req.body.phone_number, rs[0].id]);
-                db(query.log, [userID, "User", rs[0].id, "Reset Phone Number", true, "Previous Phone Number: " + rs[0].phone_number]);
+                log(res.locals.config, db, userID, "User", rs[0].id, "Reset Phone Number", true, "Previous Phone Number: " + rs[0].phone_number);
             }
             if (rs[0].id === userID) {
-                res.status(200);
                 res.render('notification', {
                     code: 200,
                     msg: "Update Successfully",
@@ -131,7 +131,6 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
                 });
             }
             else {
-                res.status(200);
                 res.render('notification', {
                     code: 200,
                     msg: "Update Successfully",
@@ -141,7 +140,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             }
         } catch (e) {
             if (e.code === 'ER_DUP_ENTRY') {
-                db(query.log, [userID, "User", rs[0].id, "Reset Phone Number", false, "Error: Duplicate"]);
+                log(res.locals.config, db, userID, "User", rs[0].id, "Reset Phone Number", false, "Error: Duplicate");
                 next(createError(400, 'Not Completely Finished: Phone Number Has Been Taken'));
             } else throw e;
         }

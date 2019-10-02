@@ -1,5 +1,6 @@
 import express from 'express';
 import query from "../db/query";
+import log from "../tools/log";
 
 export default (session_map : any, db : (sql : string, values : any) => Promise<any[]>) => {
     const router = express.Router();
@@ -14,7 +15,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             if (err) throw err;
             res.clearCookie('session');
 
-            db(query.log, [id, "User", id, "Logout", true, null]);
+            log(res.locals.config, db, id, "User", id, "Logout", true, null);
 
             res.redirect('/login');
         });

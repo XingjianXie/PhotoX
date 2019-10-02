@@ -2,6 +2,7 @@ import express from 'express';
 import {MemoryStore} from "express-session";
 import query from "../../db/query";
 import createError from "http-errors";
+import log from "../../tools/log";
 
 export default (session_map : any, db : (sql : string, values : any) => Promise<any[]>) => {
     const router = express.Router();
@@ -16,17 +17,17 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         }
         const rs : any[] = await db(query.getUserById, [Number(req.body.userID)]);
         if (!rs[0]) {
-            db(query.log, [req.session.userID, "User", Number(req.body.userID), "Delete", false, "Error: User Not Found"]);
+            log(res.locals.config, db, req.session.userID, "User", Number(req.body.userID), "Delete", false, "Error: User Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
         if (req.session.type <= rs[0].type && req.session.userID !== Number(req.body.userID)) {
-            db(query.log, [req.session.userID, "User", rs[0].id, "Delete", false, "Error: Unauthorized"]);
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Delete", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
-            db(query.log, [req.session.userID, "User", rs[0].id, "Delete", false, "Error: Unauthorized"]);
+            log(res.locals.config, db, req.session.userID, "User", rs[0].id, "Delete", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
@@ -60,11 +61,9 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
 
         await db(query.deleteUser, [rs[0].id]);
 
-        db(query.log, [userID, "User", rs[0].id, "Delete", true, null]);
+        log(res.locals.config, db, userID, "User", rs[0].id, "Delete", true, null);
 
-        res.status(200);
         if (rs[0].id === userID) {
-            res.status(200);
             res.render('notification', {
                 code: 200,
                 msg: "Delete Successfully",
@@ -73,7 +72,6 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             });
         }
         else {
-            res.status(200);
             res.render('notification', {
                 code: 200,
                 msg: "Delete Successfully",

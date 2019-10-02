@@ -2,6 +2,7 @@ import express from 'express';
 import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
+import log from "../../tools/log";
 
 export default (db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
@@ -12,13 +13,13 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         const rs : any[] = await db(query.getPhotoById, [Number(req.body.photoID)]);
         if (!rs[0]) {
-            db(query.log, [req.session.userID, "Photo", Number(req.body.photoID), "Recall", false, "Error: Photo Not Found"]);
+            log(res.locals.config, db, req.session.userID, "Photo", Number(req.body.photoID), "Recall", false, "Error: Photo Not Found");
             next(createError(404, 'Photo Not Found'));
             return;
         }
         const dw : any[] = await db(query.getDownloadByPhotoId, [Number(req.body.photoID)]);
         if (req.session.type <= rs[0].uploader_type && (req.session.userID !== rs[0].uploader_id || (dw.length && !req.session.type))) {
-            db(query.log, [req.session.userID, "Photo", rs[0].id, "Recall", false, "Error: Unauthorized"]);
+            log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Recall", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
@@ -55,7 +56,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             )
         ]);
 
-        db(query.log, [req.session.userID, "Photo", rs[0].id, "Recall", true, null]);
+        log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Recall", true, null);
 
         res.status(200);
         if (dw.length) {
