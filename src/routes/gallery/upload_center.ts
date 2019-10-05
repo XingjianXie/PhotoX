@@ -69,7 +69,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
                 if (!metadata.width) throw "Can't get the size";
 
                 await t.withMetadata().toFile(path.join(req.app.get('root'), 'uploads', id + '.jpg'));
-                await t.clone().resize(Math.min(metadata.width, 400)).toFile(path.join(req.app.get('root'), 'uploads', id + '.preview.jpg'));
+                await t.resize(Math.min(metadata.width, 400)).toFile(path.join(req.app.get('root'), 'uploads', id + '.preview.jpg'));
 
                 await db(query.convertPhoto, [metadata.height, metadata.width, metadata.exif && exif(metadata.exif).exif.DateTimeOriginal ? exif(metadata.exif).exif.DateTimeOriginal.getTime()/1000 + (new Date()).getTimezoneOffset() * 60: null, id]);
 

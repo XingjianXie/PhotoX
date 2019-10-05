@@ -33,7 +33,7 @@ block content
   .card.shadow
     .card-header.py-3
       p.d-inline.text-primary.m-0.font-weight-bold My Message
-      if (session.type)
+      if (session.type && !config.disable_admin_send_message)
         button.btn.ml-3.d-inline.btn-primary.btn-sm(onclick="window.location='/message?sent=1'") Switch
     #list.card-body
       if messages.length

@@ -16,6 +16,10 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(401, 'Unauthorized'));
             return;
         }
+        if (res.locals.config.disable_admin_send_message && !!req.query.sent) {
+            next(createError(401, 'Disabled'));
+            return;
+        }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 5, 1);
         let rs : any[], total : number;
