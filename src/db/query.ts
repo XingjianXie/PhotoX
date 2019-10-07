@@ -40,6 +40,9 @@ export default {
     searchPublishedPhotoWithLimitSpecificCategory: 'SELECT DISTINCT photo.*, category.name as category_name, category.owner as category_owner, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id LEFT OUTER JOIN category ON photo.category=category.id LEFT OUTER JOIN mark ON mark.photo_id=photo.id WHERE photo.type = 2 AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id) OR POSITION(? IN photo.name) OR POSITION(? IN mark.mark_name)) AND photo.deleted = 0 AND photo.category = ? ORDER BY photo.id DESC LIMIT ?,?',
     countSearchPublishedPhotoWithLimitSpecificCategory: 'SELECT COUNT(DISTINCT photo.id) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id LEFT OUTER JOIN mark ON mark.photo_id=photo.id WHERE photo.type = 2 AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id) OR POSITION(? IN photo.name) OR POSITION(? IN mark.mark_name)) AND photo.deleted = 0 AND photo.category = ?',
 
+    moveCategory: 'UPDATE photo SET category = ? WHERE category = ?',
+    countPhotoSpecificCategory: 'SELECT COUNT(*) FROM photo WHERE category=? AND deleted=0 AND type=2',
+
     //Download
     addDownload: 'INSERT INTO download values(UUID(), ?, ?)',
     getDownloadByPhotoId: 'SELECT download.*, user.name AS user_name from download LEFT OUTER JOIN user ON user.id=download.user where photo = ?',
@@ -68,7 +71,15 @@ export default {
     readMessage: 'INSERT INTO `read`(user, message) values(?,?)',
 
     //Category
-    queryCategory: 'SELECT category.*, owner, user.name AS owner_name, user.type AS owner_type, user.deleted AS owner_deleted FROM category LEFT OUTER JOIN user ON user.id=category.owner WHERE category.deleted = 0',
+    queryCategoryForQueryPhoto: 'SELECT * FROM category',
+    addCategory: 'INSERT INTO category(name, owner) VALUES(?, ?)',
+    updateCategory: 'UPDATE category SET name=? WHERE id=?',
+    getCategoryById: 'SELECT category.*, owner, user.name AS owner_name, user.type AS owner_type, user.deleted AS owner_deleted FROM category LEFT OUTER JOIN user ON user.id=category.owner WHERE category.id = ?',
+    deleteCategory: 'DELETE FROM category WHERE id=?',
+    queryCategoryWithLimit: 'SELECT category.*, owner, user.name AS owner_name, user.type AS owner_type, user.deleted AS owner_deleted FROM category LEFT OUTER JOIN user ON user.id=category.owner LIMIT ?, ?',
+    countQueryCategoryWithLimit: 'SELECT COUNT(*) FROM category',
+    searchCategoryWithLimit: 'SELECT category.*, owner, user.name AS owner_name, user.type AS owner_type, user.deleted AS owner_deleted FROM category LEFT OUTER JOIN user ON user.id=category.owner WHERE POSITION(? IN name) LIMIT ?, ?',
+    countSearchCategoryWithLimit: 'SELECT COUNT(*) from category WHERE POSITION(? IN name)',
 
     //Mark
     addMark: 'INSERT INTO mark values(?, ?)',
@@ -77,10 +88,10 @@ export default {
 
     //Log
     log: 'INSERT INTO log(operator, target_type, target, action, success, extra_message) VALUES(?, ?, ?, ?, ?, ?)',
-    queryLogWithLimit: 'SELECT log.*, operator_obj.name AS operator_name, target_type, target, COALESCE(targetP_obj.name, targetU_obj.name, "Message") AS target_name, action, success, extra_message FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target WHERE operator_obj.type <= ? ORDER BY log.id DESC LIMIT ?,?',
-    countQueryLogWithLimit: 'SELECT COUNT(*) FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target WHERE operator_obj.type <= ?',
-    searchLogWithLimit: 'SELECT log.*, operator_obj.name AS operator_name, target_type, target, COALESCE(targetP_obj.name, targetU_obj.name, "Message") AS target_name, action, success, extra_message FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target WHERE operator_obj.type <= ? AND (POSITION(? IN log.id) OR POSITION(? IN COALESCE(targetP_obj.name, targetU_obj.name)) OR POSITION(? IN target) OR POSITION(? IN operator_obj.name) OR POSITION(? IN operator) OR POSITION(? IN action)) ORDER BY log.id DESC LIMIT ?,?',
-    countSearchLogWithLimit: 'SELECT COUNT(*) FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target WHERE operator_obj.type <= ? AND (POSITION(? IN log.id) OR POSITION(? IN COALESCE(targetP_obj.name, targetU_obj.name)) OR POSITION(? IN target) OR POSITION(? IN operator_obj.name) OR POSITION(? IN operator) OR POSITION(? IN action))',
+    queryLogWithLimit: 'SELECT log.*, operator_obj.name AS operator_name, target_type, target, COALESCE(targetP_obj.name, targetU_obj.name, targetC_obj.name, "Message") AS target_name, action, success, extra_message FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target LEFT OUTER JOIN category AS targetC_obj ON log.target_type="Category" AND targetC_obj.id=log.target WHERE operator_obj.type <= ? ORDER BY log.id DESC LIMIT ?,?',
+    countQueryLogWithLimit: 'SELECT COUNT(*) FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target LEFT OUTER JOIN category AS targetC_obj ON log.target_type="Category" AND targetC_obj.id=log.target WHERE operator_obj.type <= ?',
+    searchLogWithLimit: 'SELECT log.*, operator_obj.name AS operator_name, target_type, target, COALESCE(targetP_obj.name, targetU_obj.name, targetC_obj.name, "Message") AS target_name, action, success, extra_message FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target LEFT OUTER JOIN category AS targetC_obj ON log.target_type="Category" AND targetC_obj.id=log.target WHERE operator_obj.type <= ? AND (POSITION(? IN log.id) OR POSITION(? IN COALESCE(targetP_obj.name, targetU_obj.name, targetC_obj.name, "Message")) OR POSITION(? IN target) OR POSITION(? IN operator_obj.name) OR POSITION(? IN operator) OR POSITION(? IN action)) ORDER BY log.id DESC LIMIT ?,?',
+    countSearchLogWithLimit: 'SELECT COUNT(*) FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target LEFT OUTER JOIN category AS targetC_obj ON log.target_type="Category" AND targetC_obj.id=log.target WHERE operator_obj.type <= ? AND (POSITION(? IN log.id) OR POSITION(? IN COALESCE(targetP_obj.name, targetU_obj.name, targetC_obj.name, "Message")) OR POSITION(? IN target) OR POSITION(? IN operator_obj.name) OR POSITION(? IN operator) OR POSITION(? IN action))',
 
     //SpPreview
     addSpPreview: 'INSERT INTO sppreview values(?, ?)',

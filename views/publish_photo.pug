@@ -1,7 +1,7 @@
 extends layout
 
 block title
-  title Publish Photo
+  title PhotoX: Publish Photo
 
 block top
   h3.text-dark.mb-0.m-2.d-none.d-md-inline Publish Photo #{p.id}
@@ -32,9 +32,10 @@ block content
                     input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Category", onfocus='this.blur()', autocomplete="off", spellcheck="false", maxlength=30)
                     .dropdown-menu(role='menu')
                       each c in category
-                        a.dropdown-item(href='#', role='presentation', onclick="$('#type0').val('" + c.name + "'); $('[name=category]').val(" + c.id + "); input(); return false;")= c.name
+                        button.dropdown-item(role='presentation', onclick="$('#type0').val('" + c.name + "'); $('[name=category]').val(" + c.id + "); input(); return false;")= c.name
                       if session.type
-                      a.dropdown-item(href='#', role='presentation') Edit...
+                        .dropdown-divider
+                        a.dropdown-item(href='/gallery/category', role='presentation') List Categories
                   .form-group
                     input.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput="input()", autocomplete="off", spellcheck="false", maxlength=30)
 

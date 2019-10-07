@@ -1,7 +1,7 @@
 extends layout
 
 block title
-  title Upload Center
+  title PhotoX: Upload Center
 
 block top
   h3#t1.text-dark.mb-0.m-2.d-none.d-lg-inline Upload Center
@@ -76,7 +76,7 @@ block content
 append javascripts
   script.
     function cu_submit(d, ext, rep) {
-      let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
+      let fd = d.serialize() + (ext ? ('&' + encodeURIComponent(ext.attr('name')) + '=' + encodeURIComponent(ext.attr('value'))) : '');
       const xhr = new XMLHttpRequest();
       const url = (d.attr('action') || '/gallery/upload_center') + '?' + fd;
       xhr.open('get', url, true);

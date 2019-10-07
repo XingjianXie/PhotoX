@@ -1,11 +1,11 @@
 extends layout
 
 block title
-  title Add Config
+  title PhotoX: Add Category
 
 block top
-  h3.text-dark.mb-0.m-2.d-none.d-md-inline Add Config
-  h5.text-dark.mb-0.m-2.d-md-none Add Config
+  h3.text-dark.mb-0.m-2.d-none.d-md-inline Add Category
+  h5.text-dark.mb-0.m-2.d-md-none Add Category
 
 block topr
   .nav-item
@@ -22,9 +22,7 @@ block content
           .p-5
             form.user(method="post")
               .form-group
-                input.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput='input()', autocomplete="off", spellcheck="false", maxlength=100)
-              .form-group
-                input.form-control.form-control-user(type="text", placeholder="Value", name="value", oninput='input()', autocomplete="off", spellcheck="false", maxlength=2000)
+                input.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput='input()', autocomplete="off", spellcheck="false", maxlength=30)
               .form-group
                 input.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, value="Add")
 
@@ -32,7 +30,7 @@ block content
 append javascripts
   script.
     function input() {
-      if ($('[name=name]').val() && $('[name=value]').val())
+      if ($('[name=name]').val())
         $('[type=submit]').removeAttr('disabled');
       else
         $('[type=submit]').attr('disabled', '');

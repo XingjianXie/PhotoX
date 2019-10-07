@@ -17,7 +17,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         const rs : any[] = await db(query.getPhotoById, [Number(req.params.id)]);
         if (!rs[0] || rs[0].type !== 1) {
-            log(res.locals.config, db, req.session.userID, "Photo", Number(req.params.id), "Publish", false, "Error: Photo Not Found");
+            log(res.locals.config, db, req.session.userID, "Photo", Number(req.params.id), "Publish", false, "Error: Not Found");
             next(createError(404, 'Photo Not Found'));
             return;
         }
@@ -26,7 +26,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(401, 'Unauthorized'));
             return;
         }
-        const category : any[] = await db(query.queryCategory, []);
+        const category : any[] = await db(query.queryCategoryForQueryPhoto, []);
         res.render('publish_photo', {
             category, p: rs[0]
         });
@@ -42,7 +42,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         const rs : any[] = await db(query.getPhotoById, [Number(req.params.id)]);
         if (!rs[0] || rs[0].type !== 1) {
-            log(res.locals.config, db, req.session.userID, "Photo", Number(req.body.photoID), "Publish", false, "Error: Photo Not Found");
+            log(res.locals.config, db, req.session.userID, "Photo", Number(req.body.photoID), "Publish", false, "Error: Not Found");
             next(createError(404, 'Photo Not Found'));
             return;
         }

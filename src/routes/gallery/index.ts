@@ -6,6 +6,7 @@ import publish from "./publish";
 import recall from "./recall";
 import download from "./download";
 import unuse from "./unuse";
+import category from "./category/index"
 import query from '../../db/query';
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
@@ -50,7 +51,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             };
         }));
 
-        const category : any[] = await db(query.queryCategory, []);
+        const category : any[] = await db(query.queryCategoryForQueryPhoto, []);
 
         res.render('gallery', {
             photos: rs,
@@ -68,6 +69,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
     router.use('/delete', _delete(db));
     router.use('/recall', recall(db));
     router.use('/download', download(db));
+    router.use('/category', category(db));
     router.use('/unuse', unuse(db));
     return router;
 };

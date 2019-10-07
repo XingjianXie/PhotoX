@@ -1,7 +1,7 @@
 extends layout
 
 block title
-  title Message
+  title PhotoX: Message
 
 block top
   h3.text-dark.mb-0.m-2.d-none.d-md-inline Message
@@ -75,7 +75,7 @@ append javascripts
     if (end_callback)
       end_callback(this);
     function cu_submit(d, ext, rep) {
-      let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
+      let fd = d.serialize() + (ext ? ('&' + encodeURIComponent(ext.attr('name')) + '=' + encodeURIComponent(ext.attr('value'))) : '');
       const xhr = new XMLHttpRequest();
       const url = (d.attr('action') || '/message') + '?' + fd;
       xhr.open('get', url, true);

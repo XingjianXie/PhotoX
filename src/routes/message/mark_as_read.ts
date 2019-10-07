@@ -18,7 +18,7 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
             }
             const rs : any[] = await db(query.getMyUnreadMessageById, [req.session.userID, req.session.userID, Number(req.body.messageID)]);
             if (!rs[0]) {
-                log(res.locals.config, db, req.session.userID, "Message", rs[0].id, "Read", false, "Error: Message Not Found");
+                log(res.locals.config, db, req.session.userID, "Message", rs[0].id, "Read", false, "Error: Not Found");
                 next(createError(404, 'Message Not Found'));
                 return;
             }
@@ -29,7 +29,7 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
         } else {
             const rs : any[] = await db(query.queryMyUnreadMessage, [req.session.userID, req.session.userID]);
             if (!rs.length) {
-                log(res.locals.config, db, req.session.userID, "Message", null, "Read All", false, "Error: No Message");
+                log(res.locals.config, db, req.session.userID, "Message", null, "Read All", false, "Error: Not Found");
                 next(createError(404, 'Message Not Found'));
                 return;
             }

@@ -17,7 +17,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         }
         const rs : any[] = await db(query.getUserById, [Number(req.params.id)]);
         if (!rs[0]) {
-            log(res.locals.config, db, req.session.userID, "User", Number(req.params.id), "Edit", false, "Error: User Not Found");
+            log(res.locals.config, db, req.session.userID, "User", Number(req.params.id), "Edit", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
@@ -58,7 +58,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         }
         const rs : any[] = await db(query.getUserById, [Number(req.params.id)]);
         if (!rs[0]) {
-            log(res.locals.config, db, req.session.userID, "User", Number(req.params.id), "Edit", false, "Error: User Not Found");
+            log(res.locals.config, db, req.session.userID, "User", Number(req.params.id), "Edit", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }

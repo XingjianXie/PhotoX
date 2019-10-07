@@ -17,7 +17,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         }
         const rs : any[] = await db(query.getUserById, [Number(req.body.userID)]);
         if (!rs[0]) {
-            log(res.locals.config, db, req.session.userID, "User", Number(req.body.userID), "Delete", false, "Error: User Not Found");
+            log(res.locals.config, db, req.session.userID, "User", Number(req.body.userID), "Delete", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
@@ -43,7 +43,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
                 res.render('confirm', {
                     msg: 'Delete Confirmation',
                     inf1: 'Are you sure to delete your own user?',
-                    inf2: 'YOU MAY NOT UNDO THIS ACTION, AND YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
+                    inf2: 'YOU MAY NOT UNDO THIS ACTION: YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
                     data: data1
                 });
             else

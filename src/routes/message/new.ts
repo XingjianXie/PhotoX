@@ -38,7 +38,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         const rs : any[] = await db(query.getUserById, [Number(req.body.id)]);
         if (!rs[0]) {
-            log(res.locals.config, db, req.session.userID, "User", Number(req.body.id), "Send Message", false, "Error: User Not Found");
+            log(res.locals.config, db, req.session.userID, "User", Number(req.body.id), "Send Message", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }

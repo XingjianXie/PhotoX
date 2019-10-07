@@ -1,7 +1,7 @@
 extends layout
 
 block title
-  title User
+  title PhotoX: User
 
 block top
   h3.text-dark.mb-0.m-2.d-none.d-md-inline User
@@ -43,7 +43,7 @@ block content
               each val in users
                 tr
                   if val.id === session.userID
-                    th= val.id + ' (Me)'
+                    th #{val.id} (Me)
                   else
                     th= val.id
                   th= val.name
@@ -60,11 +60,11 @@ block content
                           | Offline
                     if !config.disable_admin_edit_user
                       form.d-inline-block
-                        button.btn.btn-primary.btn-sm.mx-1(onclick="location='/user/edit/" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                        button.btn.btn-primary.btn-sm.mx-1(onclick="location='/user/edit/" + val.id.toString() + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
                           | Edit
                     if !config.disable_admin_send_message
                       form.d-inline-block
-                        button.btn.btn-primary.btn-sm.mx-1(onclick="location='/message/new?id=" + val.id + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                        button.btn.btn-primary.btn-sm.mx-1(onclick="location='/message/new?id=" + val.id.toString() + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
                           | Message
                     if !config.disable_admin_delete_user
                       form.d-inline-block(method='post' action='/user/delete')
@@ -93,7 +93,7 @@ block content
 append javascripts
   script.
     function cu_submit(d, ext, rep) {
-      let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
+      let fd = d.serialize() + (ext ? ('&' + encodeURIComponent(ext.attr('name')) + '=' + encodeURIComponent(ext.attr('value'))) : '');
       const xhr = new XMLHttpRequest();
       const url = (d.attr('action') || '/user') + '?' + fd;
       xhr.open('get', url, true);

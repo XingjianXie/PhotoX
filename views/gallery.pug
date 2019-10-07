@@ -1,7 +1,7 @@
 extends layout
 
 block title
-  title Gallery
+  title PhotoX: Gallery
 
 block top
   h3.text-dark.mb-0.m-2.d-none.d-md-inline Gallery
@@ -20,6 +20,10 @@ block top
             option(selected= cur_category === val.id, value= val.id)= val.name
 
 block topr
+  if session.type
+    .nav-item
+      a.nav-link(href='/gallery/category')
+        span.d-inline.mr-2.text-gray-600.small Category
   .nav-item
     a.nav-link(href='/gallery/upload_center')
       span.d-inline.mr-2.text-gray-600.small Upload Center
@@ -110,7 +114,7 @@ append javascripts
     }
 
     function cu_submit(d, ext, rep) {
-      let fd = d.serialize() + (ext ? ('&' + encodeURI(ext.attr('name')) + '=' + encodeURI(ext.attr('value'))) : '');
+      let fd = d.serialize() + (ext ? ('&' + encodeURIComponent(ext.attr('name')) + '=' + encodeURIComponent(ext.attr('value'))) : '');
       const xhr = new XMLHttpRequest();
       const url = (d.attr('action') || '/gallery') + '?' + fd;
       xhr.open('get', url, true);

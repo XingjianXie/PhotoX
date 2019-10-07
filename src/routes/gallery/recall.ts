@@ -13,7 +13,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         const rs : any[] = await db(query.getPhotoById, [Number(req.body.photoID)]);
         if (!rs[0]) {
-            log(res.locals.config, db, req.session.userID, "Photo", Number(req.body.photoID), "Recall", false, "Error: Photo Not Found");
+            log(res.locals.config, db, req.session.userID, "Photo", Number(req.body.photoID), "Recall", false, "Error: Not Found");
             next(createError(404, 'Photo Not Found'));
             return;
         }

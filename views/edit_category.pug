@@ -1,10 +1,10 @@
 extends layout
 
 block title
-  title PhotoX: Edit Config #{c.name}
+  title PhotoX: Edit Category #{c.name} (#{c.id})
 
 block top
-  h3.text-dark.mb-0.m-2.d-none.d-md-inline Edit Config #{c.name}
+  h3.text-dark.mb-0.m-2.d-none.d-md-block Edit Category #{c.name} (#{c.id})
   h5.text-dark.mb-0.m-2.d-md-none Edit #{c.name}
 
 block topr
@@ -22,21 +22,15 @@ block content
           .p-5
             form.user(method="post")
               .form-group
-                input.form-control.form-control-user(type="text", placeholder="Name", oninput='input()', autocomplete="off", spellcheck="false", maxlength=100, disabled, value=c.name)
-              .form-group
-                input.form-control.form-control-user(type="text", placeholder="Value", name="value", oninput='input()', autocomplete="off", spellcheck="false", maxlength=2000)
+                input.form-control.form-control-user(type="text", name="name", placeholder="Name", oninput='input()', autocomplete="off", spellcheck="false", maxlength=30)
               .form-group
                 input.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled, value="Update")
-
 
 append javascripts
   script.
     function input() {
-      if ($('[name=value]').val())
+      if ($('[name=name]').val())
         $('[type=submit]').removeAttr('disabled');
       else
         $('[type=submit]').attr('disabled', '');
     }
-
-  script.
-    $(window).on("load", function () {input()});

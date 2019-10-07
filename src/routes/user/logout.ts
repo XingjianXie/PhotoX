@@ -16,7 +16,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         }
         const rs : any[] = await db(query.getUserById, [Number(req.body.userID)]);
         if (!rs[0]) {
-            log(res.locals.config, db, req.session.userID, "User", Number(req.params.id), "Kick Out", false, "Error: User Not Found");
+            log(res.locals.config, db, req.session.userID, "User", Number(req.params.id), "Kick Out", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
