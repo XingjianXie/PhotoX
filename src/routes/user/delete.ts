@@ -36,7 +36,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
             next(createError(401, 'Disabled'));
             return;
         }
-        if (req.body.confirm === '1') {
+        if (req.body.confirm === '1' && !res.locals.config.disable_dangerous_action_confirm) {
             let data1 = req.body;
             data1.confirm = '0';
             if(req.session.userID === Number(req.body.userID))

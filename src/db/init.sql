@@ -26,9 +26,9 @@ CREATE TABLE `category` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `owner` int(10) unsigned NOT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +37,7 @@ CREATE TABLE `category` (
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (100000,'Default Category',0,0);
+INSERT INTO `category` VALUES (0,'Default Category',0);
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -49,8 +49,8 @@ DROP TABLE IF EXISTS `config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `config` (
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `value` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `name` varchar(400) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `value` text COLLATE utf8mb4_general_ci,
   `deletable` tinyint(1) NOT NULL,
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -62,7 +62,7 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES ('allow_register','false',0),('disable_log','true',0),('disable_admin_reset_password','false',0),('disable_admin_delete_user','false',0),('disable_admin_add_user','false',0),('disable_admin_edit_user','false',0),('disable_admin_kick_user','false',0),('disable_admin_send_message','true',0),('disable_photo_md5','false',0);
+INSERT INTO `config` VALUES ('allow_register','false',0),('disable_log','false',0),('disable_admin_reset_password','false',0),('disable_admin_delete_user','false',0),('disable_admin_add_user','false',0),('disable_admin_edit_user','false',0),('disable_admin_kick_user','true',0),('disable_admin_send_message','true',0),('disable_photo_md5','false',0),('disable_admin_edit_category','true',0),('disable_admin_add_category','false',0),('disable_admin_delete_category','true',0),('disable_dangerous_action_confirm','false',1);
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -100,7 +100,7 @@ DROP TABLE IF EXISTS `log`;
 CREATE TABLE `log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `operator` int(10) unsigned NOT NULL,
-  `target_type` enum('User','Photo','Message') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `target_type` enum('User','Photo','Category','Message') COLLATE utf8mb4_general_ci DEFAULT NULL,
   `target` int(10) unsigned DEFAULT NULL,
   `action` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `success` tinyint(1) NOT NULL,
@@ -274,7 +274,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (0,'00000000000','System',127,'Azw9dcJStqsM0A8lLNvakw==','74547703214960624824',0,'2019-08-18 07:46:58','2019-08-27 11:48:43');
+INSERT INTO `user` VALUES (0,'00000000000','System',127,'uk3Di1tbRejfDqTYXJJwxw==','82615204691798773458',0,'2019-08-18 07:46:58','2019-10-07 10:54:15');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -287,4 +287,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-02 16:51:16
+-- Dump completed on 2019-10-07 18:54:42

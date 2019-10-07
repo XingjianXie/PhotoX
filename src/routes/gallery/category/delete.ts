@@ -31,7 +31,7 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
             next(createError(400, 'Disabled'));
             return;
         }
-        if (req.body.confirm === '1') {
+        if (req.body.confirm === '1' && !res.locals.config.disable_dangerous_action_confirm) {
             let num : number = (await db(query.countPhotoSpecificCategory, [rs[0].id]))[0]["COUNT(*)"];
             let data1 = req.body;
             data1.confirm = '0';
