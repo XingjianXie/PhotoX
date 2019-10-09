@@ -8,6 +8,11 @@ block menu
     a.nav-link.active.disabled(href=url)
       i.fas.fa-user-circle
       span Login
+  if config.allow_register
+    li.nav-item(role='presentation')
+      a.nav-link(href="/register")
+        i.fas.fa-registered
+        span Register
 
 block top
   h3.text-dark.mb-0.m-2.d-none.d-md-inline Login
@@ -29,9 +34,9 @@ block content
                   h4.text-dark.pb-4 Welcome To PhotoX Beta
                 form.user(method="post")
                   .form-group
-                    input#input1.form-control.form-control-user(type="text", placeholder="Phone Number", name="phone_number", oninput="input(0)", disabled, autocomplete="off", spellcheck="false", maxlength=11)
+                    input#input1.form-control.form-control-user(type="text", placeholder="Phone Number", name="phone_number", oninput="input()", disabled, autocomplete="off", spellcheck="false", maxlength=11)
                   .form-group
-                    input#input2.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input(1)", disabled, autocomplete="off", spellcheck="false", maxlength=30)
+                    input#input2.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input()", disabled, autocomplete="off", spellcheck="false", maxlength=30)
                   button#loginButton.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled) Please Enable JavaScript to Login
 
 append javascripts
@@ -40,7 +45,7 @@ append javascripts
     $('#input1').removeAttr('disabled');
     $('#input2').removeAttr('disabled');
     $('#loginButton').removeAttr('disabled');
-    function input(x) {
+    function input() {
       if ($('#input1').val() && $('#input2').val() && !isNaN(Number($('#input1').val())) && Number($('#input1').val()).toString().length === 11)
         $('#loginButton').removeAttr('disabled');
       else

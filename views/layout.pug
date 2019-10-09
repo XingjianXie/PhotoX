@@ -112,8 +112,12 @@ html
                         |  Logout
                     else
                       a.dropdown-item(role='presentation', href='/login')
-                        i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
+                        i.fas.fa-user-circle.fa-sm.fa-fw.mr-2.text-gray-400
                         |  Login
+                      if config.allow_register
+                        a.dropdown-item(role='presentation', href='/register')
+                          i.fas.fa-registered.fa-sm.fa-fw.mr-2.text-gray-400
+                          |  Register
           #main_content.container-fluid
             block content
 

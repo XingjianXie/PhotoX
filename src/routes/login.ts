@@ -7,7 +7,7 @@ import log from "../tools/log";
 export default (session_map : any, db: (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
     router.get('/', (req, res) => {
-        if (req.session!.sign) {
+        if (req.session && req.session.sign) {
             res.redirect('/');
             return;
         }
@@ -15,7 +15,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
     });
 
     router.post('/', async(req, res, next) => {
-        if (req.session!.sign) {
+        if (req.session && req.session.sign) {
             res.redirect('/');
             return;
         }

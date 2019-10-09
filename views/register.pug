@@ -1,0 +1,56 @@
+extends layout
+
+block title
+  title PhotoX: Register
+
+block menu
+  li.nav-item(role='presentation')
+    a.nav-link(href="/login")
+      i.fas.fa-user-circle
+      span Login
+  if config.allow_register
+    li.nav-item(role='presentation')
+      a.nav-link.active.disabled(href=url)
+        i.fas.fa-registered
+        span Register
+
+block top
+  h3.text-dark.mb-0.m-2.d-none.d-md-inline Register
+  h5.text-dark.mb-0.m-2.d-md-none Register
+
+block content
+  .row.justify-content-center
+    .col-sm-12.col-md-9.col-lg-11.col-xl-9
+      .card.shadow-lg.o-hidden.border-0.my-5
+        .card-header.py-3.d-lg-none
+          p.text-primary.m-0.font-weight-bold Register Form
+        .card-body.p-0
+          .row
+            .col-lg-6.d-none.d-lg-flex
+              .flex-grow-1.bg-login-image(style="background-image: url(/images/bg.jpeg);")
+            .col-lg-6
+              .p-5
+                .text-center
+                  h4.text-dark.pb-4 Welcome To PhotoX Beta
+                form.user(method="post")
+                  .form-group
+                    input#input1.form-control.form-control-user(type="text", placeholder="Phone Number", name="phone_number", oninput="input()", disabled, autocomplete="off", spellcheck="false", maxlength=11)
+                  .form-group
+                    input#input2.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput="input()", disabled, autocomplete="off", spellcheck="false", maxlength=30)
+                  .form-group
+                    input#input3.form-control.form-control-user(type="password", placeholder="Password", name="pwd", oninput="input()", disabled, autocomplete="off", spellcheck="false", maxlength=30)
+                  button#registerButton.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled) Please Enable JavaScript to Register
+
+append javascripts
+  script.
+    $('#registerButton').html('Register');
+    $('#input1').removeAttr('disabled');
+    $('#input2').removeAttr('disabled');
+    $('#input3').removeAttr('disabled');
+    $('#registerButton').removeAttr('disabled');
+    function input() {
+      if ($('#input1').val() && $('#input2').val() && $('#input3').val() && !isNaN(Number($('#input1').val())) && Number($('#input1').val()).toString().length === 11)
+        $('#registerButton').removeAttr('disabled');
+      else
+        $('#registerButton').attr('disabled', true);
+    }

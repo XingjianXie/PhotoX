@@ -71,12 +71,11 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             res.render('notification', {
                 code: 201,
                 msg: "Add Successfully",
-                inf: "Please Remember Your User ID: " + id,
                 bk2: true
             });
         } catch(e) {
             if (e.code === 'ER_DUP_ENTRY') {
-                log(res.locals.config, db, req.session.userID, "User", 0, "Create", false, "Error: Duplicate Phone Number");
+                log(res.locals.config, db, req.session.userID, "User", null, "Create", false, "Error: Duplicate Phone Number");
                 next(createError(400, 'Phone Number Has Been Taken'));
             } else throw e;
         }

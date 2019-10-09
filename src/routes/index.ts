@@ -4,6 +4,7 @@ import {MemoryStore} from "express-session";
 import multer from "multer";
 
 import login from './login';
+import register from './register';
 import logout from './logout';
 import gallery from './gallery';
 import user from './user';
@@ -22,6 +23,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
     });
 
     router.use('/login', login(session_map, db));
+    router.use('/register', register(db));
     router.use('/logout', logout(session_map, db));
     router.use('/gallery', gallery(db, multer));
     router.use('/user', user(session_map, db));
