@@ -89,14 +89,18 @@ exports.default = (function (session_map, db) {
                             res.render('confirm', {
                                 msg: 'Delete Confirmation',
                                 inf1: 'Are you sure to delete your own user?',
-                                inf2: 'YOU MAY NOT UNDO THIS ACTION: YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
+                                inf2: res.locals.config.completely_delete_user ?
+                                    'YOU MAY NOT UNDO THIS ACTION: PHOTO ON IT\'S UPLOAD CENTER WILL BE GONE' :
+                                    'YOU MAY NOT UNDO THIS ACTION: YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
                                 data: data1
                             });
                         else
                             res.render('confirm', {
                                 msg: 'Delete Confirmation',
                                 inf1: 'Are you sure to delete ' + res.locals.typeName[rs[0].type] + ' ' + rs[0].name + ' (' + rs[0].id + ')?',
-                                inf2: 'YOU MAY NOT UNDO THIS ACTION, AND YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
+                                inf2: res.locals.config.completely_delete_user ?
+                                    'YOU MAY NOT UNDO THIS ACTION: PHOTO ON IT\'S UPLOAD CENTER WILL BE GONE' :
+                                    'YOU MAY NOT UNDO THIS ACTION: YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
                                 data: data1
                             });
                         return [2 /*return*/];
@@ -123,7 +127,7 @@ exports.default = (function (session_map, db) {
                 case 2:
                     _a.sent();
                     session_map[rs[0].id] = undefined;
-                    return [4 /*yield*/, db(query_1.default.deleteUser, [rs[0].id])];
+                    return [4 /*yield*/, db(res.locals.config.completely_delete_user ? query_1.default.deleteUserC : query_1.default.deleteUser, [rs[0].id])];
                 case 3:
                     _a.sent();
                     log_1.default(res.locals.config, db, userID, "User", rs[0].id, "Delete", true, null);

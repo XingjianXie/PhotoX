@@ -50,7 +50,7 @@ append javascripts
     |   if ($('[name=name]').val() || $('[name=type]').val() || $('[name=phone_number]').val())
     |     $('[type=submit]').removeAttr('disabled');
     |   else
-    |     $('[type=submit]').attr('disabled', '');
+    |     $('[type=submit]').attr('disabled', true);
     if (u.id === session.userID)
       |   if (!x) {
       |     if ($('[name=type]').val() && Number($('[name=type]').val()) < #{session.type}) {

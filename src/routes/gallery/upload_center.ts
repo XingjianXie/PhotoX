@@ -8,7 +8,7 @@ import * as util from "util";
 import crypto from "crypto";
 import path from "path";
 import log from "../../tools/log"
-const exif = require('exif-reader');
+import upload_photo = require('../../tools/upload_photo');
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
@@ -19,12 +19,18 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 5, 1);
-        const rs : any[] = !req.query.wd
-            ? await db(query.queryUnPublishedPhotoWithLimit, [req.session.userID, (pg - 1) * maximum, maximum])
-            : await db(query.searchUnPublishedPhotoWithLimit, [req.session.userID, req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
-        const total = !req.query.wd
-            ? (await db(query.countQueryUnPublishedPhotoWithLimit, [req.session.userID]))[0]['COUNT(*)']
-            : (await db(query.countSearchUnPublishedPhotoWithLimit, [req.session.userID, req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
+        let rs : any[], total : number;
+        if (!req.query.guest) {
+            rs = await db(query.queryUnPublishedPhotoWithLimit, [req.session.userID, (pg - 1) * maximum, maximum]);
+            total = (await db(query.countQueryUnPublishedPhotoWithLimit, [req.session.userID]))[0]['COUNT(*)'];
+        } else {
+            rs = !req.query.wd
+                ? await db(query.queryGuestUnPublishedPhotoWithLimit, [ (pg - 1) * maximum, maximum])
+                : await db(query.searchGuestUnPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
+            total = !req.query.wd
+                ? (await db(query.countQueryGuestUnPublishedPhotoWithLimit, []))[0]['COUNT(*)']
+                : (await db(query.countSearchGuestUnPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
+        }
 
 
         if (!rs.length && total) {
@@ -32,7 +38,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             return;
         }
 
-        res.render('upload_center', {
+        res.render(!req.query.guest ? 'upload_center' : 'upload_center_guest', {
             photos: rs,
             total: total,
             current: pg,
@@ -44,58 +50,11 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             next(createError(401, 'Unauthorized'));
             return;
         }
-
         if (!(req.files instanceof Array)) {
             throw req.files;
         }
-
-        const t = await Promise.all(req.files.map(async(value) => {
-            const bufs : any = [];
-            value.stream.on('data', (d) => { bufs.push(d); });
-
-            const buffer = await (new Promise<Buffer>(function (resolve, reject) {
-                value.stream.on('end', () => {
-                    resolve(Buffer.concat(bufs))
-                });
-            }));
-            const photo_md5 = res.locals.config.disable_photo_md5 ? null
-                : crypto.createHash('md5').update(buffer).digest('base64');
-            try {
-                const id : number = (await db(query.addPhoto, [req.session!.userID, photo_md5])).insertId;
-                log(res.locals.config, db, req.session!.userID, "Photo", id, "Upload", true, null)
-
-                const t = sharp(buffer);
-                const metadata = await t.metadata();
-                if (!metadata.width) throw "Can't get the size";
-
-                await t.withMetadata().toFile(path.join(req.app.get('root'), 'uploads', id + '.jpg'));
-                await t.resize(Math.min(metadata.width, 400)).toFile(path.join(req.app.get('root'), 'uploads', id + '.preview.jpg'));
-
-                await db(query.convertPhoto, [metadata.height, metadata.width, metadata.exif && exif(metadata.exif).exif.DateTimeOriginal ? exif(metadata.exif).exif.DateTimeOriginal.getTime()/1000 + (new Date()).getTimezoneOffset() * 60: null, id]);
-
-                log(res.locals.config, db, req.session!.userID, "Photo", id, "Convert", true, null);
-                return "";
-            } catch(err) {
-                console.log(err);
-                if (err.code === "ER_DUP_ENTRY") {
-                    const rs : any[] = await db(query.getPhotoByMd5, [photo_md5]);
-                    await db(query.addSpPreview, [req.session!.userID, rs[0].id]);
-                    await db(query.addMessage, [
-                        0,
-                        req.session!.userID,
-                        (
-                            "The photo you uploaded has been uploaded " + (rs[0].type !==2 ? "(but not published) " : "") + "by "+ rs[0].uploader_name + " (" + rs[0].uploader_id + "). " + "<br>"
-                            + '<div class="bkimg rounded" style="width: 200px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
-                        )
-                    ]);
-                    log(res.locals.config, db, req.session!.userID, "Photo", null, "Convert", false, null);
-                }
-
-                return false;
-            }
-        }));
+        const t = await upload_photo(res.locals.config, db, req.files, req.session.userID, req.app.get("root"));
         res.send(t);
-
     });
     return router;
 };

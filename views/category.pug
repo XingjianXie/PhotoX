@@ -50,11 +50,11 @@ block content
                   th #{val.owner_name} (#{val.owner})
                   th.d-none.d-sm-block
                     form.d-inline-block
-                      button.btn.btn-primary.btn-sm.mx-1(onclick="location='/gallery?category=" + val.id + "'; return false;")
+                      button.btn.btn-primary.btn-sm.mx-1(onclick="window.location='/gallery?category=" + val.id + "'; return false;")
                         | Look Up
                     if !config.disable_admin_edit_category
                       form.d-inline-block
-                        button.btn.btn-primary.btn-sm.mx-1(onclick="location='/gallery/category/edit/" + val.id + "'; return false;", disabled=val.owner_type >= session.type && val.owner !== session.userID)
+                        button.btn.btn-primary.btn-sm.mx-1(onclick="window.location='/gallery/category/edit/" + val.id + "'; return false;", disabled=val.owner_type >= session.type && val.owner !== session.userID)
                           | Edit
                     if !config.disable_admin_delete_category
                       form.d-inline-block(method='post' action='/gallery/category/delete')

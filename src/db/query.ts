@@ -9,6 +9,7 @@ export default {
     countSearchUserWithLimited: 'SELECT COUNT(*) FROM user WHERE type <= ? AND (id=? OR phone_number=? OR name=?) AND deleted = 0',
     resetPassword: 'UPDATE user SET passcode=?, passrd=? WHERE id=? AND deleted = 0',
     deleteUser: 'UPDATE user SET deleted = 1 WHERE id=? AND deleted = 0',
+    deleteUserC: 'DELETE FROM user WHERE id=? AND deleted = 0',
     resetUserType: 'UPDATE user SET type=? WHERE id=? AND deleted = 0',
     resetUserName: 'UPDATE user SET name=? WHERE id=? AND deleted = 0',
     resetUserPhoneNumber: 'UPDATE user SET phone_number=? WHERE id=? AND deleted = 0',
@@ -24,11 +25,15 @@ export default {
     deletePhoto: 'UPDATE photo SET deleted = 1, md5=NULL WHERE id = ?',
     recallPhoto: 'UPDATE photo SET type = 1 WHERE id = ? AND type=2',
 
-    countUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo WHERE photo.uploader_id = ? AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0',
+    countUnPublishedPhoto: 'SELECT COUNT(*) FROM photo WHERE photo.uploader_id = ? AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0',
+
     queryUnPublishedPhotoWithLimit: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.id = ? AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
     countQueryUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.id = ? AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0',
-    searchUnPublishedPhotoWithLimit: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.id = ? AND (photo.type = 0 OR photo.type = 1) AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
-    countSearchUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.id = ? AND (photo.type = 0 OR photo.type = 1) AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0',
+
+    queryGuestUnPublishedPhotoWithLimit: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.type = 126 AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
+    countQueryGuestUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.type = 126 AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0',
+    searchGuestUnPublishedPhotoWithLimit: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.type = 126 AND (photo.type = 0 OR photo.type = 1) AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
+    countSearchGuestUnPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE user.type = 126 AND (photo.type = 0 OR photo.type = 1) AND (POSITION(? IN user.name) OR POSITION(? IN user.id) OR POSITION(? IN photo.id)) AND photo.deleted = 0',
 
     queryPublishedPhotoWithLimit: 'SELECT photo.*, category.name as category_name, category.owner as category_owner, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id LEFT OUTER JOIN category ON photo.category=category.id WHERE photo.type = 2 AND photo.deleted = 0 ORDER BY photo.id DESC LIMIT ?,?',
     countQueryPublishedPhotoWithLimit: 'SELECT COUNT(*) FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.type = 2 AND photo.deleted = 0',

@@ -20,10 +20,6 @@ block top
           option(selected= maximum === 25) 25
 
 block topr
-  if session.type && !config.disable_admin_send_message
-    .nav-item
-      a.nav-link(href='/message/new')
-        span.d-inline.mr-2.text-gray-600.small New
   if unreadMeessageLength
     .nav-item
       a.nav-link(href='#', onclick='read(); return false;')
@@ -34,7 +30,7 @@ block content
     .card-header.py-3
       p.d-inline.text-primary.m-0.font-weight-bold My Message
       if (session.type && !config.disable_admin_send_message)
-        button.btn.ml-3.d-inline.btn-primary.btn-sm(onclick="window.location='/message?sent=1'") Switch
+        button.btn.ml-3.d-inline.btn-primary.btn-sm(onclick="window.location='/message?sent=1'") Switch to Sent Message
     #list.card-body
       if messages.length
         each val in messages

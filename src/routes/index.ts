@@ -14,6 +14,7 @@ import log from './log'
 import message from './message'
 import uploads from './uploads'
 import config from './config'
+import guest_upload from "./guest_upload";
 
 export default (session_map : any, db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
@@ -23,6 +24,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
     });
 
     router.use('/login', login(session_map, db));
+    router.use('/guest_upload', guest_upload(db, multer));
     router.use('/register', register(db));
     router.use('/logout', logout(session_map, db));
     router.use('/gallery', gallery(db, multer));
@@ -52,7 +54,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             code: err.status || 500,
             msg: err.message,
             inf: req.app.get('env') === 'development' ? err.stack : null,
-            home: err.status === 401
+            //home: err.status === 401
         });
     });
     return router;

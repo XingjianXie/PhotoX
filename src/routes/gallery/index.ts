@@ -59,7 +59,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             total: total,
             current: pg,
             maximum: maximum,
-            uploadsLength: (await db(query.countUnPublishedPhotoWithLimit, [req.session.userID]))[0]['COUNT(*)'],
+            uploadsLength: (await db(query.countUnPublishedPhoto, [req.session.userID]))[0]['COUNT(*)'],
             category: category,
             cur_category: cur_category
         });

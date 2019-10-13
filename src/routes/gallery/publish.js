@@ -66,7 +66,7 @@ exports.default = (function (db) {
                         next(http_errors_1.default(404, 'Photo Not Found'));
                         return [2 /*return*/];
                     }
-                    if (req.session.type <= rs[0].uploader_type && req.session.userID !== rs[0].uploader_id) {
+                    if (!(rs[0].uploader_type == 126 && req.session.type && res.locals.config.allow_guest_upload) && req.session.userID !== rs[0].uploader_id) {
                         log_1.default(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Publish", false, "Error: Unauthorized");
                         next(http_errors_1.default(401, 'Unauthorized'));
                         return [2 /*return*/];
@@ -102,7 +102,7 @@ exports.default = (function (db) {
                         next(http_errors_1.default(404, 'Photo Not Found'));
                         return [2 /*return*/];
                     }
-                    if (req.session.type <= rs[0].uploader_type && req.session.userID !== rs[0].uploader_id) {
+                    if (!(rs[0].uploader_type == 126 && req.session.type && res.locals.config.allow_guest_upload) && req.session.userID !== rs[0].uploader_id) {
                         log_1.default(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Publish", false, "Error: Unauthorized");
                         next(http_errors_1.default(401, 'Unauthorized'));
                         return [2 /*return*/];

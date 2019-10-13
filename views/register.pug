@@ -13,6 +13,11 @@ block menu
       a.nav-link.active.disabled(href=url)
         i.fas.fa-registered
         span Register
+  if config.allow_guest_upload
+    li.nav-item(role='presentation')
+      a.nav-link(href="/guest_upload")
+        i.fas.fa-upload
+        span Guest Upload
 
 block top
   h3.text-dark.mb-0.m-2.d-none.d-md-inline Register
@@ -27,7 +32,7 @@ block content
         .card-body.p-0
           .row
             .col-lg-6.d-none.d-lg-flex
-              .flex-grow-1.bg-login-image(style="background-image: url(/images/bg.jpeg);")
+              .flex-grow-1.bg-login-image(style="background-image: url(/images/bg1.jpeg);")
             .col-lg-6
               .p-5
                 .text-center
@@ -47,7 +52,7 @@ append javascripts
     $('#input1').removeAttr('disabled');
     $('#input2').removeAttr('disabled');
     $('#input3').removeAttr('disabled');
-    $('#registerButton').removeAttr('disabled');
+    //$('#registerButton').removeAttr('disabled');
     function input() {
       if ($('#input1').val() && $('#input2').val() && $('#input3').val() && !isNaN(Number($('#input1').val())) && Number($('#input1').val()).toString().length === 11)
         $('#registerButton').removeAttr('disabled');

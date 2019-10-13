@@ -60,7 +60,7 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
         } catch(e) {
             if (e.code === 'ER_DUP_ENTRY') {
                 log(res.locals.config, db, 0, "User", null, "Register", false, "Error: Duplicate Phone Number");
-                next(createError(400, 'Phone Number Has Been Taken'));
+                next(createError(400, 'Phone Number Has Been Taken. If You Previously Used the Same Phone Number for Uploading Photos as Guest, Ask Admin to Migrate Your Account '));
             } else throw e;
         }
     });

@@ -60,11 +60,11 @@ block content
                           | Offline
                     if !config.disable_admin_edit_user
                       form.d-inline-block
-                        button.btn.btn-primary.btn-sm.mx-1(onclick="location='/user/edit/" + val.id.toString() + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                        button.btn.btn-primary.btn-sm.mx-1(onclick="window.location='/user/edit/" + val.id.toString() + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
                           | Edit
                     if !config.disable_admin_send_message
                       form.d-inline-block
-                        button.btn.btn-primary.btn-sm.mx-1(onclick="location='/message/new?id=" + val.id.toString() + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
+                        button.btn.btn-primary.btn-sm.mx-1(onclick="window.location='/message/new?id=" + val.id.toString() + "'; return false;", disabled=val.type >= session.type && val.id !== session.userID)
                           | Message
                     if !config.disable_admin_delete_user
                       form.d-inline-block(method='post' action='/user/delete')

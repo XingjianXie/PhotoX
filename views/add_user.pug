@@ -46,7 +46,7 @@ append javascripts
     |   if ($('[name=name]').val() && $('[name=pwd]').val() && $('[name=type]').val() && $('[name=phone_number]').val())
     |     $('[type=submit]').removeAttr('disabled');
     |   else
-    |     $('[type=submit]').attr('disabled', '');
+    |     $('[type=submit]').attr('disabled', true);
     |   if (!x) {
     |     if ($('[name=type]').val() === '#{session.type}') {
     |       $('#warning').removeClass('d-none');

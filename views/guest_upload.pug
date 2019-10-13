@@ -1,0 +1,166 @@
+extends layout
+
+block title
+  title PhotoX: Guest Upload
+
+block menu
+  li.nav-item(role='presentation')
+    a.nav-link(href="/login")
+      i.fas.fa-user-circle
+      span Login
+  if config.allow_register
+    li.nav-item(role='presentation')
+      a.nav-link(href="/register")
+        i.fas.fa-registered
+        span Register
+  if config.allow_guest_upload
+    li.nav-item(role='presentation')
+      a.nav-link.active(href=url)
+        i.fas.fa-upload
+        span Guest Upload
+
+block top
+  h3#t1.text-dark.mb-0.m-2.d-none.d-md-inline Guest Upload
+  h5#t2.text-dark.mb-0.m-2.d-md-none Guest Upload
+  #progressbar.my-auto.col-3.d-none.m-2
+    .progress
+      .progress-bar
+
+block content
+  .row.justify-content-center
+    .col-sm-12.col-md-9.col-lg-11.col-xl-9
+      .card.shadow-lg.o-hidden.border-0.my-5
+        .card-header.py-3.d-lg-none
+          p.text-primary.m-0.font-weight-bold Guest Upload Form
+        .card-body.p-0
+          .row
+            .col-lg-6.d-none.d-lg-flex
+              .flex-grow-1.bg-login-image(style="background-image: url(/images/bg3.jpeg);")
+            .col-lg-6
+              .p-5
+                .text-center
+                  h4.text-dark.pb-4 Guest Upload
+                  h6.text-dark If you are staff,
+                  h6.text-dark.pb-4 use your personal account instead.
+                form#uploadForm.d-none(method="post", enctype="multipart/form-data")
+                  input#uploadInput(type="file", name="photo", accept='image/*', onchange="upload()", multiple, autocomplete="off", spellcheck="false", maxlength=30)
+                form#uploadInfForm.user(method="post", onsubmit="cu_submit($(this)); return false;")
+                  .form-group
+                    input#input1.form-control.form-control-user(type="text", placeholder="Phone Number", name="phone_number", oninput="input()", disabled, autocomplete="off", spellcheck="false", maxlength=11)
+                  .form-group
+                    input#input2.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput="input()", disabled, autocomplete="off", spellcheck="false", maxlength=30)
+                  .form-group
+                    input#input3.form-control.form-control-user(type="text", placeholder="Secret Code", name="secret", oninput="input()", disabled, autocomplete="off", spellcheck="false", maxlength=30)
+                  button#uploadButton.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled) Please Enable JavaScript to Login
+
+append javascripts
+  script.
+    (function init() {
+      $('#uploadButton').html('Submit');
+      $('#input1').removeAttr('disabled');
+      $('#input2').removeAttr('disabled');
+      $('#input3').removeAttr('disabled');
+    })();
+
+    function input() {
+      if ($('#input1').val() && $('#input2').val() && $('#input3').val() && !isNaN(Number($('#input1').val())) && Number($('#input1').val()).toString().length === 11)
+        $('#uploadButton').removeAttr('disabled');
+      else
+        $('#uploadButton').attr('disabled', true);
+    }
+
+    function cu_submit(d) {
+      const xhr = new XMLHttpRequest();
+      const url = window.location;
+      xhr.open('post', url, true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status !== 200) {
+            $('body').html($('body', new DOMParser().parseFromString(xhr.response, "text/html")).html());
+            window.history.pushState(null, null, xhr.responseURL);
+          } else {
+            $('#input1').attr('disabled', true);
+            $('#input2').attr('disabled', true);
+            $('#input3').attr('disabled', true);
+            $('#uploadButton').html('Choose Photos');
+            d.attr("onsubmit", "document.querySelector('#uploadInput').click(); return false;");
+          }
+        }
+      }
+      xhr.send(d.serialize());
+    }
+
+    function upload() {
+      const formData = new FormData();
+      const files = document.getElementById('uploadInput').files;
+      if (files.length > 20) {
+        alert("You can only upload less than 20 photos at once");
+        return;
+      }
+      for (const file of files) {
+        if (file.size >= 1e8) {
+          alert("You can only upload photo less than 100mb");
+          return;
+        }
+        formData.append('photo', file);
+      }
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('post', "/guest_upload/upload", true);
+
+      xhr.upload.onprogress = function (e) {
+        if (e.lengthComputable) {
+          if (e.loaded === e.total) {
+            $('#t1').html("Converting...");
+            $('#t2').html("Converting...");
+            $('#progressbar').removeClass('d-lg-block');
+          } else {
+            const percentage = ((e.loaded / e.total) * 100);
+            $('#t1').html("Uploading...");
+            $('#t2').html("Uploading... " + percentage.toFixed(2).toString() + '%');
+            $('.progress-bar').attr('style', "width: " + percentage.toString() + "%; transition:none;")
+            $('.progress-bar').html(percentage.toFixed(2).toString() + "%");
+            $('#progressbar').addClass('d-lg-block');
+          }
+        }
+      };
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          let arr = JSON.parse(xhr.response);
+          let suc = Number(arr.reduce(function (total, num) {
+            return num ? Number(total) + 1 : Number(total);
+          }));
+          $('#t1').html(suc.toString() + ' / ' + arr.length.toString() + ' Finished');
+          $('#t2').html(suc.toString() + ' / ' + arr.length.toString() + ' Finished');
+
+          $('#input1').val("");
+          $('#input2').val("");
+          $('#input3').val("");
+
+          $('#input1').removeAttr('disabled');
+          $('#input2').removeAttr('disabled');
+          $('#input3').removeAttr('disabled');
+
+          $('#uploadButton').html('Submit');
+          $('#uploadInfForm').attr("onsubmit", "cu_submit($(this)); return false;");
+          $('#uploadInput').val('');
+        }
+      }
+      xhr.send(formData);
+    }
+
+append history
+  script.
+    window.addEventListener("popstate", function (e) {
+      const xhr = new XMLHttpRequest();
+      const url = window.location;
+      xhr.open('get', url, true);
+      xhr.onreadystatechange = function () {
+        $('#uploadButton').html('Choose Photos');
+        $('body').html($('body', new DOMParser().parseFromString(xhr.response, "text/html")).html());
+        window.history.replaceState(null, null, xhr.responseURL);
+      }
+      xhr.send();
+    });

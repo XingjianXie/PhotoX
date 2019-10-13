@@ -43,14 +43,18 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
                 res.render('confirm', {
                     msg: 'Delete Confirmation',
                     inf1: 'Are you sure to delete your own user?',
-                    inf2: 'YOU MAY NOT UNDO THIS ACTION: YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
+                    inf2: res.locals.config.completely_delete_user ?
+                        'YOU MAY NOT UNDO THIS ACTION: PHOTO ON IT\'S UPLOAD CENTER WILL BE GONE':
+                        'YOU MAY NOT UNDO THIS ACTION: YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
                     data: data1
                 });
             else
                 res.render('confirm', {
                     msg: 'Delete Confirmation',
                     inf1: 'Are you sure to delete ' + res.locals.typeName[rs[0].type] + ' ' + rs[0].name + ' (' + rs[0].id + ')?',
-                    inf2: 'YOU MAY NOT UNDO THIS ACTION: YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
+                    inf2: res.locals.config.completely_delete_user ?
+                        'YOU MAY NOT UNDO THIS ACTION: PHOTO ON IT\'S UPLOAD CENTER WILL BE GONE':
+                        'YOU MAY NOT UNDO THIS ACTION: YOU MAY NOT USE ITS PHONE NUMBER TO SIGN UP',
                     data: data1
                 });
             return;
@@ -64,7 +68,7 @@ export default (session_map : any, db : (sql : string, values : any) => Promise<
         });
         session_map[rs[0].id] = undefined;
 
-        await db(query.deleteUser, [rs[0].id]);
+        await db(res.locals.config.completely_delete_user ? query.deleteUserC : query.deleteUser, [rs[0].id]);
 
         log(res.locals.config, db, userID, "User", rs[0].id, "Delete", true, null);
 

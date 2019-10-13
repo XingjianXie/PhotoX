@@ -45,7 +45,7 @@ block content
                   th= val.value
                   th.d-none.d-sm-block
                     form.d-inline-block
-                      button.btn.btn-primary.btn-sm.mx-1(onclick="location='/config/edit/" + encodeURIComponent(val.name) + "'; return false;")
+                      button.btn.btn-primary.btn-sm.mx-1(onclick="window.location='/config/edit/" + encodeURIComponent(val.name) + "'; return false;")
                         | Edit
                     form.d-inline-block(method='post' action='/config/delete')
                       input.d-none(value=val.name, name='name', autocomplete="off", spellcheck="false", maxlength=30)

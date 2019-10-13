@@ -20,7 +20,7 @@ block top
             option(selected= cur_category === val.id, value= val.id)= val.name
 
 block topr
-  if session.type
+  if session.type && (!config.disable_admin_add_category || !config.disable_admin_delete_category || !config.disable_admin_edit_category)
     .nav-item
       a.nav-link(href='/gallery/category')
         span.d-inline.mr-2.text-gray-600.small Category

@@ -71,6 +71,7 @@ export default async function create_application() {
                         case 0: return 'Editor';
                         case 1: return 'Admin';
                         case 2: return 'Super Admin';
+                        case 126: return 'Guest Upload Account';
                         case 127: return 'System';
                         default: return 'Unknown';
                     }

@@ -54,7 +54,7 @@ append javascripts
       if ($('[name=category]').val() && $('[name=name]').val())
         $('[type=submit]').removeAttr('disabled');
       else
-        $('[type=submit]').attr('disabled', '');
+        $('[type=submit]').attr('disabled', true);
       if (x) {
         let current_space = 1;
         for (let i = 1; i <= 10; i++) {
