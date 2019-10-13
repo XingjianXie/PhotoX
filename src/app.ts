@@ -34,17 +34,25 @@ export default async function create_application() {
             return true;
         }
     });
+    const config : any = {};
+    for (let obj of await db(query.config, [])) {
+        try {
+            config[obj.name] = JSON.parse(obj.value);
+        } catch {
+            config[obj.name] = null;
+        }
+    }
 
     app.set('views', 'views');
     app.set('view engine', 'pug');
-    //app.enable('view cache');
+    app.enable('view cache');
 
     app.use(logger('dev'));
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     app.use(cookieParser());
     app.use(session({
-        secret: 'secret mark07 xx 002376 abc xx',
+        secret: config.session_secret,
         cookie: { maxAge: 60 * 1000 * 60 * 12 },
         resave: false,
         store: store,
@@ -80,14 +88,6 @@ export default async function create_application() {
         });
 
         res.locals.url = req.url;
-        let config : any = {};
-        for (let obj of await db(query.config, [])) {
-            try {
-                config[obj.name] = JSON.parse(obj.value);
-            } catch {
-                config[obj.name] = null;
-            }
-        }
         res.locals.config = config;
         next();
     });

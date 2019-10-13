@@ -33,7 +33,6 @@ export = async(config: any, db: (sql : string, values : any) => Promise<any>, fi
             log(config, db, userID, "Photo", id, "Convert", true, null);
             return true;
         } catch(err) {
-            console.log(err);
             if (err.code === "ER_DUP_ENTRY") {
                 const rs : any[] = await db(query.getPhotoByMd5, [photo_md5]);
                 await db(query.addSpPreview, [userID, rs[0].id]);

@@ -49,8 +49,8 @@ DROP TABLE IF EXISTS `config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `config` (
-  `name` varchar(400) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `value` text COLLATE utf8mb4_general_ci,
+  `name` varchar(400) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `deletable` tinyint(1) NOT NULL,
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -62,7 +62,7 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES ('allow_register','false',0),('disable_log','false',0),('disable_admin_reset_password','false',0),('disable_admin_delete_user','false',0),('disable_admin_add_user','false',0),('disable_admin_edit_user','false',0),('disable_admin_kick_user','true',0),('disable_admin_send_message','true',0),('disable_photo_md5','false',0),('disable_admin_edit_category','true',0),('disable_admin_add_category','false',0),('disable_admin_delete_category','true',0),('disable_dangerous_action_confirm','false',1);
+INSERT INTO `config` VALUES ('allow_register','false',0),('disable_log','false',0),('disable_admin_reset_password','false',0),('disable_admin_delete_user','false',0),('disable_admin_add_user','false',0),('disable_admin_edit_user','false',0),('disable_admin_kick_user','true',0),('disable_admin_send_message','false',0),('disable_photo_md5','false',0),('disable_admin_edit_category','true',0),('disable_admin_add_category','false',0),('disable_admin_delete_category','true',0),('disable_dangerous_action_confirm','false',0),('allow_guest_upload','true',0),('guest_upload_secret','\"Halloween\"',0),('completely_delete_user','true',0);
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -100,7 +100,7 @@ DROP TABLE IF EXISTS `log`;
 CREATE TABLE `log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `operator` int(10) unsigned NOT NULL,
-  `target_type` enum('User','Photo','Category','Message') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `target_type` enum('User','Photo','Category','Message') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `target` int(10) unsigned DEFAULT NULL,
   `action` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `success` tinyint(1) NOT NULL,
@@ -287,4 +287,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-07 18:54:42
+-- Dump completed on 2019-10-13 20:19:17

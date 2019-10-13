@@ -42,6 +42,10 @@ use photox;
 # Import Database File
 source init.sql;
 
+# Set Your Secret of Session
+# Please, Change This to Your Own String
+insert into config(name, value, deletable) values("session_secret", '"mark07x"', false);
+
 # Update the Phone Number of System User
 # Once You Finish This Step, You Could Login to System User
 # By Using Your Phone Number

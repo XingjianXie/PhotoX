@@ -129,10 +129,9 @@ append javascripts
 
       xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
-          let arr = JSON.parse(xhr.response);
-          let suc = arr.reduce(function (total, num) {
-            return num ? total + 1 : total;
-          });
+          let suc = Number(arr.reduce(function (total, num) {
+            return num ? Number(total) + 1 : Number(total);
+          }));
           $('#t1').html(suc.toString() + ' / ' + arr.length.toString() + ' Finished');
           $('#t2').html(suc.toString() + ' / ' + arr.length.toString() + ' Finished');
 

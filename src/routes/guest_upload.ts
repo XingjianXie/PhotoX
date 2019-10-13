@@ -24,7 +24,6 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             res.redirect('/');
             return;
         }
-        console.log(req.body)
         if (!req.body.phone_number) {
             next(createError(400, 'Phone Number Required'));
             return;

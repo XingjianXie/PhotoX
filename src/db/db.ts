@@ -11,7 +11,6 @@ export default (sql : string, values : string[]) =>
             if (err) {
                 reject(err);
             } else {
-                //console.log(connection.format(sql, values));
                 connection.query(sql, values, (err, rows) => {
                     if (err) {
                         reject(err);

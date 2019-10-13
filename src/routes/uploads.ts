@@ -31,7 +31,6 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
             next(createError(401, 'Unauthorized'));
             return;
         }
-        //console.log(path.join(req.app.get('root'), "uploads", req.params.id + ".preview.jpg"));
         res.sendFile(path.join(req.app.get('root'), "uploads", req.params.id + ".preview.jpg"));
     });
     router.get('/:uuid/:id.jpg', async(req, res, next) => {
