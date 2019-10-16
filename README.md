@@ -13,22 +13,22 @@ npm install
 npm run build
 
 # Copy Database Config Template
-cp db/DBConfig.js.template db/DBConfig.js
+cp src/db/DBConfig.js.template src/db/DBConfig.js
 
 # Edit Database Config
-vim db/DBConfig.js
+vim src/db/DBConfig.js
 
 # Copy Redis Config Template
-cp db/RedisConfig.js.template db/RedisConfig.js
+cp src/db/RedisConfig.js.template src/db/RedisConfig.js
 
 # Edit Redis Config
-vim db/RedisConfig.js
+vim src/db/RedisConfig.js
 ```
 
 ## Init Database
 ```shell script
 # Chdir to Database Folder
-cd db/
+cd src/db/
 
 # Login to Root User (or any user you want, permission is required)
 mysql -u root -p
