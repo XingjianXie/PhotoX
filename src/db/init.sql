@@ -181,7 +181,7 @@ CREATE TABLE `photo` (
   `height` int(10) unsigned DEFAULT NULL,
   `width` int(10) unsigned DEFAULT NULL,
   `exif_time` timestamp NULL DEFAULT NULL,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `category` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `uploader_id` int(10) unsigned NOT NULL,
   `type` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -287,4 +287,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-13 20:19:17
+-- Dump completed on 2019-10-17 15:42:05
