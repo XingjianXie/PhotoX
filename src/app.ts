@@ -34,7 +34,7 @@ export default async function create_application() {
             return true;
         }
     });
-    const config : any = {};
+    let config : any = {};
     for (let obj of await db(query.config, [])) {
         try {
             config[obj.name] = JSON.parse(obj.value);
@@ -69,6 +69,15 @@ export default async function create_application() {
     app.use(express.static(path.join(app.get('root'), 'public')));
 
     app.use(async(req, res, next) => {
+        config = {};
+        for (let obj of await db(query.config, [])) {
+            try {
+                config[obj.name] = JSON.parse(obj.value);
+            } catch {
+                config[obj.name] = null;
+            }
+        }
+        res.locals.config = config;
         res.locals.session = req.session;
         if (req.session && req.session.sign)
             res.locals.unreadMeessageLength = (await db(query.countQueryMyUnreadMessage, [req.session.userID, req.session.userID]))[0]['COUNT(*)'];
@@ -88,7 +97,6 @@ export default async function create_application() {
         });
 
         res.locals.url = req.url;
-        res.locals.config = config;
         next();
     });
 
