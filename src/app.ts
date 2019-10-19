@@ -17,24 +17,25 @@ import query from "./db/query";
 export default async function create_application() {
     const redisStore = require('connect-redis')(session);
     const multer = require("multer");
+    const RedisConfig = require('./db/RedisConfig');
 
     const app = express();
     app.set('root', path.join(__dirname, '../'));
-    const redis_client = redis.createClient({ host: require('./db/RedisConfig').host, port: require('./db/RedisConfig').port });
+    const redis_client = redis.createClient(RedisConfig);
     const store : Store = new redisStore({ client: redis_client });
     const session_map : any = new Proxy({}, {
         get(target, index) {
-            return promisify(redis_client.get).bind(redis_client)('mark07x_session_map:' + index.toString());
+            return promisify(redis_client.get).bind(redis_client)('session_map:' + index.toString());
         },
         set(target, index, value, receiver) {
             if (value === undefined)
-                redis_client.del('mark07x_session_map:' + index.toString());
+                redis_client.del("session_map:" + index.toString());
             else
-                redis_client.set('mark07x_session_map:' + index.toString(), value);
+                redis_client.set('session_map:' + index.toString(), value);
             return true;
         }
     });
-    const config : any = {};
+    let config : any = {};
     for (let obj of await db(query.config, [])) {
         try {
             config[obj.name] = JSON.parse(obj.value);
@@ -69,15 +70,15 @@ export default async function create_application() {
     app.use(express.static(path.join(app.get('root'), 'public')));
 
     app.use(async(req, res, next) => {
-        const config1 : any = {};
+        config = {};
         for (let obj of await db(query.config, [])) {
             try {
-                config1[obj.name] = JSON.parse(obj.value);
+                config[obj.name] = JSON.parse(obj.value);
             } catch {
-                config1[obj.name] = null;
+                config[obj.name] = null;
             }
         }
-        res.locals.config = config1;
+        res.locals.config = config;
         res.locals.session = req.session;
         if (req.session && req.session.sign)
             res.locals.unreadMeessageLength = (await db(query.countQueryMyUnreadMessage, [req.session.userID, req.session.userID]))[0]['COUNT(*)'];
