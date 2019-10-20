@@ -45,7 +45,7 @@ export default async function create_application() {
     }
 
     app.set('views', 'views');
-    app.set('port', normalizePort(config.port || '3000'));
+    app.set('port', normalizePort(config.port || '3001'));
     function normalizePort(val: string) {
         const port = Number(val);
 

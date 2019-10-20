@@ -64,7 +64,7 @@ update user set phone_number = "(YOUR PHONE NUMBER)" where id = 0;
 ## Debug
 ```shell script
 # Start Server
-npm run debug
+npm run startDev
 ```
 
 ## Run
