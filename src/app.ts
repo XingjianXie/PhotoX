@@ -45,8 +45,26 @@ export default async function create_application() {
     }
 
     app.set('views', 'views');
+    app.set('port', normalizePort(config.port || '3000'));
+    function normalizePort(val: string) {
+        const port = Number(val);
+
+        if (isNaN(port)) {
+            // named pipe
+            return val;
+        }
+
+        if (port >= 0) {
+            // port number
+            return port;
+        }
+
+        return false;
+    }
+
     app.set('view engine', 'pug');
     app.enable('view cache');
+    app.set('env', config.env || "development");
 
     app.use(logger('dev'));
     app.use(express.json());

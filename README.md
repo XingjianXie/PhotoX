@@ -44,7 +44,14 @@ source init.sql;
 
 # Set Your Secret of Session
 # Please, Change This to Your Own String
-insert into config(name, value, deletable) values("session_secret", '"mark07x"', false);
+insert into config(name, value, deletable) values("session_secret", '"mark07x"', true);
+
+# Set Env
+insert into config(name, value, deletable) values("env", '"production"', true);
+
+# Set PORT
+insert into config(name, value, deletable) values("port", '3000', true);
+
 
 # Update the Phone Number of System User
 # Once You Finish This Step, You Could Login to System User
@@ -56,24 +63,12 @@ update user set phone_number = "(YOUR PHONE NUMBER)" where id = 0;
 
 ## Debug
 ```shell script
-# Set Environment to Development
-export NODE_ENV="development"
-
-# Set Http Port to 80 (or any number you want)
-export PORT=80
-
 # Start Server
 npm run debug
 ```
 
 ## Run
 ```shell script
-# Set Environment to Production
-export NODE_ENV="production"
-
-# Set Http Port to 80 (or any number you want)
-export PORT=80
-
 # Start Server
 npm run start
 ```

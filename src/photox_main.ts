@@ -4,30 +4,13 @@ import app from "./app";
 
 async function main() {
   const app = await create_application();
-  const port = normalizePort(process.env.PORT || '3000');
-  app.set('port', port);
+  const port = app.get('port');
 
   const server = http.createServer(app);
 
   server.listen(port);
   server.on('error', onError);
   server.on('listening', onListening);
-
-  function normalizePort(val: string) {
-    const port = Number(val);
-
-    if (isNaN(port)) {
-      // named pipe
-      return val;
-    }
-
-    if (port >= 0) {
-      // port number
-      return port;
-    }
-
-    return false;
-  }
 
   function onError(error : any) {
     if (error.syscall !== 'listen') {
