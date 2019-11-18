@@ -62,7 +62,7 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES ('allow_register','false',0),('disable_log','false',0),('disable_admin_reset_password','false',0),('disable_admin_delete_user','false',0),('disable_admin_add_user','false',0),('disable_admin_edit_user','false',0),('disable_admin_kick_user','true',0),('disable_admin_send_message','false',0),('disable_photo_md5','false',0),('disable_admin_edit_category','true',0),('disable_admin_add_category','false',0),('disable_admin_delete_category','true',0),('disable_dangerous_action_confirm','false',0),('allow_guest_upload','true',0),('guest_upload_secret','\"Halloween\"',0),('completely_delete_user','true',0),('welcome_word','\"Welcome to PhotoX\"',0);
+INSERT INTO `config` VALUES ('allow_register','false',0),('disable_log','false',0),('disable_admin_reset_password','false',0),('disable_admin_delete_user','false',0),('disable_admin_add_user','false',0),('disable_admin_edit_user','false',0),('disable_admin_kick_user','true',0),('disable_admin_send_message','false',0),('disable_photo_md5','false',0),('disable_admin_edit_category','true',0),('disable_admin_add_category','false',0),('disable_admin_delete_category','true',0),('disable_dangerous_action_confirm','false',0),('allow_guest_upload','true',0),('guest_upload_secret','\"Halloween\"',0),('completely_delete_user','true',0),('welcome_word','\"Welcome to PhotoX\"',0),('bg1','0',0),('bg2','0',0),('bg3','0',0);
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 

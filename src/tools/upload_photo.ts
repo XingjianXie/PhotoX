@@ -26,7 +26,7 @@ export = async(config: any, db: (sql : string, values : any) => Promise<any>, fi
             if (!metadata.width) throw "Can't get the size";
 
             await t.withMetadata().toFile(path.join(root, 'uploads', id + '.jpg'));
-            await t.resize(Math.min(metadata.width, 400)).toFile(path.join(root, 'uploads', id + '.preview.jpg'));
+            await t.resize(Math.min(metadata.width, 1000)).toFile(path.join(root, 'uploads', id + '.preview.jpg'));
 
             await db(query.convertPhoto, [metadata.height, metadata.width, metadata.exif && exif(metadata.exif).exif.DateTimeOriginal ? exif(metadata.exif).exif.DateTimeOriginal.getTime()/1000 + (new Date()).getTimezoneOffset() * 60: null, id]);
 

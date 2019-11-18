@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "pm2 start src/photox_main.js -i max --name PhotoX",
-    "startDev": "pm2 start src/photox_main.js -i max --name PhotoXDev --watch",
+    "startDev": "pm2 start src/photox_main.js -i max --name PhotoXDev",
     "stop": "pm2 stop PhotoX",
     "stopDev": "pm2 stop PhotoXDev",
     "restart": "pm2 restart PhotoX",

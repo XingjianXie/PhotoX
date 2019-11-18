@@ -59,6 +59,8 @@ insert into config(name, value, deletable) values("port", '3000', true);
 # And Password "Password"
 # Then You Should Reset Your Password
 update user set phone_number = "(YOUR PHONE NUMBER)" where id = 0;
+
+# Remember to change configs bg1 ~ bg3 to the ID of your uploaded photos to change the cover in the login page
 ```
 
 ## Debug
