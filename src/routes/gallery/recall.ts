@@ -18,7 +18,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             return;
         }
         const dw : any[] = await db(query.getDownloadByPhotoId, [Number(req.body.photoID)]);
-        if (req.session.type <= rs[0].uploader_type && (req.session.userID !== rs[0].uploader_id || (dw.length && !req.session.type))) {
+        if (req.session.type && (req.session.userID !== rs[0].uploader_id || (dw.length && !req.session.type))) {
             log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Recall", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
