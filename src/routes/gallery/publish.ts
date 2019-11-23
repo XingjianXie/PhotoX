@@ -21,7 +21,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(404, 'Photo Not Found'));
             return;
         }
-        if (!(rs[0].uploader_type == 126 && req.session.type && res.locals.config.allow_guest_upload) && req.session.userID !== rs[0].uploader_id) {
+        if (!(req.session.type && res.locals.config.allow_admin_publish_others) && req.session.userID !== rs[0].uploader_id) {
             log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Publish", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
@@ -46,7 +46,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(404, 'Photo Not Found'));
             return;
         }
-        if (!(rs[0].uploader_type == 126 && req.session.type && res.locals.config.allow_guest_upload) && req.session.userID !== rs[0].uploader_id) {
+        if (!(req.session.type && res.locals.config.allow_admin_publish_others) && req.session.userID !== rs[0].uploader_id) {
             log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Publish", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
