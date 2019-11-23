@@ -19,7 +19,7 @@ block topr
 block content
   .card.shadow
     .card-header.py-3
-      p.d-inline.text-primary.m-0.font-weight-bold Guest Upload
+      p.d-inline.text-primary.m-0.font-weight-bold All Upload
       button.d-inline.btn.ml-3.d-inline.btn-primary.btn-sm(onclick="window.location='/gallery/upload_center'") Switch to My Upload
     #list.card-body
       if photos.length
@@ -37,7 +37,7 @@ block content
               each val in photos
                 tr
                   th= val['id']
-                  th #{val.uploader_name} (#{val.uploader_id}, GUEST)
+                  th #{val.uploader_name} (#{val.uploader_id + (val.uploader_type === 126 ? ", GUEST" : "")})
                   th
                     .bkimg.rounded(style={'background-image' : 'url(' + "/uploads/" + val.id + ".preview.jpg" + ')', 'background-size' : '100%', width: '100px'}, rel-height=val.height, rel-width=val.width)
                   th= val.type === 0 ? "Converting" : "Unpublished"
@@ -71,7 +71,7 @@ block content
 append javascripts
   script.
     function cu_submit(d, ext, rep) {
-      let fd = d.serialize() + (ext ? ('&' + encodeURIComponent(ext.attr('name')) + '=' + encodeURIComponent(ext.attr('value'))) : '') + '&guest=1';
+      let fd = d.serialize() + (ext ? ('&' + encodeURIComponent(ext.attr('name')) + '=' + encodeURIComponent(ext.attr('value'))) : '') + '&others=1';
       const xhr = new XMLHttpRequest();
       const url = (d.attr('action') || '/gallery/upload_center') + '?' + fd;
       xhr.open('get', url, true);

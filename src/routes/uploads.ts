@@ -30,7 +30,7 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
                 next(createError(404, 'Photo Not Found'));
                 return;
             }
-            if (rs[0].type === 1 && req.session.type <= rs[0].uploader_type && req.session.userID !== rs[0].uploader_id) {
+            if (rs[0].type === 1 && !req.session.type && req.session.userID !== rs[0].uploader_id) {
                 next(createError(401, 'Unauthorized'));
                 return;
             }
