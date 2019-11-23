@@ -23,17 +23,17 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         if (cur_category) {
             rs = !req.query.wd
                 ? await db(query.queryPublishedPhotoWithLimitSpecificCategory, [cur_category, (pg - 1) * maximum, maximum])
-                : await db(query.searchPublishedPhotoWithLimitSpecificCategory, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, req.query.wd, cur_category, (pg - 1) * maximum, maximum]);
+                : await db(query.searchPublishedPhotoWithLimitSpecificCategory, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, cur_category, (pg - 1) * maximum, maximum]);
             total = !req.query.wd
                 ? (await db(query.countQueryPublishedPhotoWithLimitSpecificCategory, [cur_category]))[0]['COUNT(*)']
-                : (await db(query.countSearchPublishedPhotoWithLimitSpecificCategory, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, req.query.wd, cur_category]))[0]['COUNT(*)'];
+                : (await db(query.countSearchPublishedPhotoWithLimitSpecificCategory, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, cur_category]))[0]['COUNT(DISTINCT photo.id)'];
         } else {
             rs = !req.query.wd
                 ? await db(query.queryPublishedPhotoWithLimit, [(pg - 1) * maximum, maximum])
-                : await db(query.searchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
+                : await db(query.searchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
             total = !req.query.wd
                 ? (await db(query.countQueryPublishedPhotoWithLimit, []))[0]['COUNT(*)']
-                : (await db(query.countSearchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
+                : (await db(query.countSearchPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(DISTINCT photo.id)'];
         }
 
 
