@@ -43,6 +43,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             total: total,
             current: pg,
             maximum: maximum,
+            wd: req.query.wd,
         });
     });
     router.post('/', multer.array("photo", 20), async(req, res, next) => {
