@@ -25,7 +25,7 @@ block content
     .card-header.py-3
       p.d-inline.text-primary.m-0.font-weight-bold My Upload
       if (session.type && config.allow_guest_upload)
-         button.d-inline.btn.ml-3.d-inline.btn-primary.btn-sm(onclick="window.location='/gallery/upload_center?guest=1'") Switch to Guest Upload
+         button.d-inline.btn.ml-3.d-inline.btn-primary.btn-sm(onclick="window.location='/gallery/upload_center?guest=1'") Switch to Others Upload
     #list.card-body
       if photos.length
         .table-responsive.table.mt-2(role='grid')

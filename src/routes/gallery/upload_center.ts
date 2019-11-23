@@ -20,16 +20,16 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 5, 1);
         let rs : any[], total : number;
-        if (!req.query.guest) {
+        if (!req.query.others) {
             rs = await db(query.queryUnPublishedPhotoWithLimit, [req.session.userID, (pg - 1) * maximum, maximum]);
             total = (await db(query.countQueryUnPublishedPhotoWithLimit, [req.session.userID]))[0]['COUNT(*)'];
         } else {
             rs = !req.query.wd
-                ? await db(query.queryGuestUnPublishedPhotoWithLimit, [ (pg - 1) * maximum, maximum])
-                : await db(query.searchGuestUnPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
+                ? await db(query.queryOthersUnPublishedPhotoWithLimit, [ (pg - 1) * maximum, maximum])
+                : await db(query.searchOthersUnPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
             total = !req.query.wd
-                ? (await db(query.countQueryGuestUnPublishedPhotoWithLimit, []))[0]['COUNT(*)']
-                : (await db(query.countSearchGuestUnPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
+                ? (await db(query.countQueryOthersUnPublishedPhotoWithLimit, []))[0]['COUNT(*)']
+                : (await db(query.countSearchOthersUnPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
         }
 
 
@@ -38,7 +38,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             return;
         }
 
-        res.render(!req.query.guest ? 'upload_center' : 'upload_center_guest', {
+        res.render(!req.query.others ? 'upload_center' : 'upload_center_others', {
             photos: rs,
             total: total,
             current: pg,
