@@ -4,8 +4,10 @@
     form
       if wd
         input.d-none(name='wd', value=wd, autocomplete="off", spellcheck="false", maxlength=30)
-      if max
+      if maximum
         input.d-none(name='max', value=maximum, autocomplete="off", spellcheck="false", maxlength=30)
+      if cur_category
+        input.d-none(name='category', value=cur_category, autocomplete="off", spellcheck="false", maxlength=30)
       ul.pagination
         if 2 <= current - 2
           li.page-item(class={"active": current === 1})
@@ -34,8 +36,12 @@
   nav
     - var end = Math.ceil(total / maximum);
     form
-      input.d-none(name='wd', value=wd, autocomplete="off", spellcheck="false", maxlength=30)
-      input.d-none(name='max', value=maximum, autocomplete="off", spellcheck="false", maxlength=30)
+      if wd
+        input.d-none(name='wd', value=wd, autocomplete="off", spellcheck="false", maxlength=30)
+      if maximum
+        input.d-none(name='max', value=maximum, autocomplete="off", spellcheck="false", maxlength=30)
+      if cur_category
+        input.d-none(name='category', value=cur_category, autocomplete="off", spellcheck="false", maxlength=30)
       ul.pagination
         li.page-item(class={disabled: current === 1})
           input.page-link(onclick="cu_submit($(this).parents('form'), $(this), true)", type='button', name='pg', value=current - 1, autocomplete="off", spellcheck="false", maxlength=30)

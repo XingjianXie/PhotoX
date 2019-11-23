@@ -61,7 +61,8 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             maximum: maximum,
             uploadsLength: (await db(query.countUnPublishedPhoto, [req.session.userID]))[0]['COUNT(*)'],
             category: category,
-            cur_category: cur_category
+            cur_category: cur_category,
+            wd: req.query.wd
         });
     });
     router.use('/upload_center', upload_center(db, multer));
