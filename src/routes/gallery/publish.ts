@@ -53,7 +53,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         }
         if (!req.body.category || !req.body.name) {
             log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Publish", false, "Error: Bad Request");
-            next(createError(400, 'Type or Name Required'));
+            next(createError(400, 'Category or Name Required'));
             return;
         }
         if (req.body.confirm === '1' && !res.locals.config.disable_dangerous_action_confirm) {

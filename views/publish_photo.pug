@@ -17,7 +17,11 @@ block content
     .col-sm-12.col-md-11.col-lg-10.col-xl-9
       .card.shadow-lg.o-hidden.border-0.my-5
         .card-header.py-3
-          p.text-primary.m-0.font-weight-bold Publish Form
+          p.text-primary.m-0.font-weight-bold.d-inline Publish To:
+          select.form-control.form-control-sm.ml-3.d-inline.custom-select.custom-select-sm.col-4(onchange="$('#category').val($(this).val()); input();")
+            option(value= "")= "Select Category"
+            each val in category
+              option(value= val.id)= val.name
         .card-body.p-0
           .row.d-inline.d-lg-flex
             .col-10.col-lg-6.m-auto
@@ -26,16 +30,8 @@ block content
             .col-12.col-lg-6.m-auto
               .p-4.p-lg-5
                 form.user(method="post")
+                  input#category.d-none(value='', name='category', autocomplete="off", spellcheck="false", maxlength=30)
                   input#confirm.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
-                  .form-group
-                    input.d-none(name='category', autocomplete="off", spellcheck="false", maxlength=30)
-                    input#type0.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type='text', placeholder="Category", onfocus='this.blur()', autocomplete="off", spellcheck="false", maxlength=30)
-                    .dropdown-menu(role='menu')
-                      each c in category
-                        button.dropdown-item(role='presentation', onclick="$('#type0').val('" + c.name + "'); $('[name=category]').val(" + c.id + "); input(); return false;")= c.name
-                      if session.type
-                        .dropdown-divider
-                        a.dropdown-item(href='/gallery/category', role='presentation') List Categories
                   .form-group
                     input.form-control.form-control-user(type="text", placeholder="Name", name="name", oninput="input()", autocomplete="off", spellcheck="false", maxlength=30)
 
