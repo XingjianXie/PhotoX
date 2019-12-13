@@ -3,5 +3,6 @@ module.exports = {
     user: 'root',
     password: 'password',
     database: 'photox',
-    port: 3306
+    port: 3306,
+    charset: 'utf8mb4'
 };
