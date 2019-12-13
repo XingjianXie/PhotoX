@@ -1,6 +1,6 @@
 # PhotoX
 **PhotoX is used to manage photos for Year Book Club of CNU High School.**  
-We will support upload and download photos, and we have a simply user manage system. The download of photos will be recorded so that we can make sure a photo is used for only one time.  
+We support upload and download photos, and we have a simply user manage system. The download of photos will be recorded so that we can make sure a photo is used for only one time.  
 
 ## Build
 **Node and NPM should be installed at first.**  
