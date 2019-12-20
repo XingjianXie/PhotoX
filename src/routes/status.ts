@@ -12,8 +12,8 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
             res.redirect('/');
             return;
         }
-        const users = await db(query.allUser, []);
         const usersDeleted = await db(query.allDeletedUser, []);
+        const users = await db(query.allUser, []) - usersDeleted;
         const photosPublished = await db(query.allPublishedPhoto, []);
         const photosUnpublished = await db(query.allUnpublishedPhoto, []);
         const photosUnconverted = await db(query.allUnconvertedPhoto, []);
