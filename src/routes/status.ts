@@ -13,7 +13,7 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
             return;
         }
         const usersDeleted = await db(query.allDeletedUser, []);
-        const users = await db(query.allUser, []) - usersDeleted;
+        const usersLength = (await db(query.allUser, [])).length - usersDeleted.length;
         const photosPublished = await db(query.allPublishedPhoto, []);
         const photosUnpublished = await db(query.allUnpublishedPhoto, []);
         const photosUnconverted = await db(query.allUnconvertedPhoto, []);
@@ -25,7 +25,7 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
         const successLogs = await db(query.allSuccessLog, []);
         const failLogs = await db(query.allFailLog, []);
         res.render("status", {
-            users,
+            usersLength,
             usersDeleted,
             photosPublished,
             photosUnpublished,
