@@ -2,6 +2,8 @@ export default {
     //User
     addUser: 'INSERT INTO user(phone_number, name, type, passcode, passrd) VALUES(?,?,?,?,?)',
     getUserById: 'SELECT * FROM user WHERE id=? AND deleted = 0',
+    allUser: 'SELECT * FROM user WHERE deleted = 0',
+    allDeletedUser: 'SELECT * FROM user WHERE deleted = 1 OR passcode="" OR passrd=""',
     getUserByPhoneNumber: 'SELECT * FROM user WHERE phone_number=? AND deleted = 0',
     queryUserWithLimit: 'SELECT * FROM user WHERE type <= ? AND deleted = 0 LIMIT ?,?',
     countQueryUserWithLimit: 'SELECT COUNT(*) FROM user WHERE type <= ? AND deleted = 0',
@@ -24,6 +26,11 @@ export default {
     getPhotoByMd5: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.md5 = ? AND photo.deleted = 0',
     deletePhoto: 'UPDATE photo SET deleted = 1, md5=NULL WHERE id = ?',
     recallPhoto: 'UPDATE photo SET type = 1 WHERE id = ? AND type=2',
+
+    allPublishedPhoto: 'SELECT * from photo WHERE photo.type = 2 AND photo.deleted = 0',
+    allUnpublishedPhoto: 'SELECT * from photo WHERE photo.type = 1 AND photo.deleted = 0',
+    allUnconvertedPhoto: 'SELECT * from photo WHERE photo.type = 0 AND photo.deleted = 0',
+    allDeletedPhoto: 'SELECT * from photo WHERE photo.deleted = 1',
 
     countUnPublishedPhoto: 'SELECT COUNT(*) FROM photo WHERE photo.uploader_id = ? AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0',
 
@@ -93,6 +100,9 @@ export default {
 
     //Log
     log: 'INSERT INTO log(operator, target_type, target, action, success, extra_message) VALUES(?, ?, ?, ?, ?, ?)',
+    allLog: 'SELECT * FROM log',
+    allSuccessLog: 'SELECT * FROM log where success=true',
+    allFailLog: 'SELECT * FROM log where success=false',
     queryLogWithLimit: 'SELECT log.*, operator_obj.name AS operator_name, target_type, target, COALESCE(targetP_obj.name, targetU_obj.name, targetC_obj.name, "NO NAME") AS target_name, action, success, extra_message FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target LEFT OUTER JOIN category AS targetC_obj ON log.target_type="Category" AND targetC_obj.id=log.target WHERE operator_obj.type <= ? ORDER BY log.id DESC LIMIT ?,?',
     countQueryLogWithLimit: 'SELECT COUNT(*) FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target LEFT OUTER JOIN category AS targetC_obj ON log.target_type="Category" AND targetC_obj.id=log.target WHERE operator_obj.type <= ?',
     searchLogWithLimit: 'SELECT log.*, operator_obj.name AS operator_name, target_type, target, COALESCE(targetP_obj.name, targetU_obj.name, targetC_obj.name, "NO NAME") AS target_name, action, success, extra_message FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target LEFT OUTER JOIN category AS targetC_obj ON log.target_type="Category" AND targetC_obj.id=log.target WHERE operator_obj.type <= ? AND (POSITION(? IN log.id) OR POSITION(? IN COALESCE(targetP_obj.name, targetU_obj.name, targetC_obj.name, "Message")) OR POSITION(? IN target) OR POSITION(? IN operator_obj.name) OR POSITION(? IN operator) OR POSITION(? IN action)) ORDER BY log.id DESC LIMIT ?,?',

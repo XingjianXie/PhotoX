@@ -15,6 +15,7 @@ import message from './message'
 import uploads from './uploads'
 import config from './config'
 import guest_upload from "./guest_upload";
+import status from "./status";
 
 export default (session_map : any, db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
@@ -35,6 +36,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
     router.use('/message', message(db));
     router.use('/uploads', uploads(db));
     router.use('/config', config(db));
+    router.use('/status', status(db));
 
     router.use((req, res, next) => {
         next(createError(404));

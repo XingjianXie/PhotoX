@@ -1,0 +1,313 @@
+extends layout
+
+block title
+  title PhotoX | Status
+
+block top
+  h3.text-dark.mb-0.m-2.d-none.d-md-inline Status
+  h5.text-dark.mb-0.m-2.d-md-none Status
+
+block content
+  .card.shadow.mb-4.mx-2
+    .card-header.py-3
+      p.text-primary.m-0.font-weight-bold System Status
+    .card-body.mx-2
+      .row
+        .col-lg-4.col-md-6.d-inline-flex
+          .card.shadow.col-12.m-2.px-0
+            .card-header
+              p.text-dark.m-0.font-weight-bold System Memory Usage
+            .card-body
+              .chart-pie
+                .chartjs-size-monitor
+                  .chartjs-size-monitor-expand
+                    div
+                  .chartjs-size-monitor-shrink
+                    div
+                canvas#sysMemoryUsed.chartjs-render-monitor
+
+        .col-lg-4.col-md-6.d-inline-flex
+          .card.shadow.col-12.m-2.px-0
+            .card-header
+              p.text-dark.m-0.font-weight-bold Cluster Memory Usage
+            .card-body
+              .chart-pie
+                .chartjs-size-monitor
+                  .chartjs-size-monitor-expand
+                    div
+                  .chartjs-size-monitor-shrink
+                    div
+                canvas#nodeMemoryUsed.chartjs-render-monitor
+        .col-lg-4.col-md-12.d-inline-flex
+          .card.shadow.col-12.m-2.px-0
+            .card-header
+              p.text-dark.m-0.font-weight-bold Load Avg
+            .card-body
+              .chart-area
+                .chartjs-size-monitor
+                  .chartjs-size-monitor-expand
+                    div
+                  .chartjs-size-monitor-shrink
+                    div
+                canvas#loadAvg.chartjs-render-monitor
+
+  .col-lg-6.d-lg-inline-flex.px-2
+    .col-12.px-0
+      .card.shadow.mb-4.px-0.col-12
+        .card-header.py-3
+          p.text-primary.m-0.font-weight-bold User Management Status
+        .card-body
+          .card.border-left-success.shadow.h-100.col-12.my-2
+            .card-body
+              .row.no-gutters.align-items-center
+                .col.mr-2
+                  .text-xs.font-weight-bold.text-success.text-uppercase.mb-1 Password Auth
+                  .h5.mb-0.font-weight-bold.text-gray-800=users.length
+                .col-auto
+                  i.fas.fa-user-alt.fa-2x.text-gray-300
+          .card.border-left-danger.shadow.h-100.col-12.my-2
+            .card-body
+              .row.no-gutters.align-items-center
+                .col.mr-2
+                  .text-xs.font-weight-bold.text-danger.text-uppercase.mb-1 No Password
+                  .h5.mb-0.font-weight-bold.text-gray-800=usersDeleted.length
+                .col-auto
+                  i.fas.fa-user-alt.fa-2x.text-gray-300
+      .card.shadow.mb-4.px-0.col-12
+        .card-header.py-3
+          p.text-primary.m-0.font-weight-bold Log Status [log is #{config.disable_log ? "disabled" : "enabled"}]
+        .card-body
+          .card.border-left-primary.shadow.h-100.col-12.my-2
+            .card-body
+              .row.no-gutters.align-items-center
+                .col.mr-2
+                  .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 All
+                  .h5.mb-0.font-weight-bold.text-gray-800=allLogs.length
+                .col-auto
+                  i.fas.fa-book.fa-2x.text-gray-300
+          .card.border-left-success.shadow.h-100.col-12.my-2
+            .card-body
+              .row.no-gutters.align-items-center
+                .col.mr-2
+                  .text-xs.font-weight-bold.text-success.text-uppercase.mb-1 Success
+                  .h5.mb-0.font-weight-bold.text-gray-800=successLogs.length
+                .col-auto
+                  i.fas.fa-book.fa-2x.text-gray-300
+          .card.border-left-danger.shadow.h-100.col-12.my-2
+            .card-body
+              .row.no-gutters.align-items-center
+                .col.mr-2
+                  .text-xs.font-weight-bold.text-danger.text-uppercase.mb-1 Fail
+                  .h5.mb-0.font-weight-bold.text-gray-800=failLogs.length
+                .col-auto
+                  i.fas.fa-book.fa-2x.text-gray-300
+
+  .col-lg-6.d-lg-inline-flex.px-2
+    .col-12.px-0
+      .card.shadow.mb-4.px-0.col-12
+        .card-header.py-3
+          p.text-primary.m-0.font-weight-bold Gallery Status
+        .card-body
+          .card.border-left-success.shadow.h-100.col-12.my-2
+            .card-body
+              .row.no-gutters.align-items-center
+                .col.mr-2
+                  .text-xs.font-weight-bold.text-success.text-uppercase.mb-1 Published
+                  .h5.mb-0.font-weight-bold.text-gray-800=photosPublished.length
+                .col-auto
+                  i.fas.fa-image.fa-2x.text-gray-300
+          .card.border-left-primary.shadow.h-100.col-12.my-2
+            .card-body
+              .row.no-gutters.align-items-center
+                .col.mr-2
+                  .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Unpublished
+                  .h5.mb-0.font-weight-bold.text-gray-800=photosUnpublished.length
+                .col-auto
+                  i.fas.fa-image.fa-2x.text-gray-300
+          .card.border-left-warning.shadow.h-100.col-12.my-2
+            .card-body
+              .row.no-gutters.align-items-center
+                .col.mr-2
+                  .text-xs.font-weight-bold.text-warning.text-uppercase.mb-1 Unconverted
+                  .h5.mb-0.font-weight-bold.text-gray-800=photosUnpublished.length
+                .col-auto
+                  i.fas.fa-image.fa-2x.text-gray-300
+          .card.border-left-danger.shadow.h-100.col-12.my-2
+            .card-body
+              .row.no-gutters.align-items-center
+                .col.mr-2
+                  .text-xs.font-weight-bold.text-danger.text-uppercase.mb-1 Deleted
+                  .h5.mb-0.font-weight-bold.text-gray-800=photosDeleted.length
+                .col-auto
+                  i.fas.fa-image.fa-2x.text-gray-300
+
+      .card.shadow.mb-4.px-0.col-12
+        .card-header.py-3
+          p.text-primary.m-0.font-weight-bold System Version
+        .card-body
+          .card.border-left-primary.shadow.h-100.col-12.my-2
+            .card-body
+              .row.no-gutters.align-items-center
+                .col.mr-2
+                  .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Git Branch
+                  .h5.mb-0.font-weight-bold.text-gray-800 Stable
+                .col-auto
+                  i.fas.fa-code-branch.fa-2x.text-gray-300
+
+
+append javascripts
+  script
+    | var myPieChart = new Chart($("#sysMemoryUsed"), {
+    |   type: 'doughnut',
+    |   data: {
+    |     labels: ["Used", "Available"],
+    |     datasets: [{
+    |       data: [#{(sysMemUsed/1e6).toFixed(2)}, #{(sysMemAvailable/1e6).toFixed(2)}],
+    |       backgroundColor: ['#e74a3b', '#1cc88a'],
+    |       hoverBorderColor: "rgba(234, 236, 244, 1)",
+    |     }],
+    |   },
+    |   options: {
+    |     maintainAspectRatio: false,
+    |     tooltips: {
+    |       backgroundColor: "rgb(255,255,255)",
+    |       bodyFontColor: "#858796",
+    |       borderColor: '#dddfeb',
+    |       borderWidth: 1,
+    |       xPadding: 15,
+    |       yPadding: 15,
+    |       displayColors: false,
+    |       caretPadding: 10,
+    |       callbacks: {
+    |         label: function (tooltipItem, data) {
+    |           return data.labels[tooltipItem.index] + ": " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + 'MB';
+    |         }
+    |       }
+    |     },
+    |     legend: {
+    |       display: false
+    |     },
+    |     cutoutPercentage: 80,
+    |   },
+    | });
+  script
+    | var myPieChart = new Chart($("#nodeMemoryUsed"), {
+    |   type: 'doughnut',
+    |   data: {
+    |     labels: ["Used", "Available"],
+    |     datasets: [{
+    |       data: [#{(nodeMemUsed / 1e6).toFixed(2)}, #{(nodeMemAvailable / 1e6).toFixed(2)}],
+    |       backgroundColor: ['#e74a3b', '#1cc88a'],
+    |       hoverBorderColor: "rgba(234, 236, 244, 1)",
+    |     }],
+    |   },
+    |   options: {
+    |     maintainAspectRatio: false,
+    |     tooltips: {
+    |       backgroundColor: "rgb(255,255,255)",
+    |       bodyFontColor: "#858796",
+    |       borderColor: '#dddfeb',
+    |       borderWidth: 1,
+    |       xPadding: 15,
+    |       yPadding: 15,
+    |       displayColors: false,
+    |       caretPadding: 10,
+    |       callbacks: {
+    |         label: function (tooltipItem, data) {
+    |           return data.labels[tooltipItem.index] + ": " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + 'MB';
+    |         }
+    |       }
+    |     },
+    |     legend: {
+    |       display: false
+    |     },
+    |     cutoutPercentage: 80,
+    |   },
+    | });
+  script
+    | var myLineChart = new Chart($("#loadAvg"), {
+    |   type: 'line',
+    |   data: {
+    |     labels: ["15 min", "5 min", "1 min"],
+    |     datasets: [{
+    |       label: "Load Avg",
+    |       lineTension: 0.3,
+    |       backgroundColor: "rgba(78, 115, 223, 0.05)",
+    |       borderColor: "rgba(78, 115, 223, 1)",
+    |       pointRadius: 3,
+    |       pointBackgroundColor: "rgba(78, 115, 223, 1)",
+    |       pointBorderColor: "rgba(78, 115, 223, 1)",
+    |       pointHoverRadius: 3,
+    |       pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+    |       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+    |       pointHitRadius: 10,
+    |       pointBorderWidth: 2,
+    |       data: [#{min15.toFixed(2)}, #{min5.toFixed(2)}, #{min1.toFixed(2)}],
+    |     }],
+    |   },
+    |   options: {
+    |     maintainAspectRatio: false,
+    |     layout: {
+    |       padding: {
+    |         left: 10,
+    |         right: 25,
+    |         top: 25,
+    |         bottom: 0
+    |       }
+    |     },
+    |     scales: {
+    |       xAxes: [{
+    |         time: {
+    |           unit: 'date'
+    |         },
+    |         gridLines: {
+    |           display: false,
+    |           drawBorder: false
+    |         },
+    |         ticks: {
+    |           maxTicksLimit: 7
+    |         }
+    |       }],
+    |       yAxes: [{
+    |         ticks: {
+    |           maxTicksLimit: 5,
+    |           padding: 10,
+    |           callback: function (value, index, values) {
+    |             return value + "%";
+    |           }
+    |         },
+    |         gridLines: {
+    |           color: "rgb(234, 236, 244)",
+    |           zeroLineColor: "rgb(234, 236, 244)",
+    |           drawBorder: false,
+    |           borderDash: [2],
+    |           zeroLineBorderDash: [2]
+    |         }
+    |       }],
+    |     },
+    |     legend: {
+    |       display: false
+    |     },
+    |     tooltips: {
+    |       backgroundColor: "rgb(255,255,255)",
+    |       bodyFontColor: "#858796",
+    |       titleMarginBottom: 10,
+    |       titleFontColor: '#6e707e',
+    |       titleFontSize: 14,
+    |       borderColor: '#dddfeb',
+    |       borderWidth: 1,
+    |       xPadding: 15,
+    |       yPadding: 15,
+    |       displayColors: false,
+    |       intersect: false,
+    |       mode: 'index',
+    |       caretPadding: 10,
+    |       callbacks: {
+    |         label: function (tooltipItem, chart) {
+    |           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+    |           return datasetLabel + ': ' + tooltipItem.yLabel + '%';
+    |         }
+    |       }
+    |     }
+    |   }
+    | });
