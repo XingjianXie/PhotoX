@@ -3,7 +3,7 @@ export default {
     addUser: 'INSERT INTO user(phone_number, name, type, passcode, passrd) VALUES(?,?,?,?,?)',
     getUserById: 'SELECT * FROM user WHERE id=? AND deleted = 0',
     allUser: 'SELECT * FROM user WHERE deleted = 0',
-    allDeletedUser: 'SELECT * FROM user WHERE deleted = 1 OR passcode="" OR passrd=""',
+    allDeletedUser: 'SELECT * FROM user WHERE deleted = 1 OR passcode="" OR passrd="" OR passcode=NULL OR passrd=NULL',
     getUserByPhoneNumber: 'SELECT * FROM user WHERE phone_number=? AND deleted = 0',
     queryUserWithLimit: 'SELECT * FROM user WHERE type <= ? AND deleted = 0 LIMIT ?,?',
     countQueryUserWithLimit: 'SELECT COUNT(*) FROM user WHERE type <= ? AND deleted = 0',
