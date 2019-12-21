@@ -46,7 +46,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             wd: req.query.wd,
         });
     });
-    router.post('/', multer.array("photo", 20), async(req, res, next) => {
+    router.post('/', multer.array("photo", 50), async(req, res, next) => {
         if (!req.session || !req.session.sign) {
             next(createError(401, 'Unauthorized'));
             return;

@@ -11,10 +11,10 @@ block content
   .card.shadow.mb-4.mx-2
     .card-header.py-3
       p.text-primary.m-0.font-weight-bold System Status
-    .card-body.mx-2
-      .row
-        .col-lg-4.col-md-6.d-inline-flex
-          .card.shadow.col-12.m-2.px-0
+    .card-body.px-3
+      .row.no-gutters
+        .col-lg-4.col-md-6.d-inline-flex.px-2
+          .card.shadow.col-12.my-2.p-0
             .card-header
               p.text-dark.m-0.font-weight-bold System Memory Usage
             .card-body
@@ -26,8 +26,8 @@ block content
                     div
                 canvas#sysMemoryUsed.chartjs-render-monitor
 
-        .col-lg-4.col-md-6.d-inline-flex
-          .card.shadow.col-12.m-2.px-0
+        .col-lg-4.col-md-6.d-inline-flex.px-2
+          .card.shadow.col-12.my-2.p-0
             .card-header
               p.text-dark.m-0.font-weight-bold Cluster Memory Usage
             .card-body
@@ -38,8 +38,8 @@ block content
                   .chartjs-size-monitor-shrink
                     div
                 canvas#nodeMemoryUsed.chartjs-render-monitor
-        .col-lg-4.col-md-12.d-inline-flex
-          .card.shadow.col-12.m-2.px-0
+        .col-lg-4.col-md-12.d-inline-flex.px-2
+          .card.shadow.col-12.my-2.p-0
             .card-header
               p.text-dark.m-0.font-weight-bold Load Avg
             .card-body
@@ -52,8 +52,8 @@ block content
                 canvas#loadAvg.chartjs-render-monitor
 
   .col-lg-6.d-lg-inline-flex.px-2
-    .col-12.px-0
-      .card.shadow.mb-4.px-0.col-12
+    .col-12.p-0
+      .card.shadow.mb-4.p-0.col-12
         .card-header.py-3
           p.text-primary.m-0.font-weight-bold User Management Status
         .card-body
@@ -73,7 +73,7 @@ block content
                   .h5.mb-0.font-weight-bold.text-gray-800=usersDeleted.length
                 .col-auto
                   i.fas.fa-user-alt.fa-2x.text-gray-300
-      .card.shadow.mb-4.px-0.col-12
+      .card.shadow.mb-4.p-0.col-12
         .card-header.py-3
           p.text-primary.m-0.font-weight-bold Log Status [log is #{config.disable_log ? "disabled" : "enabled"}]
         .card-body
@@ -103,8 +103,8 @@ block content
                   i.fas.fa-book.fa-2x.text-gray-300
 
   .col-lg-6.d-lg-inline-flex.px-2
-    .col-12.px-0
-      .card.shadow.mb-4.px-0.col-12
+    .col-12.p-0
+      .card.shadow.mb-4.p-0.col-12
         .card-header.py-3
           p.text-primary.m-0.font-weight-bold Gallery Status
         .card-body
@@ -141,7 +141,7 @@ block content
                 .col-auto
                   i.fas.fa-image.fa-2x.text-gray-300
 
-      .card.shadow.mb-4.px-0.col-12
+      .card.shadow.mb-4.p-0.col-12
         .card-header.py-3
           p.text-primary.m-0.font-weight-bold System Version
         .card-body
@@ -153,6 +153,40 @@ block content
                   .h5.mb-0.font-weight-bold.text-gray-800 Stable
                 .col-auto
                   i.fas.fa-code-branch.fa-2x.text-gray-300
+
+  .card.shadow.mb-4.mx-2
+    .card-header.py-3
+      p.text-primary.m-0.font-weight-bold Maintenance Scripts (Coming Soon)
+    .card-header
+      .text-danger For Running Any One of Scripts Below, An Email Will Be Sent to the Current Maintainer of System, and A Group Message Will Be Sent to All Users, Including All Details of the Script and Its Results.
+    .card-body
+      .card.border-left-dark.shadow.h-100.col-12.my-2
+        .card-body
+          .row.no-gutters.align-items-center
+            .col.mr-2
+              .text-xs.font-weight-bold.text-dark.text-uppercase.mb-1 Restart Server
+              .h5.mb-0.font-weight-bold.text-dark Restart This Server Immediately. Service Engineer's Allowance Required.
+            .col-auto
+              button.btn.p-0.col-12.text-left(onclick="alert(\"Coming Soon\")", disabled)
+                i.far.fa-caret-square-right.fa-2x.text-danger
+      .card.border-left-dark.shadow.h-100.col-12.my-2
+        .card-body
+          .row.no-gutters.align-items-center
+            .col.mr-2
+              .text-xs.font-weight-bold.text-dark.text-uppercase.mb-1 Reload Preview
+              .h5.mb-0.font-weight-bold.text-dark Remove All Preview Photos and Generate It Again. Service Engineer's Allowance Required.
+            .col-auto
+              button.btn.p-0.col-12.text-left(onclick="alert(\"Coming Soon\")", disabled)
+                i.far.fa-caret-square-right.fa-2x.text-danger
+      .card.border-left-dark.shadow.h-100.col-12.my-2
+        .card-body
+          .row.no-gutters.align-items-center
+            .col.mr-2
+              .text-xs.font-weight-bold.text-dark.text-uppercase.mb-1 Clean Up
+              .h5.mb-0.font-weight-bold.text-dark Clean All Deleted Photos on Cache. Admin's Allowance Required.
+            .col-auto
+              button.btn.p-0.col-12.text-left(onclick="alert(\"Coming Soon\")", disabled)
+                i.far.fa-caret-square-right.fa-2x.text-danger
 
 
 append javascripts

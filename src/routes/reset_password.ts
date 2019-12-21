@@ -97,7 +97,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             }
         } else {
             log(res.locals.config, db, req.session.userID, "User", id, "Reset Password", false, "Error: Unauthorized");
-            next(createError(401, 'Password or Permission Unauthorized'));
+            next(createError(401, 'Password or Privilege Unauthorized'));
         }
     });
     return router;

@@ -94,8 +94,8 @@ append javascripts
     function upload() {
       const formData = new FormData();
       const files = document.getElementById('uploadInput').files;
-      if (files.length > 20) {
-        alert("You can only upload less than 20 photos at once");
+      if (files.length > 50) {
+        alert("You can only upload less than 50 photos at once");
         return;
       }
       for (const file of files) {
@@ -134,14 +134,6 @@ append javascripts
           }));
           $('#t1').html(suc.toString() + ' / ' + arr.length.toString() + ' Finished');
           $('#t2').html(suc.toString() + ' / ' + arr.length.toString() + ' Finished');
-
-          $('#input1').val("");
-          $('#input2').val("");
-          $('#input3').val("");
-
-          $('#input1').removeAttr('disabled');
-          $('#input2').removeAttr('disabled');
-          $('#input3').removeAttr('disabled');
 
           $('#uploadButton').html('Submit');
           $('#uploadInfForm').attr("onsubmit", "cu_submit($(this)); return false;");

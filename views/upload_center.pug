@@ -95,8 +95,8 @@ append javascripts
     function upload() {
       const formData = new FormData();
       const files = document.getElementById('uploadInput').files;
-      if (files.length > 20) {
-        alert("You can only upload less than 20 photos at once");
+      if (files.length > 50) {
+        alert("You can only upload less than 50 photos at once");
         return;
       }
       for (const file of files) {
