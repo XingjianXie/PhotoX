@@ -120,8 +120,5 @@ export default async function create_application() {
     });
 
     app.use(index(session_map, db, multer( { limits: { fileSize: 1e8 } } )));
-    await promisify(mkdir)(path.join(app.get('root'), 'uploads')).catch((err) => {
-        if (err.code !== "EEXIST") throw err;
-    });
     return app;
 }
