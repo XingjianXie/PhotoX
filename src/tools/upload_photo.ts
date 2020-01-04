@@ -25,10 +25,17 @@ export = async(config: any, db: (sql : string, values : any) => Promise<any>, fi
             const metadata = await t.metadata();
             if (!metadata.width) throw "Can't get the size";
 
-            await t.withMetadata().toFile(path.join(root, 'uploads', id + '.jpg'));
-            await t.resize(Math.min(metadata.width, 1000)).toFile(path.join(root, 'uploads', id + '.preview.jpg'));
+            console.log(exif(metadata.exif));
+            console.log(metadata);
 
-            await db(query.convertPhoto, [metadata.height, metadata.width, metadata.exif && exif(metadata.exif).exif.DateTimeOriginal ? exif(metadata.exif).exif.DateTimeOriginal.getTime()/1000 + (new Date()).getTimezoneOffset() * 60: null, id]);
+            await t.clone().resize(Math.min(metadata.width, 1000)).rotate().toFile(path.join(root, 'uploads', id + '.preview.jpg'));
+            await t.withMetadata().toFile(path.join(root, 'uploads', id + '.jpg'));
+
+            await db(query.convertPhoto, [
+                (!metadata.orientation || (metadata.orientation >= 1 && metadata.orientation <= 4)) ? metadata.height : metadata.width,
+                (!metadata.orientation || (metadata.orientation >= 1 && metadata.orientation <= 4)) ? metadata.width : metadata.height,
+                metadata.exif && exif(metadata.exif).exif.DateTimeOriginal ? exif(metadata.exif).exif.DateTimeOriginal.getTime()/1000 + (new Date()).getTimezoneOffset() * 60: null, id]
+            );
 
             log(config, db, userID, "Photo", id, "Convert", true, null);
             return true;
