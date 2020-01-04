@@ -1,7 +1,7 @@
 import query from "../db/query";
 import crypto from "crypto";
 import log from "./log";
-import sharp, {bool} from "sharp";
+import sharp from "sharp";
 import path from "path";
 const exif = require('exif-reader');
 
@@ -24,9 +24,6 @@ export = async(config: any, db: (sql : string, values : any) => Promise<any>, fi
             const t = sharp(buffer);
             const metadata = await t.metadata();
             if (!metadata.width) throw "Can't get the size";
-
-            console.log(exif(metadata.exif));
-            console.log(metadata);
 
             await t.clone().resize(Math.min(metadata.width, 1000)).rotate().toFile(path.join(root, 'uploads', id + '.preview.jpg'));
             await t.withMetadata().toFile(path.join(root, 'uploads', id + '.jpg'));
