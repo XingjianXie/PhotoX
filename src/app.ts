@@ -96,6 +96,7 @@ export default async function create_application() {
                 config[obj.name] = null;
             }
         }
+
         res.locals.config = config;
         res.locals.session = req.session;
         if (req.session && req.session.sign)
@@ -116,6 +117,17 @@ export default async function create_application() {
         });
 
         res.locals.url = req.url;
+
+        if (config["maintenance_mode"]) {
+            res.render('notification', {
+                code: 503,
+                msg: "Service Unavailable",
+                inf: "PhotoX is not available. This may imply a maintenance script is running or the service is updating. Please wait for a while.",
+                home: true
+            });
+            return
+        }
+
         next();
     });
 

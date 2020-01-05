@@ -4,6 +4,7 @@ import {make as ps_make, create as ps_create} from '../tools/password';
 import createError from "http-errors";
 import log from "../tools/log";
 import os, {totalmem} from "os";
+import path from "path";
 
 export default (db: (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
@@ -43,5 +44,35 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
             failLogs,
         });
     });
+    router.post('/:name', async(req, res, next) => {
+        if (!req.session || !req.session.sign) {
+            next(createError(401, 'Unauthorized'));
+            return;
+        }
+        if (!req.params.name) {
+            next(createError(400, 'Script Required'));
+            return;
+        }
+        if (req.params.name.includes(".")) {
+            next(createError(400, 'Script Name Should Not Include "."'));
+            return;
+        }
+
+        const script = await import(path.join("../tools/mscript/", encodeURIComponent(req.params.name)))
+
+        await db(query.maintenance, [true]);
+        //=========aha==========
+        const obj = script(db);
+        obj.run();
+        await db(query.addMessage, [0, null,
+            "Script " + encodeURIComponent(req.params.name) + "is ran by " + req.session.name + " (" + req.session.userID + "). " + "<br>"
+            + "The results are: " + obj.result
+        ])
+        //=========aha==========
+        await db(query.maintenance, [false]);
+        obj.callback();
+
+
+    })
     return router;
 };

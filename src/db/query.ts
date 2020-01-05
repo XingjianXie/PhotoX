@@ -123,4 +123,6 @@ export default {
     countQueryConfigWithLimit: 'SELECT COUNT(*) from config',
     searchConfigWithLimit: 'SELECT * from config WHERE POSITION(? IN name) LIMIT ?, ?',
     countSearchConfigWithLimit: 'SELECT COUNT(*) from config WHERE POSITION(? IN name)',
+
+    maintenance: 'UPDATE config SET value=? where name="maintenance_mode"',
 };
