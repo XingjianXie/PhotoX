@@ -41,21 +41,21 @@ block content
                 button#wb.btn.btn-primary.btn-block.text-white.btn-user(type="submit", disabled) Add
 
 append javascripts
-  script
-    | function input(x) {
-    |   if ($('[name=name]').val() && $('[name=pwd]').val() && $('[name=type]').val() && $('[name=phone_number]').val())
-    |     $('[type=submit]').removeAttr('disabled');
-    |   else
-    |     $('[type=submit]').attr('disabled', true);
-    |   if (!x) {
-    |     if ($('[name=type]').val() === '#{session.type}') {
-    |       $('#warning').removeClass('d-none');
-    |       $('#wb').removeClass('btn-primary');
-    |       $('#wb').addClass('btn-danger');
-    |     } else {
-    |       $('#warning').addClass('d-none');
-    |       $('#wb').removeClass('btn-danger');
-    |       $('#wb').addClass('btn-primary');
-    |     }
-    |   }
-    | }
+  script.
+    function input(x) {
+      if ($('[name=name]').val() && $('[name=pwd]').val() && $('[name=type]').val() && $('[name=phone_number]').val())
+        $('[type=submit]').removeAttr('disabled');
+      else
+        $('[type=submit]').attr('disabled', true);
+      if (!x) {
+        if (Number($('[name=type]').val()) === #{session.type}) {
+          $('#warning').removeClass('d-none');
+          $('#wb').removeClass('btn-primary');
+          $('#wb').addClass('btn-danger');
+        } else {
+          $('#warning').addClass('d-none');
+          $('#wb').removeClass('btn-danger');
+          $('#wb').addClass('btn-primary');
+        }
+      }
+    }

@@ -5,7 +5,7 @@ import sharp from "sharp";
 import path from "path";
 const exif = require('exif-reader');
 
-export = async(config: any, db: (sql : string, values : any) => Promise<any>, files: Express.Multer.File[], userID: number, root: string) => {
+export default async(config: any, db: (sql : string, values : any) => Promise<any>, files: Express.Multer.File[], userID: number, root: string) => {
     return await Promise.all(files.map(async(value) => {
         const bufs : any = [];
         value.stream.on('data', (d) => { bufs.push(d); });

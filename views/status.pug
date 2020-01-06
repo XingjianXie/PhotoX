@@ -154,194 +154,177 @@ block content
                 .col-auto
                   i.fas.fa-code-branch.fa-2x.text-gray-300
 
-  .card.shadow.mb-4.mx-2
-    .card-header.py-3
-      p.text-primary.m-0.font-weight-bold Maintenance Scripts
-    .card-header
-      .text-danger Scripts Are Not Set to Be Admin User Only Because of the Experiment of New Privilege Authentication. Please, Do Not Run Any of These Script Unless You Know What Are You Doing. For Running Any One of Scripts Below, An Email Will Be Sent to the Maintainer of System, and A Group Message Will Be Sent to All Users, Including All Details of the Script and Its Results.
-    .card-body
-      .card.border-left-dark.shadow.h-100.col-12.my-2
-        .card-body
-          .row.no-gutters.align-items-center
-            .col.mr-2
-              .text-xs.font-weight-bold.text-dark.text-uppercase.mb-1 Restart Server
-              .h5.mb-0.font-weight-bold.text-dark Restart the Server Immediately. PhotoX Website Will Not Restart Automatically.
-            .col-auto
-              button.btn.p-0.col-12.text-left(onclick="alert(\"Coming Soon\")", disabled)
-                i.far.fa-caret-square-right.fa-2x.text-danger
-      .card.border-left-dark.shadow.h-100.col-12.my-2
-        .card-body
-          .row.no-gutters.align-items-center
-            .col.mr-2
-              .text-xs.font-weight-bold.text-dark.text-uppercase.mb-1 Reload Preview
-              .h5.mb-0.font-weight-bold.text-dark Remove All Preview Photos and Generate Them Again. This May Take a While.
-            .col-auto
-              button.btn.p-0.col-12.text-left(onclick="alert(\"Coming Soon\")", disabled)
-                i.far.fa-caret-square-right.fa-2x.text-danger
-      .card.border-left-dark.shadow.h-100.col-12.my-2
-        .card-body
-          .row.no-gutters.align-items-center
-            .col.mr-2
-              .text-xs.font-weight-bold.text-dark.text-uppercase.mb-1 Clean Up
-              .h5.mb-0.font-weight-bold.text-dark Clean All Deleted Photos on Cache. The Deleted Photos May Not Be Restored.
-            .col-auto
-              button.btn.p-0.col-12.text-left(onclick="alert(\"Coming Soon\")", disabled)
-                i.far.fa-caret-square-right.fa-2x.text-danger
+  if script
+    .card.shadow.mb-4.mx-2
+      .card-header.py-3
+        p.text-primary.m-0.font-weight-bold Maintenance Scripts
+      .card-header
+        .text-danger Scripts Are Not Set to Be Admin User Only Because of the Experiment of New Privilege Authentication. Please, Do Not Run Any of These Script Unless You Know What Are You Doing. For Running Any One of Scripts Below, An Email Will Be Sent to the Maintainer of System, and A Group Message Will Be Sent to All Users, Including All Details of the Script and Its Result.
+      .card-body
+        each script in config.scripts
+          form(method='post' action='/status/run/' + script.location)
+            .card.border-left-dark.shadow.h-100.col-12.my-2
+              .card-body
+                .row.no-gutters.align-items-center
+                  .col.mr-2
+                    .text-xs.font-weight-bold.text-dark.text-uppercase.mb-1= script.name
+                    .h5.mb-0.font-weight-bold.text-dark= script.description
+                  .col-auto
+                      button.btn.p-0.col-12.text-left(type="submit")
+                        i.far.fa-caret-square-right.fa-2x.text-danger
 
 
 append javascripts
-  script
-    | var myPieChart = new Chart($("#sysMemoryUsed"), {
-    |   type: 'doughnut',
-    |   data: {
-    |     labels: ["Used", "Available"],
-    |     datasets: [{
-    |       data: [#{(sysMemUsed/1e6).toFixed(2)}, #{(sysMemAvailable/1e6).toFixed(2)}],
-    |       backgroundColor: ['#e74a3b', '#1cc88a'],
-    |       hoverBorderColor: "rgba(234, 236, 244, 1)",
-    |     }],
-    |   },
-    |   options: {
-    |     maintainAspectRatio: false,
-    |     tooltips: {
-    |       backgroundColor: "rgb(255,255,255)",
-    |       bodyFontColor: "#858796",
-    |       borderColor: '#dddfeb',
-    |       borderWidth: 1,
-    |       xPadding: 15,
-    |       yPadding: 15,
-    |       displayColors: false,
-    |       caretPadding: 10,
-    |       callbacks: {
-    |         label: function (tooltipItem, data) {
-    |           return data.labels[tooltipItem.index] + ": " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + 'MB';
-    |         }
-    |       }
-    |     },
-    |     legend: {
-    |       display: false
-    |     },
-    |     cutoutPercentage: 80,
-    |   },
-    | });
-  script
-    | var myPieChart = new Chart($("#nodeMemoryUsed"), {
-    |   type: 'doughnut',
-    |   data: {
-    |     labels: ["Used", "Available"],
-    |     datasets: [{
-    |       data: [#{(nodeMemUsed / 1e6).toFixed(2)}, #{(nodeMemAvailable / 1e6).toFixed(2)}],
-    |       backgroundColor: ['#e74a3b', '#1cc88a'],
-    |       hoverBorderColor: "rgba(234, 236, 244, 1)",
-    |     }],
-    |   },
-    |   options: {
-    |     maintainAspectRatio: false,
-    |     tooltips: {
-    |       backgroundColor: "rgb(255,255,255)",
-    |       bodyFontColor: "#858796",
-    |       borderColor: '#dddfeb',
-    |       borderWidth: 1,
-    |       xPadding: 15,
-    |       yPadding: 15,
-    |       displayColors: false,
-    |       caretPadding: 10,
-    |       callbacks: {
-    |         label: function (tooltipItem, data) {
-    |           return data.labels[tooltipItem.index] + ": " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + 'MB';
-    |         }
-    |       }
-    |     },
-    |     legend: {
-    |       display: false
-    |     },
-    |     cutoutPercentage: 80,
-    |   },
-    | });
-  script
-    | var myLineChart = new Chart($("#loadAvg"), {
-    |   type: 'line',
-    |   data: {
-    |     labels: ["15 min", "5 min", "1 min"],
-    |     datasets: [{
-    |       label: "Load Avg",
-    |       lineTension: 0.3,
-    |       backgroundColor: "rgba(78, 115, 223, 0.05)",
-    |       borderColor: "rgba(78, 115, 223, 1)",
-    |       pointRadius: 3,
-    |       pointBackgroundColor: "rgba(78, 115, 223, 1)",
-    |       pointBorderColor: "rgba(78, 115, 223, 1)",
-    |       pointHoverRadius: 3,
-    |       pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-    |       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-    |       pointHitRadius: 10,
-    |       pointBorderWidth: 2,
-    |       data: [#{min15.toFixed(2)}, #{min5.toFixed(2)}, #{min1.toFixed(2)}],
-    |     }],
-    |   },
-    |   options: {
-    |     maintainAspectRatio: false,
-    |     layout: {
-    |       padding: {
-    |         left: 10,
-    |         right: 25,
-    |         top: 25,
-    |         bottom: 0
-    |       }
-    |     },
-    |     scales: {
-    |       xAxes: [{
-    |         time: {
-    |           unit: 'date'
-    |         },
-    |         gridLines: {
-    |           display: false,
-    |           drawBorder: false
-    |         },
-    |         ticks: {
-    |           maxTicksLimit: 7
-    |         }
-    |       }],
-    |       yAxes: [{
-    |         ticks: {
-    |           maxTicksLimit: 5,
-    |           padding: 10,
-    |           callback: function (value, index, values) {
-    |             return value + "%";
-    |           }
-    |         },
-    |         gridLines: {
-    |           color: "rgb(234, 236, 244)",
-    |           zeroLineColor: "rgb(234, 236, 244)",
-    |           drawBorder: false,
-    |           borderDash: [2],
-    |           zeroLineBorderDash: [2]
-    |         }
-    |       }],
-    |     },
-    |     legend: {
-    |       display: false
-    |     },
-    |     tooltips: {
-    |       backgroundColor: "rgb(255,255,255)",
-    |       bodyFontColor: "#858796",
-    |       titleMarginBottom: 10,
-    |       titleFontColor: '#6e707e',
-    |       titleFontSize: 14,
-    |       borderColor: '#dddfeb',
-    |       borderWidth: 1,
-    |       xPadding: 15,
-    |       yPadding: 15,
-    |       displayColors: false,
-    |       intersect: false,
-    |       mode: 'index',
-    |       caretPadding: 10,
-    |       callbacks: {
-    |         label: function (tooltipItem, chart) {
-    |           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-    |           return datasetLabel + ': ' + tooltipItem.yLabel + '%';
-    |         }
-    |       }
-    |     }
-    |   }
-    | });
+  script.
+    var PieChart1 = new Chart($("#sysMemoryUsed"), {
+      type: 'doughnut',
+      data: {
+        labels: ["Used", "Available"],
+        datasets: [{
+          data: [#{(sysMemUsed/1e6).toFixed(2)}, #{(sysMemAvailable/1e6).toFixed(2)}],
+          backgroundColor: ['#e74a3b', '#1cc88a'],
+          hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        tooltips: {
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          caretPadding: 10,
+          callbacks: {
+            label: function (tooltipItem, data) {
+              return data.labels[tooltipItem.index] + ": " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + 'MB';
+            }
+          }
+        },
+        legend: {
+          display: false
+        },
+        cutoutPercentage: 80,
+      },
+    });
+    var PieChart2 = new Chart($("#nodeMemoryUsed"), {
+      type: 'doughnut',
+      data: {
+        labels: ["Used", "Available"],
+        datasets: [{
+          data: [#{(nodeMemUsed / 1e6).toFixed(2)}, #{(nodeMemAvailable / 1e6).toFixed(2)}],
+          backgroundColor: ['#e74a3b', '#1cc88a'],
+          hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        tooltips: {
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          caretPadding: 10,
+          callbacks: {
+            label: function (tooltipItem, data) {
+              return data.labels[tooltipItem.index] + ": " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + 'MB';
+            }
+          }
+        },
+        legend: {
+          display: false
+        },
+        cutoutPercentage: 80,
+      },
+    });
+    var LineChart = new Chart($("#loadAvg"), {
+      type: 'line',
+      data: {
+        labels: ["15 min", "5 min", "1 min"],
+        datasets: [{
+          label: "Load Avg",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(78, 115, 223, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointBorderColor: "rgba(78, 115, 223, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: [#{min15.toFixed(2)}, #{min5.toFixed(2)}, #{min1.toFixed(2)}],
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 10,
+            right: 25,
+            top: 25,
+            bottom: 0
+          }
+        },
+        scales: {
+          xAxes: [{
+            time: {
+              unit: 'date'
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              maxTicksLimit: 7
+            }
+          }],
+          yAxes: [{
+            ticks: {
+              maxTicksLimit: 5,
+              padding: 10,
+              callback: function (value, index, values) {
+                return value + "%";
+              }
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2]
+            }
+          }],
+        },
+        legend: {
+          display: false
+        },
+        tooltips: {
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          titleMarginBottom: 10,
+          titleFontColor: '#6e707e',
+          titleFontSize: 14,
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          intersect: false,
+          mode: 'index',
+          caretPadding: 10,
+          callbacks: {
+            label: function (tooltipItem, chart) {
+              var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+              return datasetLabel + ': ' + tooltipItem.yLabel + '%';
+            }
+          }
+        }
+      }
+    });

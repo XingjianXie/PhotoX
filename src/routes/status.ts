@@ -44,7 +44,7 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
             failLogs,
         });
     });
-    router.post('/:name', async(req, res, next) => {
+    router.post('/run/:name', async(req, res, next) => {
         if (!req.session || !req.session.sign) {
             next(createError(401, 'Unauthorized'));
             return;
@@ -58,21 +58,25 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
             return;
         }
 
-        const script = await import(path.join("../tools/mscript/", encodeURIComponent(req.params.name)))
+        const script = (await import(path.join("../tools/mscript/", encodeURIComponent(req.params.name)))).default(db)
+        console.log(script)
 
         await db(query.maintenance, [true]);
         //=========aha==========
-        const obj = script(db);
-        obj.run();
+        const result = await script.run();
         await db(query.addMessage, [0, null,
-            "Script " + encodeURIComponent(req.params.name) + "is ran by " + req.session.name + " (" + req.session.userID + "). " + "<br>"
-            + "The results are: " + obj.result
+            "Script " + encodeURIComponent(req.params.name) + " has been run by " + req.session.name + " (" + req.session.userID + "). " + "<br>"
+            + "The result is: " + result
         ])
         //=========aha==========
         await db(query.maintenance, [false]);
-        obj.callback();
+        await script.callback();
 
-
+        res.render('notification', {
+            code: 200,
+            msg: "Script Finished",
+            inf: "Result: " + result,
+        });
     })
     return router;
 };
