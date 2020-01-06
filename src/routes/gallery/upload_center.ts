@@ -8,7 +8,7 @@ import * as util from "util";
 import crypto from "crypto";
 import path from "path";
 import log from "../../tools/log"
-import upload_photo = require('../../tools/upload_photo');
+import upload_photo from '../../tools/upload_photo';
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();

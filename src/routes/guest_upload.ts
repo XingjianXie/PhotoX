@@ -4,7 +4,7 @@ import {create as ps_create, make as ps_make} from '../tools/password';
 import createError from "http-errors";
 import log from "../tools/log";
 import multer = require('multer');
-import upload_photo = require('../tools/upload_photo');
+import upload_photo from '../tools/upload_photo';
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
