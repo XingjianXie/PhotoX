@@ -58,7 +58,7 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
             return;
         }
 
-        const script = (await import(path.join("../tools/mscript/", encodeURIComponent(req.params.name)))).default(db)
+        const script = (await import(path.join("../tools/mscript/", encodeURIComponent(req.params.name)))).default(db, req.app.get('root'))
         console.log(script)
 
         await db(query.maintenance, [true]);
@@ -66,7 +66,8 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
         const result = await script.run();
         await db(query.addMessage, [0, null,
             "Script " + encodeURIComponent(req.params.name) + " has been run by " + req.session.name + " (" + req.session.userID + "). " + "<br>"
-            + "The result is: " + result
+            + "The result is: <br>"
+            + result
         ])
         //=========aha==========
         await db(query.maintenance, [false]);
@@ -75,7 +76,10 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
         res.render('notification', {
             code: 200,
             msg: "Script Finished",
-            inf: "Result: " + result,
+            inf: '<div><a href="#result" data-toggle="collapse">Result</a></div>\n' +
+                '<div id="result" class="collapse">\n' +
+                result +
+                '</div>',
         });
     })
     return router;

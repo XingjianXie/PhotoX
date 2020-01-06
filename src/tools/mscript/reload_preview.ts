@@ -1,4 +1,4 @@
-export default (db: (sql : string, values : any) => Promise<any>) => {
+export default (db: (sql : string, values : any) => Promise<any>, root: string) => {
     return {
         run: async() => {
             console.log("reload_preview run")

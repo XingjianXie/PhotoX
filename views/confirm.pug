@@ -14,8 +14,8 @@ block content
     .error.mx-auto(data-text= 306)
       p.m-0= 306
     p.text-dark.mb-5.lead= msg
-    p.text-black-50.mb-0= inf1
-    p.mb-0.text-danger= inf2
+    p.text-black-50.mb-0!= inf1
+    p.mb-0.text-danger!= inf2
     form.d-inline-block(method='post')
       -for(const t in data)
         input.d-none(name=t, value=data[t], autocomplete="off", spellcheck="false", maxlength=30)

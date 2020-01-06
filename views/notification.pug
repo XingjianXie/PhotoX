@@ -13,8 +13,8 @@ block content
   .text-center.mt-5
     .error.mx-auto(data-text= code)
       p#code.m-0= code
-    p.text-dark.mb-5.lead#msg= msg
-    p.text-black-50.mb-0#inf= inf
+    p.text-dark.mb-5.lead#msg!= msg
+    p.text-black-50.mb-0#inf!= inf
     if home
       a(href="/") ← Back To Home
     else if (!bk2)
