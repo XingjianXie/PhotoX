@@ -76,10 +76,10 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
         res.render('notification', {
             code: 200,
             msg: "Script Finished",
-            inf: '<div><a href="#result" data-toggle="collapse">Result</a></div>\n' +
-                '<div id="result" class="collapse">\n' +
+            inf: '<a href="#result" data-toggle="collapse">Result</a>' +
+                '<span id="result" class="collapse">' +
                 result +
-                '</div>',
+                '</span>',
         });
     })
     return router;
