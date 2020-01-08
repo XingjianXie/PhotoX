@@ -66,8 +66,10 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
         const result = await script.run();
         await db(query.addMessage, [0, null,
             "Script " + encodeURIComponent(req.params.name) + " has been run by " + req.session.name + " (" + req.session.userID + "). " + "<br>"
-            + "The result is: <br>"
+            + '<a href="#" onclick="$(this.nextElementSibling.nextElementSibling).collapse(\'toggle\'); return false;">Result</a><br>'
+            + '<div class="collapse">'
             + result
+            + '</div>'
         ])
         //=========aha==========
         await db(query.maintenance, [false]);
