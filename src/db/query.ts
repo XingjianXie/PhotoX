@@ -30,6 +30,7 @@ export default {
     allPublishedPhoto: 'SELECT * from photo WHERE photo.type = 2 AND photo.deleted = 0',
     allUnpublishedPhoto: 'SELECT * from photo WHERE photo.type = 1 AND photo.deleted = 0',
     allUnconvertedPhoto: 'SELECT * from photo WHERE photo.type = 0 AND photo.deleted = 0',
+    allConvertedPhoto: 'SELECT * from photo WHERE (photo.type = 1 OR photo.type = 2) AND photo.deleted = 0',
     allDeletedPhoto: 'SELECT * from photo WHERE photo.deleted = 1',
 
     countUnPublishedPhoto: 'SELECT COUNT(*) FROM photo WHERE photo.uploader_id = ? AND (photo.type = 0 OR photo.type = 1) AND photo.deleted = 0',
