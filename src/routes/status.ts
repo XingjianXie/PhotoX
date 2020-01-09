@@ -73,7 +73,7 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
         const script = (await import(path.join("../tools/mscript/", encodeURIComponent(req.params.name)))).default(db, req.app.get('root'))
         console.log(script)
 
-        await db(query.maintenance, [true]);
+        await db(query.maintenance, ["true"]);
         //=========aha==========
         const result = await script.run();
         await db(query.addMessage, [0, null,
@@ -84,7 +84,7 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
             + '</div>'
         ])
         //=========aha==========
-        await db(query.maintenance, [false]);
+        await db(query.maintenance, ["false"]);
         await script.callback();
 
         res.render('notification', {
