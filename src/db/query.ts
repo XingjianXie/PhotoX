@@ -20,6 +20,7 @@ export default {
     //Photo
     addPhoto: 'INSERT INTO photo(uploader_id, md5, type) VALUES(?, ?, 0)',
     convertPhoto: 'UPDATE photo SET type=1, height=?, width=?, exif_time=FROM_UNIXTIME(?) WHERE id=? AND deleted = 0',
+    reconvertPhoto: 'UPDATE photo SET height=?, width=?, exif_time=FROM_UNIXTIME(?) WHERE id=? AND deleted = 0',
     publishPhoto: 'UPDATE photo SET type=2, name=?, category=? WHERE id=? AND type=1 AND deleted = 0',
     getPhotoById: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.id = ? AND photo.deleted = 0',
     getPublishedPhotoById: 'SELECT photo.*, user.type as uploader_type, user.name as uploader_name, user.deleted as uploader_deleted FROM photo LEFT OUTER JOIN user ON user.id = photo.uploader_id WHERE photo.id = ? AND photo.type = 2 AND photo.deleted = 0',
