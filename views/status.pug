@@ -57,7 +57,7 @@ block content
         .card-header.py-3
           p.text-primary.m-0.font-weight-bold User Management Status
         .card-body
-          .card.border-left-success.shadow.h-100.col-12.my-2
+          .card.border-left-success.shadow.col-12.my-2
             .card-body
               .row.no-gutters.align-items-center
                 .col.mr-2
@@ -65,7 +65,7 @@ block content
                   .h5.mb-0.font-weight-bold.text-gray-800=usersLength
                 .col-auto
                   i.fas.fa-user-alt.fa-2x.text-gray-300
-          .card.border-left-danger.shadow.h-100.col-12.my-2
+          .card.border-left-danger.shadow.col-12.my-2
             .card-body
               .row.no-gutters.align-items-center
                 .col.mr-2
@@ -77,7 +77,7 @@ block content
         .card-header.py-3
           p.text-primary.m-0.font-weight-bold Log Status [log is #{config.disable_log ? "disabled" : "enabled"}]
         .card-body
-          .card.border-left-primary.shadow.h-100.col-12.my-2
+          .card.border-left-primary.shadow.col-12.my-2
             .card-body
               .row.no-gutters.align-items-center
                 .col.mr-2
@@ -85,7 +85,7 @@ block content
                   .h5.mb-0.font-weight-bold.text-gray-800=allLogs.length
                 .col-auto
                   i.fas.fa-book.fa-2x.text-gray-300
-          .card.border-left-success.shadow.h-100.col-12.my-2
+          .card.border-left-success.shadow.col-12.my-2
             .card-body
               .row.no-gutters.align-items-center
                 .col.mr-2
@@ -93,7 +93,7 @@ block content
                   .h5.mb-0.font-weight-bold.text-gray-800=successLogs.length
                 .col-auto
                   i.fas.fa-book.fa-2x.text-gray-300
-          .card.border-left-danger.shadow.h-100.col-12.my-2
+          .card.border-left-danger.shadow.col-12.my-2
             .card-body
               .row.no-gutters.align-items-center
                 .col.mr-2
@@ -108,7 +108,7 @@ block content
         .card-header.py-3
           p.text-primary.m-0.font-weight-bold Gallery Status
         .card-body
-          .card.border-left-success.shadow.h-100.col-12.my-2
+          .card.border-left-success.shadow.col-12.my-2
             .card-body
               .row.no-gutters.align-items-center
                 .col.mr-2
@@ -116,7 +116,7 @@ block content
                   .h5.mb-0.font-weight-bold.text-gray-800=photosPublished.length
                 .col-auto
                   i.fas.fa-image.fa-2x.text-gray-300
-          .card.border-left-primary.shadow.h-100.col-12.my-2
+          .card.border-left-primary.shadow.col-12.my-2
             .card-body
               .row.no-gutters.align-items-center
                 .col.mr-2
@@ -124,7 +124,7 @@ block content
                   .h5.mb-0.font-weight-bold.text-gray-800=photosUnpublished.length
                 .col-auto
                   i.fas.fa-image.fa-2x.text-gray-300
-          .card.border-left-warning.shadow.h-100.col-12.my-2
+          .card.border-left-warning.shadow.col-12.my-2
             .card-body
               .row.no-gutters.align-items-center
                 .col.mr-2
@@ -132,7 +132,7 @@ block content
                   .h5.mb-0.font-weight-bold.text-gray-800=photosUnpublished.length
                 .col-auto
                   i.fas.fa-image.fa-2x.text-gray-300
-          .card.border-left-danger.shadow.h-100.col-12.my-2
+          .card.border-left-danger.shadow.col-12.my-2
             .card-body
               .row.no-gutters.align-items-center
                 .col.mr-2
@@ -145,7 +145,7 @@ block content
         .card-header.py-3
           p.text-primary.m-0.font-weight-bold System Version
         .card-body
-          .card.border-left-primary.shadow.h-100.col-12.my-2
+          .card.border-left-primary.shadow.col-12.my-2
             .card-body
               .row.no-gutters.align-items-center
                 .col.mr-2
@@ -164,7 +164,7 @@ block content
         each script in config.scripts
           form(method='post' action='/status/run/' + script.location)
             input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
-            .card.border-left-dark.shadow.h-100.col-12.my-2
+            .card.border-left-dark.shadow.col-12.my-2
               .card-body
                 .row.no-gutters.align-items-center
                   .col.mr-2
