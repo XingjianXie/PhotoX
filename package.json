@@ -13,23 +13,23 @@
   },
   "dependencies": {
     "cluster": "^0.7.7",
-    "connect-redis": "^3.4.2",
+    "connect-redis": "^4.0.4",
     "cookie-parser": "~1.4.4",
     "exif-reader": "^1.0.2",
-    "express": "~4.16.1",
+    "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "express-mysql-session": "^2.1.0",
     "express-session": "^1.16.2",
     "html-entities": "^1.2.1",
     "http-errors": "^1.7.3",
     "memobird": "^0.5.2",
-    "morgan": "~1.9.1",
+    "morgan": "^1.10.0",
     "multer": "^2.0.0-alpha.7",
     "mysql": "^2.17.1",
-    "pm2": "^3.5.1",
+    "pm2": "^4.2.3",
     "pug": "^2.0.4",
-    "redis": "^2.8.0",
-    "sharp": "^0.23.0"
+    "redis": "^3.0.2",
+    "sharp": "^0.25.2"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.1",
@@ -40,10 +40,10 @@
     "@types/morgan": "^1.7.36",
     "@types/multer": "https://github.com/mark07x/multer-type/tarball/master",
     "@types/mysql": "^2.15.6",
-    "@types/node": "^12.6.8",
+    "@types/node": "^13.9.3",
     "@types/redis": "^2.8.13",
-    "@types/sharp": "^0.22.2",
-    "nodemon": "^1.19.1",
+    "@types/sharp": "^0.24.0",
+    "nodemon": "^2.0.2",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   }
