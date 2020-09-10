@@ -29,7 +29,7 @@ export default (state: StateObject) => {
                 next(createError(404, 'Photo Not Found'));
                 return;
             }
-            if (rs[0].type === 1 && !req.session!.type && req.session!.userID !== rs[0].uploader_id) {
+            if (rs[0].type === 1 && !res.locals.config.allow_publish_others && req.session!.userID !== rs[0].uploader_id) {
                 next(createError(401, 'Unauthorized'));
                 return;
             }
