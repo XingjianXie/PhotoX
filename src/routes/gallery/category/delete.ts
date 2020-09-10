@@ -36,7 +36,7 @@ export default (state: StateObject) => {
             res.render('confirm', {
                 msg: 'Delete Confirmation',
                 inf1: 'Are you sure to delete category ' + rs[0].name + ' (' + rs[0].id.toString() + ')',
-                inf2: !num ? '' : '[ASK ADMIN BEFORE YOU DO THIS] YOU MAY NOT UNDO THIS ACTION: ALL PHOTOS(' + num.toString() + ') WHICH HAS THIS CATEGORY WILL BE MOVED TO DEFAULT CATEGORY',
+                inf2: !num ? '' : '[ASK MARK XIE BEFORE YOU DO THIS] YOU MAY NOT UNDO THIS ACTION: ALL PHOTOS(' + num.toString() + ') WHICH HAS THIS CATEGORY WILL BE MOVED TO DEFAULT CATEGORY',
                 data: data1
             });
             return;

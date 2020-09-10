@@ -16,7 +16,7 @@ export default (state: StateObject) => {
             return;
         }
         const dw : any[] = await state.db(query.getDownloadByPhotoId, [Number(req.body.photoID)]);
-        if (req.session!.type && (req.session!.userID !== rs[0].uploader_id || (dw.length && !req.session!.type))) {
+        if (req.session!.type && (req.session!.userID !== rs[0].uploader_id)) {
             log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Recall", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;

@@ -19,7 +19,7 @@ export default (state: StateObject) => {
             next(createError(404, 'Photo Not Found'));
             return;
         }
-        if (!(req.session!.type && res.locals.config.allow_admin_publish_others) && req.session!.userID !== rs[0].uploader_id) {
+        if (!res.locals.config.allow_publish_others && req.session!.userID !== rs[0].uploader_id) {
             log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Publish", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
@@ -40,7 +40,7 @@ export default (state: StateObject) => {
             next(createError(404, 'Photo Not Found'));
             return;
         }
-        if (!(req.session!.type && res.locals.config.allow_admin_publish_others) && req.session!.userID !== rs[0].uploader_id) {
+        if (!res.locals.config.allow_publish_others && req.session!.userID !== rs[0].uploader_id) {
             log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Publish", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
@@ -56,7 +56,6 @@ export default (state: StateObject) => {
             res.render('confirm', {
                 msg: 'Publish Confirmation',
                 inf1: 'Are you sure to publish photo ' + rs[0].id.toString() + '?',
-                inf2: (req.session!.type ? '' : 'YOU MAY NOT UNDO THIS ACTION ONCE SOMEONE DOWNLOAD IT'),
                 data: data1
             });
             return;
