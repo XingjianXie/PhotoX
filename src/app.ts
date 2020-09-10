@@ -13,10 +13,11 @@ import {mkdir} from "fs";
 import * as util from "util";
 import {promisify, types} from "util";
 import query from "./db/query";
+import StateObject from "./class/state_object";
+
 
 export default async function create_application() {
     const redisStore = require('connect-redis')(session);
-    const multer = require("multer");
     const RedisConfig = require('./db/RedisConfig');
 
     const app = express();
@@ -25,13 +26,13 @@ export default async function create_application() {
     const store : Store = new redisStore({ client: redis_client });
     const session_map : any = new Proxy({}, {
         get(target, index) {
-            return promisify(redis_client.get).bind(redis_client)('session_map:' + index.toString());
+            return promisify(redis_client.get).bind(redis_client)('state.session_map:' + index.toString());
         },
         set(target, index, value, receiver) {
             if (value === undefined)
-                redis_client.del("session_map:" + index.toString());
+                redis_client.del("state.session_map:" + index.toString());
             else
-                redis_client.set('session_map:' + index.toString(), value);
+                redis_client.set('state.session_map:' + index.toString(), value);
             return true;
         }
     });
@@ -131,6 +132,6 @@ export default async function create_application() {
         next();
     });
 
-    app.use(index(session_map, db, multer( { limits: { fileSize: 1e8 } } )));
+    app.use(index(new StateObject(session_map, db)));
     return app;
 }

@@ -6,8 +6,9 @@ import _new from "./new";
 import { AllHtmlEntities } from 'html-entities';
 import auth from "../../tools/auth";
 import xauth from "../../tools/xauth";
+import StateObject from "../../class/state_object";
 
-export default (db : (sql : string, values : any) => Promise<any>) => {
+export default (state: StateObject) => {
     const router = express.Router();
     router.get('/',  async(req, res, next) => {
         if (!req.session!.type && !!req.query.sent) {
@@ -23,18 +24,18 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         let rs : any[], total : number;
         if (!req.query.sent) {
             rs = !req.query.wd
-                ? await db(query.queryMyMessageWithLimit, [req.session!.userID, req.session!.userID, (pg - 1) * maximum, maximum])
-                : await db(query.searchMyMessageWithLimit, [req.session!.userID, req.session!.userID, new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd), (pg - 1) * maximum, maximum]);
+                ? await state.db(query.queryMyMessageWithLimit, [req.session!.userID, req.session!.userID, (pg - 1) * maximum, maximum])
+                : await state.db(query.searchMyMessageWithLimit, [req.session!.userID, req.session!.userID, new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd), (pg - 1) * maximum, maximum]);
             total = !req.query.wd
-                ? (await db(query.countQueryMyMessageWithLimit, [req.session!.userID, req.session!.userID]))[0]['COUNT(*)']
-                : (await db(query.countSearchMyMessageWithLimit, [req.session!.userID, req.session!.userID, new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd)]))[0]['COUNT(*)'];
+                ? (await state.db(query.countQueryMyMessageWithLimit, [req.session!.userID, req.session!.userID]))[0]['COUNT(*)']
+                : (await state.db(query.countSearchMyMessageWithLimit, [req.session!.userID, req.session!.userID, new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd)]))[0]['COUNT(*)'];
         } else {
             rs = !req.query.wd
-                ? await db(query.querySentMessageWithLimit, [req.session!.userID, (pg - 1) * maximum, maximum])
-                : await db(query.searchSentMessageWithLimit, [req.session!.userID, new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd), (pg - 1) * maximum, maximum]);
+                ? await state.db(query.querySentMessageWithLimit, [req.session!.userID, (pg - 1) * maximum, maximum])
+                : await state.db(query.searchSentMessageWithLimit, [req.session!.userID, new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd), (pg - 1) * maximum, maximum]);
             total = !req.query.wd
-                ? (await db(query.countQuerySentMessageWithLimit, [req.session!.userID]))[0]['COUNT(*)']
-                : (await db(query.countSearchSentMessageWithLimit, [req.session!.userID, new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd), new AllHtmlEntities().encode(req.query.wd)]))[0]['COUNT(*)'];
+                ? (await state.db(query.countQuerySentMessageWithLimit, [req.session!.userID]))[0]['COUNT(*)']
+                : (await state.db(query.countSearchSentMessageWithLimit, [req.session!.userID, new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd), new AllHtmlEntities().encode('' + req.query.wd)]))[0]['COUNT(*)'];
         }
 
         if (!rs.length && total) {
@@ -51,9 +52,9 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         });
     });
     //router.use(xauth("sign"))
-    router.use('/mark_as_read', mark_as_read(db));
+    router.use('/mark_as_read', mark_as_read(state));
 
     router.use(xauth("admin"))
-    router.use('/new', _new(db));
+    router.use('/new', _new(state));
     return router;
 };

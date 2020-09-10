@@ -4,32 +4,33 @@ import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
 import log from "../../tools/log";
 import auth from "../../tools/auth";
+import StateObject from "../../class/state_object";
 
-export default (session_map: any, db : (sql : string, values : any) => Promise<any>) => {
+export default (state: StateObject) => {
     const router = express.Router();
     router.get('/:id', async(req, res, next) => {
         if (isNaN(Number(req.params.id))) {
             next(createError(400, 'User ID Should Be A Number'));
             return;
         }
-        const rs : any[] = await db(query.getUserById, [Number(req.params.id)]);
+        const rs : any[] = await state.db(query.getUserById, [Number(req.params.id)]);
         if (!rs[0]) {
-            log(res.locals.config, db, req.session!.userID, "User", Number(req.params.id), "Edit", false, "Error: Not Found");
+            log(res.locals.config, state.db, req.session!.userID, "User", Number(req.params.id), "Edit", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
         if (req.session!.type <= rs[0].type && req.session!.userID !== Number(req.params.id)) {
-            log(res.locals.config, db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
+            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
-            log(res.locals.config, db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
+            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (res.locals.config.disable_admin_edit_user) {
-            log(res.locals.config, db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Disabled");
+            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Disabled");
             next(createError(401, 'Disabled'));
             return;
         }
@@ -49,34 +50,34 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             next(createError(400, 'User ID Should Be A Number'));
             return;
         }
-        const rs : any[] = await db(query.getUserById, [Number(req.params.id)]);
+        const rs : any[] = await state.db(query.getUserById, [Number(req.params.id)]);
         if (!rs[0]) {
-            log(res.locals.config, db, req.session!.userID, "User", Number(req.params.id), "Edit", false, "Error: Not Found");
+            log(res.locals.config, state.db, req.session!.userID, "User", Number(req.params.id), "Edit", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
         if (req.session!.type <= rs[0].type && req.session!.userID !== rs[0].id) {
-            log(res.locals.config, db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
+            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
-            log(res.locals.config, db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
+            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (req.session!.type < Number(req.body.type)) {
-            log(res.locals.config, db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
+            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (!req.body.name && !req.body.type && !req.body.phone_number) {
-            log(res.locals.config, db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Bad Request");
+            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Bad Request");
             next(createError(400, 'Type or Name Required'));
             return;
         }
         if (res.locals.config.disable_admin_edit_user) {
-            log(res.locals.config, db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Disabled");
+            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Disabled");
             next(createError(401, 'Disabled'));
             return;
         }
@@ -104,26 +105,26 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
         }
         const userID = req.session!.userID;
         await new Promise(async (resolve, reject) => {
-            req.sessionStore!.destroy((await session_map[rs[0].id]), (err) => {
+            req.sessionStore!.destroy((await state.session_map[rs[0].id]), (err) => {
                 if(err) reject(err);
                 else resolve();
             });
         });
-        session_map[rs[0].id] = undefined;
+        state.session_map[rs[0].id] = undefined;
 
 
         if (req.body.type) {
-            await db(query.resetUserType, [Number(req.body.type), rs[0].id]);
-            log(res.locals.config, db, userID, "User", rs[0].id, "Reset Type", true, "Previous Type: " + res.locals.typeName[rs[0].type]);
+            await state.db(query.resetUserType, [Number(req.body.type), rs[0].id]);
+            log(res.locals.config, state.db, userID, "User", rs[0].id, "Reset Type", true, "Previous Type: " + res.locals.typeName[rs[0].type]);
         }
         if (req.body.name) {
-            await db(query.resetUserName, [req.body.name, rs[0].id]);
-            log(res.locals.config, db, userID, "User", rs[0].id, "Reset Name", true, "Previous Name: " + rs[0].name);
+            await state.db(query.resetUserName, [req.body.name, rs[0].id]);
+            log(res.locals.config, state.db, userID, "User", rs[0].id, "Reset Name", true, "Previous Name: " + rs[0].name);
         }
         try {
             if (req.body.phone_number) {
-                await db(query.resetUserPhoneNumber, [req.body.phone_number, rs[0].id]);
-                log(res.locals.config, db, userID, "User", rs[0].id, "Reset Phone Number", true, "Previous Phone Number: " + rs[0].phone_number);
+                await state.db(query.resetUserPhoneNumber, [req.body.phone_number, rs[0].id]);
+                log(res.locals.config, state.db, userID, "User", rs[0].id, "Reset Phone Number", true, "Previous Phone Number: " + rs[0].phone_number);
             }
             if (rs[0].id === userID) {
                 res.render('notification', {
@@ -143,7 +144,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             }
         } catch (e) {
             if (e.code === 'ER_DUP_ENTRY') {
-                log(res.locals.config, db, userID, "User", rs[0].id, "Reset Phone Number", false, "Error: Duplicate");
+                log(res.locals.config, state.db, userID, "User", rs[0].id, "Reset Phone Number", false, "Error: Duplicate");
                 next(createError(400, 'Not Completely Finished: Phone Number Has Been Taken'));
             } else throw e;
         }

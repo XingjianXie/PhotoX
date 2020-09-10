@@ -4,8 +4,9 @@ import {make as ps_make} from '../tools/password';
 import createError from "http-errors";
 import log from "../tools/log";
 import auth from "../tools/auth"
+import StateObject from "../class/state_object";
 
-export default (session_map : any, db: (sql : string, values : any) => Promise<any>) => {
+export default (state: StateObject) => {
     const router = express.Router();
     router.get('/', (req, res, next) => {
         if (!auth(req, res, next, "redirect", "nologin")) return;
@@ -26,14 +27,14 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             next(createError(400, 'Phone Number Invalid'));
             return;
         }
-        const rs : any[] = await db(query.getUserByPhoneNumber, [Number(req.body.phone_number)]);
+        const rs : any[] = await state.db(query.getUserByPhoneNumber, [Number(req.body.phone_number)]);
         if (!rs[0]) {
             next(createError(404, 'User Not Found'));
             return;
         }
         if (ps_make(req.body.pwd, rs[0].passrd) === rs[0].passcode) {
             await new Promise(async (resolve, reject) => {
-                req.sessionStore!.destroy((await session_map[rs[0].id]), (err) => {
+                req.sessionStore!.destroy((await state.session_map[rs[0].id]), (err) => {
                     if(err) reject(err);
                     else resolve();
                 });
@@ -42,11 +43,11 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
             req.session!.userID = rs[0].id;
             req.session!.type = rs[0].type;
             req.session!.name = rs[0].name;
-            session_map[rs[0].id] = req.sessionID;
-            log(res.locals.config, db, 0, "User", rs[0].id, "Login", true, "IP Address: " + req.headers['x-forwarded-for']);
+            state.session_map[rs[0].id] = req.sessionID;
+            log(res.locals.config, state.db, 0, "User", rs[0].id, "Login", true, "IP Address: " + req.headers['x-forwarded-for']);
             res.redirect('/');
         } else {
-            log(res.locals.config, db, 0, "User", rs[0].id, "Login", false, "IP Address: " + req.headers['x-forwarded-for'] + "; Error: Unauthorized");
+            log(res.locals.config, state.db, 0, "User", rs[0].id, "Login", false, "IP Address: " + req.headers['x-forwarded-for'] + "; Error: Unauthorized");
             next(createError(401, ' Password Unauthorized'));
         }
     });

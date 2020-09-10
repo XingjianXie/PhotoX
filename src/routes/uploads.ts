@@ -3,8 +3,9 @@ import query from "../db/query";
 import path from "path"
 import createError from "http-errors";
 import auth from "../tools/auth";
+import StateObject from "../class/state_object";
 
-export default (db : (sql : string, values : any) => Promise<any[]>) => {
+export default (state: StateObject) => {
     const router = express.Router();
     router.get('/:id.preview.jpg', async(req, res, next) => {
         if (isNaN(Number(req.params.id))) {
@@ -15,11 +16,11 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
          && Number(req.params.id) !== res.locals.config.bg2
          && Number(req.params.id) !== res.locals.config.bg3) {
             if (!auth(req, res, next, "redirect", "sign")) return;
-            if ((await db(query.getSpPreview, [req.session!.userID, Number(req.params.id)])).length) {
+            if ((await state.db(query.getSpPreview, [req.session!.userID, Number(req.params.id)])).length) {
                 res.sendFile(path.join(req.app.get('root'), "uploads", req.params.id + ".preview.jpg"));
                 return;
             }
-            const rs : any[] = await db(query.getPhotoById, [Number(req.params.id)]);
+            const rs : any[] = await state.db(query.getPhotoById, [Number(req.params.id)]);
             if (!rs[0]) {
                 next(createError(404, 'Photo Not Found'));
                 return;
@@ -41,7 +42,7 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
             next(createError(400, 'Photo ID Should Be A Number'));
             return;
         }
-        const rs : any[] = await db(query.download, [req.params.uuid, req.session!.userID, Number(req.params.id)]);
+        const rs : any[] = await state.db(query.download, [req.params.uuid, req.session!.userID, Number(req.params.id)]);
         if (!rs[0]) {
             next(createError(404, 'Photo Not Found'));
             return;

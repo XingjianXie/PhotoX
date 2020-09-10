@@ -4,19 +4,20 @@ import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
 import log from "../../tools/log";
 import auth from "../../tools/auth";
+import StateObject from "../../class/state_object";
 
-export default (db : (sql : string, values : any) => Promise<any>) => {
+export default (state: StateObject) => {
     const router = express.Router();
     router.post('/', async(req, res, next) => {
-        const rs : any[] = await db(query.getPhotoById, [Number(req.body.photoID)]);
+        const rs : any[] = await state.db(query.getPhotoById, [Number(req.body.photoID)]);
         if (!rs[0]) {
-            log(res.locals.config, db, req.session!.userID, "Photo", Number(req.body.photoID), "Delete", false, "Error: Not Found");
+            log(res.locals.config, state.db, req.session!.userID, "Photo", Number(req.body.photoID), "Delete", false, "Error: Not Found");
             next(createError(404, 'Photo Not Found'));
             return;
         }
-        const dw : any[] = await db(query.getDownloadByPhotoId, [Number(req.body.photoID)]);
+        const dw : any[] = await state.db(query.getDownloadByPhotoId, [Number(req.body.photoID)]);
         if (!(req.session!.type && res.locals.config.allow_admin_publish_others) && (req.session!.userID !== rs[0].uploader_id || (dw.length && !req.session!.type))) {
-            log(res.locals.config, db, req.session!.userID, "Photo", rs[0].id, "Delete", false, "Error: Unauthorized");
+            log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Delete", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
@@ -32,28 +33,28 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             return;
         }
 
-        await db(query.deletePhoto, [rs[0].id]);
-        await db(query.clearMark, [rs[0].id]);
-        const recall_notification : any[] = await db(query.getDownloadByPhotoId, [rs[0].id]);
+        await state.db(query.deletePhoto, [rs[0].id]);
+        await state.db(query.clearMark, [rs[0].id]);
+        const recall_notification : any[] = await state.db(query.getDownloadByPhotoId, [rs[0].id]);
         for (const val of recall_notification) {
-            await db(query.addSpPreview, [val.user, rs[0].id]);
-            await db(query.addMessage, [0, val.user,
+            await state.db(query.addSpPreview, [val.user, rs[0].id]);
+            await state.db(query.addMessage, [0, val.user,
                 (
                     "The photo you downloaded has been deleted by "+ req.session!.name + " (" + req.session!.userID + "). " + "<br>"
                     + '<div class="bkimg rounded" style="width: 200px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
                 )
             ]);
         }
-        await db(query.clearDownload, [rs[0].id]);
-        await db(query.addSpPreview, [rs[0].uploader_id, rs[0].id]);
-        await db(query.addMessage, [0, rs[0].uploader_id,
+        await state.db(query.clearDownload, [rs[0].id]);
+        await state.db(query.addSpPreview, [rs[0].uploader_id, rs[0].id]);
+        await state.db(query.addMessage, [0, rs[0].uploader_id,
             (
                 "The photo you uploaded has been deleted by "+ req.session!.name + " (" + req.session!.userID + "). " + "<br>"
                 + '<div class="bkimg rounded" style="width: 200px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
             )
         ]);
 
-        log(res.locals.config, db, req.session!.userID, "Photo", rs[0].id, "Delete", true, null);
+        log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Delete", true, null);
 
         res.status(200);
         if (dw.length) {

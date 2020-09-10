@@ -7,16 +7,14 @@ let level = {
     "system": 126
 }
 
-export = (name: "sign" | "admin" | "system") => {
-    return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        if (!req.session || !req.session!.sign || req.session!.type <= level[name]) {
-            if (req.method === "GET") {
-                res.redirect('/');
-            } else if (req.method === "POST") {
-                next(createError(401, 'Unauthorized'));
-            }
-            return
+export = (name: "sign" | "admin" | "system") => (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (!req.session || !req.session!.sign || req.session!.type <= level[name]) {
+        if (req.method === "GET") {
+            res.redirect('/');
+        } else if (req.method === "POST") {
+            next(createError(401, 'Unauthorized'));
         }
-        next()
+        return
     }
+    next()
 }

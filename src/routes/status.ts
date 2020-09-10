@@ -6,22 +6,23 @@ import log from "../tools/log";
 import os, {totalmem} from "os";
 import path from "path";
 import auth from "../tools/auth";
+import StateObject from "../class/state_object";
 
-export default (db: (sql : string, values : any) => Promise<any>) => {
+export default (state: StateObject) => {
     const router = express.Router();
     router.get('/', async(req, res, next) => {
-        const usersDeleted = await db(query.allDeletedUser, []);
-        const usersLength = (await db(query.allUser, [])).length - usersDeleted.length;
-        const photosPublished = await db(query.allPublishedPhoto, []);
-        const photosUnpublished = await db(query.allUnpublishedPhoto, []);
-        const photosUnconverted = await db(query.allUnconvertedPhoto, []);
-        const photosDeleted = await db(query.allDeletedPhoto, []);
+        const usersDeleted = await state.db(query.allDeletedUser, []);
+        const usersLength = (await state.db(query.allUser, [])).length - usersDeleted.length;
+        const photosPublished = await state.db(query.allPublishedPhoto, []);
+        const photosUnpublished = await state.db(query.allUnpublishedPhoto, []);
+        const photosUnconverted = await state.db(query.allUnconvertedPhoto, []);
+        const photosDeleted = await state.db(query.allDeletedPhoto, []);
         const sysMem = {free: os.freemem(), total: os.totalmem()};
         const nodeMem = {used: process.memoryUsage().heapUsed, total: process.memoryUsage().heapTotal};
         const minn = os.loadavg();
-        const allLogs = await db(query.allLog, []);
-        const successLogs = await db(query.allSuccessLog, []);
-        const failLogs = await db(query.allFailLog, []);
+        const allLogs = await state.db(query.allLog, []);
+        const successLogs = await state.db(query.allSuccessLog, []);
+        const failLogs = await state.db(query.allFailLog, []);
         res.render("status", {
             usersLength,
             usersDeleted,
@@ -63,13 +64,13 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
             return;
         }
 
-        const script = (await import(path.join("../tools/mscript/", encodeURIComponent(req.params.name)))).default(db, req.app.get('root'))
+        const script = (await import(path.join("../tools/mscript/", encodeURIComponent(req.params.name)))).default(state.db, req.app.get('root'))
         console.log(script)
 
-        await db(query.maintenance, ["true"]);
+        await state.db(query.maintenance, ["true"]);
         //=========aha==========
         const result = await script.run();
-        await db(query.addMessage, [0, null,
+        await state.db(query.addMessage, [0, null,
             "Script " + encodeURIComponent(req.params.name) + " has been run by " + req.session!.name + " (" + req.session!.userID + "). " + "<br>"
             + '<a href="#" onclick="$(this.nextElementSibling.nextElementSibling).collapse(\'toggle\'); return false;">Result</a><br>'
             + '<div class="collapse">'
@@ -77,7 +78,7 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
             + '</div>'
         ])
         //=========aha==========
-        await db(query.maintenance, ["false"]);
+        await state.db(query.maintenance, ["false"]);
         await script.callback();
 
         res.render('notification', {
