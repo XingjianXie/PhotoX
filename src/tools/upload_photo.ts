@@ -44,7 +44,7 @@ export default async(config: any, db: (sql : string, values : any) => Promise<an
                     0,
                     userID,
                     (
-                        "The photo you uploaded has been uploaded " + (rs[0].type !==2 ? "(but not published) " : "") + "by "+ rs[0].uploader_name + " (" + rs[0].uploader_id + "). " + "<br>"
+                        "The photo you uploaded exists in the system" + (rs[0].type !==2 ? "(but not published) " : "") + ", uploaded by "+ rs[0].uploader_name + " (" + rs[0].uploader_id + "). " + "<br>"
                         + '<div class="bkimg rounded" style="width: 200px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
                     )
                 ]);
