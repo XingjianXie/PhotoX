@@ -158,8 +158,6 @@ block content
     .card.shadow.mb-4.mx-2
       .card-header.py-3
         p.text-primary.m-0.font-weight-bold Maintenance Scripts
-      .card-header
-        .text-danger Scripts Are Not Set to Be Admin User Only Because of the Experiment of New Privilege Authentication. Please, Do Not Run Any of These Script Unless You Know What You Are Doing. For Running Any One of Scripts Below, An Email Will Be Sent to the Maintainer of System, and A Group Message Will Be Sent to All Users, Including All Details of the Script and Its Result.
       .card-body
         each script in config.scripts
           form(method='post' action='/status/run/' + script.location)

@@ -36,7 +36,6 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
     router.use('/message', message(db));
     router.use('/logout', logout(session_map, db));
     router.use('/reset_password', reset_password(session_map, db));
-    router.use('/status', status(db));
     router.use('/gallery', gallery(db, multer));
 
     router.use(xauth("admin"))
@@ -44,6 +43,7 @@ export default (session_map : any, db: (sql : string, values : any) => Promise<a
 
     router.use(xauth("system"))
     router.use('/config', config(db));
+    router.use('/status', status(db));
     router.use('/log', log(db));
 
     router.use((req, res, next) => {
