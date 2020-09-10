@@ -3,14 +3,12 @@ import query from '../db/query';
 import {create as ps_create, make as ps_make} from '../tools/password';
 import createError from "http-errors";
 import log from "../tools/log";
+import auth from "../tools/auth";
 
 export default (db: (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
     router.get('/', (req, res, next) => {
-        if (req.session && req.session.sign) {
-            res.redirect('/');
-            return;
-        }
+        if (!auth(req, res, next, "redirect", "nologin")) return;
         if (!res.locals.config.allow_register) {
             log(res.locals.config, db, 0, "User", null, "Register", false, "Error: Disabled");
             next(createError(401, 'Disabled'));
@@ -20,10 +18,7 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
     });
 
     router.post('/', async(req, res, next) => {
-        if (req.session && req.session!.sign) {
-            res.redirect('/');
-            return;
-        }
+        if (!auth(req, res, next, "redirect", "nologin")) return;
         if (!req.body.phone_number) {
             next(createError(400, 'Phone Number Required'));
             return;

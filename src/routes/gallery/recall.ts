@@ -3,23 +3,20 @@ import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
 import log from "../../tools/log";
+import auth from "../../tools/auth";
 
 export default (db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
     router.post('/', async(req, res, next) => {
-        if (!req.session || !req.session.sign) {
-            next(createError(401, 'Unauthorized'));
-            return;
-        }
         const rs : any[] = await db(query.getPhotoById, [Number(req.body.photoID)]);
         if (!rs[0]) {
-            log(res.locals.config, db, req.session.userID, "Photo", Number(req.body.photoID), "Recall", false, "Error: Not Found");
+            log(res.locals.config, db, req.session!.userID, "Photo", Number(req.body.photoID), "Recall", false, "Error: Not Found");
             next(createError(404, 'Photo Not Found'));
             return;
         }
         const dw : any[] = await db(query.getDownloadByPhotoId, [Number(req.body.photoID)]);
-        if (req.session.type && (req.session.userID !== rs[0].uploader_id || (dw.length && !req.session.type))) {
-            log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Recall", false, "Error: Unauthorized");
+        if (req.session!.type && (req.session!.userID !== rs[0].uploader_id || (dw.length && !req.session!.type))) {
+            log(res.locals.config, db, req.session!.userID, "Photo", rs[0].id, "Recall", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
@@ -42,7 +39,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             await db(query.addSpPreview, [val.user, rs[0].id]);
             await db(query.addMessage, [0, val.user,
                 (
-                    "The photo you downloaded has been recalled by "+ req.session.name + " (" + req.session.userID + "). " + "<br>"
+                    "The photo you downloaded has been recalled by "+ req.session!.name + " (" + req.session!.userID + "). " + "<br>"
                     + '<div class="bkimg rounded" style="width: 200px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
                 )
             ]);
@@ -51,12 +48,12 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
         await db(query.addSpPreview, [rs[0].uploader_id, rs[0].id]);
         await db(query.addMessage, [0, rs[0].uploader_id,
             (
-                "The photo you uploaded has been recalled by "+ req.session.name + " (" + req.session.userID + "). " + "<br>"
+                "The photo you uploaded has been recalled by "+ req.session!.name + " (" + req.session!.userID + "). " + "<br>"
                 + '<div class="bkimg rounded" style="width: 200px; background-image: url(/uploads/' + rs[0].id + '.preview.jpg); background-size: 100%" rel-height="' + rs[0].height + '" rel-width="' + rs[0].width + '"> </div>'
             )
         ]);
 
-        log(res.locals.config, db, req.session.userID, "Photo", rs[0].id, "Recall", true, null);
+        log(res.locals.config, db, req.session!.userID, "Photo", rs[0].id, "Recall", true, null);
 
         res.status(200);
         if (dw.length) {

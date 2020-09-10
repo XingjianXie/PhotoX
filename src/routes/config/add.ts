@@ -4,22 +4,15 @@ import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
 import {AllHtmlEntities} from 'html-entities';
 import log from "../../tools/log";
+import auth from "../../tools/auth";
 
 export default (db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
     router.get('/', async(req, res, next) => {
-        if (!req.session || !req.session.sign || req.session.type !== 127) {
-            res.redirect('/');
-            return;
-        }
         res.render('add_config');
     });
 
     router.post('/', async(req, res, next) => {
-        if (!req.session || !req.session.sign || req.session.type !== 127) {
-            next(createError(401, 'Unauthorized'));
-            return;
-        }
         if (!req.body.name) {
             next(createError(400, 'Name Required'));
             return;

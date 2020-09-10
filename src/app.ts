@@ -99,13 +99,13 @@ export default async function create_application() {
 
         res.locals.config = config;
         res.locals.session = req.session;
-        if (req.session && req.session.sign)
-            res.locals.unreadMeessageLength = (await db(query.countQueryMyUnreadMessage, [req.session.userID, req.session.userID]))[0]['COUNT(*)'];
+        if (req.session && req.session!.sign)
+            res.locals.unreadMeessageLength = (await db(query.countQueryMyUnreadMessage, [req.session!.userID, req.session!.userID]))[0]['COUNT(*)'];
         res.locals.typeName = new Proxy({}, {
             get(target, index) {
                 if (!isNaN(Number(index))) {
                     switch (Number(index)) {
-                        case 0: return 'Editor';
+                        case 0: return 'Standard';
                         case 1: return 'Admin';
                         case 2: return 'Super Admin';
                         case 126: return 'Guest Upload Account';

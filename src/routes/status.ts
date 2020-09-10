@@ -5,14 +5,11 @@ import createError from "http-errors";
 import log from "../tools/log";
 import os, {totalmem} from "os";
 import path from "path";
+import auth from "../tools/auth";
 
 export default (db: (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
-    router.get('/', async(req, res) => {
-        if (!req.session || !req.session.sign) {
-            res.redirect('/');
-            return;
-        }
+    router.get('/', async(req, res, next) => {
         const usersDeleted = await db(query.allDeletedUser, []);
         const usersLength = (await db(query.allUser, [])).length - usersDeleted.length;
         const photosPublished = await db(query.allPublishedPhoto, []);
@@ -45,10 +42,6 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
         });
     });
     router.post('/run/:name', async(req, res, next) => {
-        if (!req.session || !req.session.sign) {
-            next(createError(401, 'Unauthorized'));
-            return;
-        }
         if (!req.params.name) {
             next(createError(400, 'Script Required'));
             return;
@@ -77,7 +70,7 @@ export default (db: (sql : string, values : any) => Promise<any>) => {
         //=========aha==========
         const result = await script.run();
         await db(query.addMessage, [0, null,
-            "Script " + encodeURIComponent(req.params.name) + " has been run by " + req.session.name + " (" + req.session.userID + "). " + "<br>"
+            "Script " + encodeURIComponent(req.params.name) + " has been run by " + req.session!.name + " (" + req.session!.userID + "). " + "<br>"
             + '<a href="#" onclick="$(this.nextElementSibling.nextElementSibling).collapse(\'toggle\'); return false;">Result</a><br>'
             + '<div class="collapse">'
             + result

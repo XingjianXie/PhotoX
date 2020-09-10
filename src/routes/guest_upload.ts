@@ -5,14 +5,12 @@ import createError from "http-errors";
 import log from "../tools/log";
 import multer = require('multer');
 import upload_photo from '../tools/upload_photo';
+import auth from "../tools/auth";
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
     router.get('/', (req, res, next) => {
-        if (req.session && req.session.sign) {
-            res.redirect('/');
-            return;
-        }
+        if (!auth(req, res, next, "redirect", "nologin")) return;
         if (!res.locals.config.allow_guest_upload) {
             next(createError(401, 'Disabled'));
             return;
@@ -20,10 +18,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         res.render("guest_upload");
     });
     router.post('/', async(req, res, next) => {
-        if (req.session && req.session.sign) {
-            res.redirect('/');
-            return;
-        }
+        if (!auth(req, res, next, "redirect", "nologin")) return;
         if (!req.body.phone_number) {
             next(createError(400, 'Phone Number Required'));
             return;
@@ -69,15 +64,15 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         res.sendStatus(200);
     });
     router.post('/upload', multer.array("photo", 20), async(req, res, next) => {
-        if (!req.session || !req.session.guestUploadLogin) {
+        if (!req.session || !req.session!.guestUploadLogin) {
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (!(req.files instanceof Array)) {
             throw req.files;
         }
-        const t = await upload_photo(res.locals.config, db, req.files, req.session.guestUploadUserID, req.app.get("root"));
-        req.session.destroy((err) => {
+        const t = await upload_photo(res.locals.config, db, req.files, req.session!.guestUploadUserID, req.app.get("root"));
+        req.session!.destroy((err) => {
             if (err) throw err;
             res.send(t);
         });

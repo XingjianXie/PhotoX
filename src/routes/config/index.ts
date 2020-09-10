@@ -4,14 +4,11 @@ import createError from "http-errors";
 import _new from "./add";
 import _delete from "./delete";
 import edit from "./edit";
+import auth from "../../tools/auth";
 
 export default (db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
     router.get('/',  async(req, res, next) => {
-        if (!req.session || !req.session.sign || req.session.type !== 127) {
-            res.redirect('/');
-            return;
-        }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 5, 1);
         const rs : any[] = !req.query.wd
@@ -34,6 +31,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             wd: req.query.wd,
         });
     });
+    //router.use(xauth("system"))
     router.use('/new', _new(db));
     router.use('/delete', _delete(db));
     router.use('/edit', edit(db))

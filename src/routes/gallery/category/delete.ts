@@ -3,31 +3,28 @@ import {MemoryStore} from "express-session";
 import query from "../../../db/query";
 import createError from "http-errors";
 import log from "../../../tools/log"
+import auth from "../../../tools/auth";
 
 export default (db : (sql : string, values : any) => Promise<any[]>) => {
     const router = express.Router();
     router.post('/', async(req, res, next) => {
-        if (!req.session || !req.session.sign || !req.session.type) {
-            res.redirect('/');
-            return;
-        }
         if (isNaN(Number(req.body.categoryId)) || Number(req.body.categoryId) === 0) {
             next(createError(400, 'Category ID Should Be A Nonzero Number'));
             return;
         }
         let rs = await db(query.getCategoryById, [Number(req.body.categoryId)]);
         if (!rs[0]) {
-            log(res.locals.config, db, req.session.userID, "Category", Number(req.body.categoryId), "Delete", false, "Error: Not Found");
+            log(res.locals.config, db, req.session!.userID, "Category", Number(req.body.categoryId), "Delete", false, "Error: Not Found");
             next(createError(404, 'Category Not Found'));
             return;
         }
-        if (req.session.type <= rs[0].owner_type && req.session.userID !== Number(rs[0].owner)) {
-            log(res.locals.config, db, req.session.userID, "Category", rs[0].id, "Delete", false, "Error: Unauthorized");
+        if (req.session!.type <= rs[0].owner_type && req.session!.userID !== Number(rs[0].owner)) {
+            log(res.locals.config, db, req.session!.userID, "Category", rs[0].id, "Delete", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (res.locals.config.disable_admin_delete_category) {
-            log(res.locals.config, db, req.session.userID, "Category", rs[0].id, "Delete", false, "Error: Disabled");
+            log(res.locals.config, db, req.session!.userID, "Category", rs[0].id, "Delete", false, "Error: Disabled");
             next(createError(400, 'Disabled'));
             return;
         }

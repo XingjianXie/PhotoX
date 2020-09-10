@@ -8,14 +8,12 @@ import download from "./download";
 import unuse from "./unuse";
 import category from "./category/index"
 import query from '../../db/query';
+import auth from "../../tools/auth";
+import xauth from "../../tools/xauth";
 
 export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
     const router = express.Router();
-    router.get('/', async(req, res) => {
-        if (!req.session || !req.session.sign) {
-            res.redirect('/');
-            return;
-        }
+    router.get('/', async(req, res, next) => {
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 20, 1);
         const cur_category = Number(req.query.category) || 0;
@@ -59,18 +57,22 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             total: total,
             current: pg,
             maximum: maximum,
-            uploadsLength: (await db(query.countUnPublishedPhoto, [req.session.userID]))[0]['COUNT(*)'],
+            uploadsLength: (await db(query.countUnPublishedPhoto, [req.session!.userID]))[0]['COUNT(*)'],
             category: category,
             cur_category: cur_category,
             wd: req.query.wd
         });
     });
+    //router.use(xauth("sign"))
     router.use('/upload_center', upload_center(db, multer));
     router.use('/publish', publish(db));
     router.use('/delete', _delete(db));
     router.use('/recall', recall(db));
     router.use('/download', download(db));
-    router.use('/category', category(db));
     router.use('/unuse', unuse(db));
+
+    router.use(xauth("admin"));
+    router.use('/category', category(db));
+
     return router;
 };

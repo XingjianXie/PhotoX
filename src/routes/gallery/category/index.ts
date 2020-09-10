@@ -5,16 +5,13 @@ import edit from './edit';
 import query from "../../../db/query";
 import createError from "http-errors";
 import log from "../../../tools/log";
+import auth from "../../../tools/auth";
 
 export default (db : (sql : string, values : any) => Promise<any>) => {
     const router = express.Router();
     router.get('/',  async(req, res, next) => {
-        if (!req.session || !req.session.sign || !req.session.type) {
-            res.redirect('/');
-            return;
-        }
         if (res.locals.config.disable_admin_edit_category && res.locals.config.disable_admin_add_category && res.locals.config.disable_admin_delete_category) {
-            log(res.locals.config, db, req.session.userID, "Category", null, "List Categories", false, "Error: Disabled");
+            log(res.locals.config, db, req.session!.userID, "Category", null, "List Categories", false, "Error: Disabled");
             next(createError(401, 'Disabled'));
             return;
         }
@@ -40,6 +37,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             wd: req.query.wd,
         });
     });
+    //router.use(xauth("admin"))
     router.use('/add', add(db));
     router.use('/edit', edit(db));
     router.use('/delete', _delete(db));
