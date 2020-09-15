@@ -5,22 +5,21 @@ import add from "./add";
 import _delete from './delete';
 import edit from "./edit";
 import logout from "./logout";
+import auth from "../../tools/auth";
+import xauth from "../../tools/xauth";
+import StateObject from "../../class/state_object";
 
-export default (session_map: any, db : (sql : string, values : any) => Promise<any>) => {
+export default (state: StateObject) => {
     const router = express.Router();
     router.get('/',  async(req, res, next) => {
-        if (!req.session || !req.session.sign || !req.session.type) {
-            res.redirect('/');
-            return;
-        }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 5, 1);
         const rs : any[] = !req.query.wd
-            ? await db(query.queryUserWithLimit, [req.session.type, (pg - 1) * maximum, maximum])
-            : await db(query.searchUserWithLimited, [req.session.type, isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), req.query.wd, (pg - 1) * maximum, maximum]);
+            ? await state.db(query.queryUserWithLimit, [req.session!.type, (pg - 1) * maximum, maximum])
+            : await state.db(query.searchUserWithLimited, [req.session!.type, isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), req.query.wd, (pg - 1) * maximum, maximum]);
         const total = !req.query.wd
-            ? (await db(query.countQueryUserWithLimit, [req.session.type]))[0]['COUNT(*)']
-            : (await db(query.countSearchUserWithLimited, [req.session.type, isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), req.query.wd]))[0]['COUNT(*)'];
+            ? (await state.db(query.countQueryUserWithLimit, [req.session!.type]))[0]['COUNT(*)']
+            : (await state.db(query.countSearchUserWithLimited, [req.session!.type, isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), req.query.wd]))[0]['COUNT(*)'];
 
         if (!rs.length && total) {
             res.redirect("/user?pg=" + Math.ceil(total / maximum).toString() + "&wd=" + (req.query.wd || '') + "&max=" + maximum.toString());
@@ -29,7 +28,7 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
 
         let new_map : any = {};
         for (const value of rs) {
-            new_map[value.id] = await session_map[value.id];
+            new_map[value.id] = await state.session_map[value.id];
         };
 
         res.render('user', {
@@ -41,9 +40,10 @@ export default (session_map: any, db : (sql : string, values : any) => Promise<a
             map: new_map
         });
     });
-    router.use('/delete', _delete(session_map, db));
-    router.use('/logout', logout(session_map, db));
-    router.use('/add', add(db));
-    router.use('/edit', edit(session_map, db));
+    //router.use(xauth("admin"))
+    router.use('/delete', _delete(state));
+    router.use('/logout', logout(state));
+    router.use('/add', add(state));
+    router.use('/edit', edit(state));
     return router;
 };

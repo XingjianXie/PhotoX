@@ -24,7 +24,7 @@ block content
   .card.shadow
     .card-header.py-3
       p.d-inline.text-primary.m-0.font-weight-bold My Upload
-      if (session.type && config.allow_admin_publish_others)
+      if (config.allow_publish_others)
          button.d-inline.btn.ml-3.d-inline.btn-primary.btn-sm(onclick="window.location='/gallery/upload_center?others=1'") Switch to All Upload
     #list.card-body
       if photos.length
@@ -69,7 +69,7 @@ block content
             }
           .error.mx-auto(data-text= 404)
             p.m-0.d-inline-block= 404
-          p.text-dark.mb-5.lead Photo Not Found
+          p.text-dark.mb-5.lead No Photo in Give Condition
 
 append javascripts
   script.

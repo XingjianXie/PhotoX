@@ -4,19 +4,17 @@ import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
 import {AllHtmlEntities} from 'html-entities';
 import log from "../../tools/log";
+import auth from "../../tools/auth"
+import StateObject from "../../class/state_object";
 
-export default (db : (sql : string, values : any) => Promise<any>) => {
+export default (state: StateObject) => {
     const router = express.Router();
     router.get('/:name', async(req, res, next) => {
-        if (!req.session || !req.session.sign || req.session.type !== 127) {
-            res.redirect('/');
-            return;
-        }
         if (!req.params.name) {
             next(createError(400, 'Name Required'));
             return;
         }
-        let rs = await db(query.getConfigByName, [req.params.name]);
+        let rs = await state.db(query.getConfigByName, [req.params.name]);
         if (!rs[0]) {
             next(createError(404, 'Config Not Found'));
             return;
@@ -25,10 +23,6 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
     });
 
     router.post('/:name', async(req, res, next) => {
-        if (!req.session || !req.session.sign || req.session.type !== 127) {
-            next(createError(401, 'Unauthorized'));
-            return;
-        }
         if (!req.params.name) {
             next(createError(400, 'Name Required'));
             return;
@@ -37,7 +31,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(400, 'Value Required'));
             return;
         }
-        let rs = await db(query.getConfigByName, [req.params.name]);
+        let rs = await state.db(query.getConfigByName, [req.params.name]);
         if (!rs[0]) {
             next(createError(404, 'Config Not Found'));
             return;
@@ -48,7 +42,7 @@ export default (db : (sql : string, values : any) => Promise<any>) => {
             next(createError(400, 'Value Not Object'));
             return
         }
-        await db(query.updateConfig, [req.body.value, req.params.name]);
+        await state.db(query.updateConfig, [req.body.value, req.params.name]);
         res.render('notification', {
             code: 200,
             msg: "Update Successfully",

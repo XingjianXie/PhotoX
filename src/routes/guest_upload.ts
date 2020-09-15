@@ -3,16 +3,15 @@ import query from '../db/query';
 import {create as ps_create, make as ps_make} from '../tools/password';
 import createError from "http-errors";
 import log from "../tools/log";
-import multer = require('multer');
 import upload_photo from '../tools/upload_photo';
+import auth from "../tools/auth";
+import StateObject from "../class/state_object";
+import multer from "multer";
 
-export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
+export default (state: StateObject) => {
     const router = express.Router();
     router.get('/', (req, res, next) => {
-        if (req.session && req.session.sign) {
-            res.redirect('/');
-            return;
-        }
+        if (!auth(req, res, next, "redirect", "nologin")) return;
         if (!res.locals.config.allow_guest_upload) {
             next(createError(401, 'Disabled'));
             return;
@@ -20,10 +19,7 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
         res.render("guest_upload");
     });
     router.post('/', async(req, res, next) => {
-        if (req.session && req.session.sign) {
-            res.redirect('/');
-            return;
-        }
+        if (!auth(req, res, next, "redirect", "nologin")) return;
         if (!req.body.phone_number) {
             next(createError(400, 'Phone Number Required'));
             return;
@@ -49,35 +45,35 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             return;
         }
 
-        const rs = await db(query.getUserByPhoneNumber, [req.body.phone_number]);
+        const rs = await state.db(query.getUserByPhoneNumber, [req.body.phone_number]);
         if (rs[0]) {
             if (rs[0].type !== 126) {
-                log(res.locals.config, db, 0, "User", null, "Guest Upload", false, "Error: Phone Number Used");
+                log(res.locals.config, state.db, 0, "User", null, "Guest Upload", false, "Error: Phone Number Used");
                 next(createError(400, 'Phone Number Has Been Taken as Staff Account'));
                 return;
             }
             req.session!.guestUploadUserID = rs[0].id;
             req.session!.guestUploadLogin = true;
-            log(res.locals.config, db, 0, "User", rs[0].id, "Guest Upload (Previous)", true, null);
+            log(res.locals.config, state.db, 0, "User", rs[0].id, "Guest Upload (Previous)", true, null);
         } else {
-            const id : number = (await db(query.addUser, [req.body.phone_number, req.body.name, 126, null, null])).insertId;
-            log(res.locals.config, db, 0, "User", id, "Guest Upload (New)", true, null);
+            const id : number = (await state.db(query.addUser, [req.body.phone_number, req.body.name, 126, null, null])).insertId;
+            log(res.locals.config, state.db, 0, "User", id, "Guest Upload (New)", true, null);
 
             req.session!.guestUploadUserID = id;
             req.session!.guestUploadLogin = true;
         }
         res.sendStatus(200);
     });
-    router.post('/upload', multer.array("photo", 20), async(req, res, next) => {
-        if (!req.session || !req.session.guestUploadLogin) {
+    router.post('/upload', multer({limits: {fileSize: 1e8}}).array("photo", 20), async(req, res, next) => {
+        if (!req.session || !req.session!.guestUploadLogin) {
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (!(req.files instanceof Array)) {
             throw req.files;
         }
-        const t = await upload_photo(res.locals.config, db, req.files, req.session.guestUploadUserID, req.app.get("root"));
-        req.session.destroy((err) => {
+        const t = await upload_photo(res.locals.config, state.db, req.files, req.session!.guestUploadUserID, req.app.get("root"));
+        req.session!.destroy((err) => {
             if (err) throw err;
             res.send(t);
         });

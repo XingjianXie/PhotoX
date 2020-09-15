@@ -1,5 +1,4 @@
 import express from 'express';
-import multer from "multer";
 import sharp from "sharp";
 import query from "../../db/query";
 import createError from "http-errors";
@@ -9,27 +8,26 @@ import crypto from "crypto";
 import path from "path";
 import log from "../../tools/log"
 import upload_photo from '../../tools/upload_photo';
+import auth from "../../tools/auth";
+import StateObject from "../../class/state_object";
+import multer from "multer";
 
-export default (db: (sql : string, values : any) => Promise<any>, multer : multer.Instance) => {
+export default (state: StateObject) => {
     const router = express.Router();
     router.get('/', async(req, res, next) => {
-        if (!req.session || !req.session.sign) {
-            res.redirect('/');
-            return;
-        }
         const pg = Math.max(Number(req.query.pg) || 1, 1);
         const maximum = Math.max(Number(req.query.max) || 5, 1);
         let rs : any[], total : number;
         if (!req.query.others) {
-            rs = await db(query.queryUnPublishedPhotoWithLimit, [req.session.userID, (pg - 1) * maximum, maximum]);
-            total = (await db(query.countQueryUnPublishedPhotoWithLimit, [req.session.userID]))[0]['COUNT(*)'];
+            rs = await state.db(query.queryUnPublishedPhotoWithLimit, [req.session!.userID, (pg - 1) * maximum, maximum]);
+            total = (await state.db(query.countQueryUnPublishedPhotoWithLimit, [req.session!.userID]))[0]['COUNT(*)'];
         } else {
             rs = !req.query.wd
-                ? await db(query.queryOthersUnPublishedPhotoWithLimit, [ (pg - 1) * maximum, maximum])
-                : await db(query.searchOthersUnPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
+                ? await state.db(query.queryOthersUnPublishedPhotoWithLimit, [ (pg - 1) * maximum, maximum])
+                : await state.db(query.searchOthersUnPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd, (pg - 1) * maximum, maximum]);
             total = !req.query.wd
-                ? (await db(query.countQueryOthersUnPublishedPhotoWithLimit, []))[0]['COUNT(*)']
-                : (await db(query.countSearchOthersUnPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
+                ? (await state.db(query.countQueryOthersUnPublishedPhotoWithLimit, []))[0]['COUNT(*)']
+                : (await state.db(query.countSearchOthersUnPublishedPhotoWithLimit, [req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
         }
 
 
@@ -46,15 +44,11 @@ export default (db: (sql : string, values : any) => Promise<any>, multer : multe
             wd: req.query.wd,
         });
     });
-    router.post('/', multer.array("photo", 50), async(req, res, next) => {
-        if (!req.session || !req.session.sign) {
-            next(createError(401, 'Unauthorized'));
-            return;
-        }
+    router.post('/', multer({limits: {fileSize: 1e8}}).array("photo", 50), async(req, res, next) => {
         if (!(req.files instanceof Array)) {
             throw req.files;
         }
-        const t = await upload_photo(res.locals.config, db, req.files, req.session.userID, req.app.get("root"));
+        const t = await upload_photo(res.locals.config, state.db, req.files, req.session!.userID, req.app.get("root"));
         res.send(t);
     });
     return router;

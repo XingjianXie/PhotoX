@@ -2,15 +2,13 @@ import express from 'express';
 import {MemoryStore} from "express-session";
 import query from "../../db/query";
 import createError from "http-errors";
+import auth from "../../tools/auth"
+import StateObject from "../../class/state_object";
 
-export default (db : (sql : string, values : any) => Promise<any[]>) => {
+export default (state: StateObject) => {
     const router = express.Router();
     router.post('/', async(req, res, next) => {
-        if (!req.session || !req.session.sign || req.session.type !== 127) {
-            next(createError(401, 'Unauthorized'));
-            return;
-        }
-        const rs : any[] = await db(query.getDeletableConfigByName, [req.body.name]);
+        const rs : any[] = await state.db(query.getDeletableConfigByName, [req.body.name]);
         if (!rs[0]) {
             next(createError(404, 'Config Not Found'));
             return;
@@ -27,7 +25,7 @@ export default (db : (sql : string, values : any) => Promise<any[]>) => {
             return;
         }
 
-        await db(query.deleteConfig, [rs[0].name]);
+        await state.db(query.deleteConfig, [rs[0].name]);
 
         res.render('notification', {
             code: 200,

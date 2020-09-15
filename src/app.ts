@@ -13,10 +13,11 @@ import {mkdir} from "fs";
 import * as util from "util";
 import {promisify, types} from "util";
 import query from "./db/query";
+import StateObject from "./class/state_object";
+
 
 export default async function create_application() {
     const redisStore = require('connect-redis')(session);
-    const multer = require("multer");
     const RedisConfig = require('./db/RedisConfig');
 
     const app = express();
@@ -25,13 +26,13 @@ export default async function create_application() {
     const store : Store = new redisStore({ client: redis_client });
     const session_map : any = new Proxy({}, {
         get(target, index) {
-            return promisify(redis_client.get).bind(redis_client)('session_map:' + index.toString());
+            return promisify(redis_client.get).bind(redis_client)('state.session_map:' + index.toString());
         },
         set(target, index, value, receiver) {
             if (value === undefined)
-                redis_client.del("session_map:" + index.toString());
+                redis_client.del("state.session_map:" + index.toString());
             else
-                redis_client.set('session_map:' + index.toString(), value);
+                redis_client.set('state.session_map:' + index.toString(), value);
             return true;
         }
     });
@@ -99,13 +100,13 @@ export default async function create_application() {
 
         res.locals.config = config;
         res.locals.session = req.session;
-        if (req.session && req.session.sign)
-            res.locals.unreadMeessageLength = (await db(query.countQueryMyUnreadMessage, [req.session.userID, req.session.userID]))[0]['COUNT(*)'];
+        if (req.session && req.session!.sign)
+            res.locals.unreadMeessageLength = (await db(query.countQueryMyUnreadMessage, [req.session!.userID, req.session!.userID]))[0]['COUNT(*)'];
         res.locals.typeName = new Proxy({}, {
             get(target, index) {
                 if (!isNaN(Number(index))) {
                     switch (Number(index)) {
-                        case 0: return 'Editor';
+                        case 0: return 'Standard';
                         case 1: return 'Admin';
                         case 2: return 'Super Admin';
                         case 126: return 'Guest Upload Account';
@@ -131,6 +132,6 @@ export default async function create_application() {
         next();
     });
 
-    app.use(index(session_map, db, multer( { limits: { fileSize: 1e8 } } )));
+    app.use(index(new StateObject(session_map, db)));
     return app;
 }
