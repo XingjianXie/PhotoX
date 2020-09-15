@@ -46,13 +46,13 @@ source init.sql;
 
 # Set Your Secret of Session
 # Please, Change This to Your Own String
-insert into config(name, value, deletable) values("session_secret", '"mark07x"', true);
+insert into config(name, value, deletable) values("session_secret", '"mark07x"', false);
 
 # Set Env
-insert into config(name, value, deletable) values("env", '"production"', true);
+insert into config(name, value, deletable) values("env", '"production"', false);
 
 # Set PORT
-insert into config(name, value, deletable) values("port", '3000', true);
+insert into config(name, value, deletable) values("port", '3000', false);
 
 
 # Update the Phone Number of System User
