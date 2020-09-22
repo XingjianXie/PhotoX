@@ -25,8 +25,8 @@ export default async function create_application() {
     const redis_client = redis.createClient(RedisConfig);
     const store : Store = new redisStore({ client: redis_client });
     const session_map : any = new Proxy({}, {
-        async get(target, index) {
-            return await promisify(redis_client.get).bind(redis_client)('state.session_map:' + index.toString());
+        get(target, index) {
+            return promisify(redis_client.get).bind(redis_client)('state.session_map:' + index.toString());
         },
         set(target, index, value, receiver) {
             if (value === undefined)
