@@ -26,14 +26,14 @@ export default async function create_application() {
     const store : Store = new redisStore({ client: redis_client });
     const session_map : any = new Proxy({}, {
         get(target, index) {
-            return promisify(redis_client.get).bind(redis_client)('state.session_map:' + index.toString());
+            return promisify(redis_client.get).bind(redis_client)('session_map:' + index.toString());
         },
         set(target, index, value, receiver) {
             if (value === undefined)
-                redis_client.del("state.session_map:" + index.toString());
+                redis_client.del("session_map:" + index.toString());
             else {
-                redis_client.set('state.session_map:' + index.toString(), value);
-                redis_client.expire('state.session_map:' + index.toString(), 60 * 1000 * 60 * 12)
+                redis_client.set('session_map:' + index.toString(), value);
+                redis_client.expire('session_map:' + index.toString(), 60 * 1000 * 60 * 12)
             }
             return true;
         }
