@@ -105,7 +105,7 @@ export default (state: StateObject) => {
         }
         const userID = req.session!.userID;
         await new Promise(async (resolve, reject) => {
-            req.sessionStore!.destroy((await state.session_map[rs[0].id]), (err) => {
+            state.redis.del((await state.session_map[rs[0].id]), (err) => {
                 if(err) reject(err);
                 else resolve();
             });

@@ -63,7 +63,7 @@ export default (state: StateObject) => {
             await state.db(query.resetPassword, [ ps_new[0], ps_new[1], id]);
             const userID = req.session!.userID;
             await new Promise(async (resolve, reject) => {
-                req.sessionStore!.destroy((await state.session_map[id]), (err) => {
+                state.redis.del((await state.session_map[rs[0].id]), (err) => {
                     if(err) reject(err);
                     else resolve();
                 });

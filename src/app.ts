@@ -25,14 +25,16 @@ export default async function create_application() {
     const redis_client = redis.createClient(RedisConfig);
     const store : Store = new redisStore({ client: redis_client });
     const session_map : any = new Proxy({}, {
-        get(target, index) {
-            return promisify(redis_client.get).bind(redis_client)('state.session_map:' + index.toString());
+        async get(target, index) {
+            return await promisify(redis_client.get).bind(redis_client)('state.session_map:' + index.toString());
         },
         set(target, index, value, receiver) {
             if (value === undefined)
                 redis_client.del("state.session_map:" + index.toString());
-            else
+            else {
                 redis_client.set('state.session_map:' + index.toString(), value);
+                redis_client.expire('state.session_map:' + index.toString(), 60 * 1000 * 60 * 12)
+            }
             return true;
         }
     });
@@ -77,13 +79,6 @@ export default async function create_application() {
         resave: false,
         store: store,
         saveUninitialized: false,
-        destroy_callback: function (session_id) {
-            store.get(session_id, (err , session) => {
-                if (err) throw err;
-                else session_map[session!.id] = undefined;
-            });
-            return true;
-        }
     }));
 
     app.use(express.static(path.join(app.get('root'), 'public')));
@@ -132,6 +127,6 @@ export default async function create_application() {
         next();
     });
 
-    app.use(index(new StateObject(session_map, db)));
+    app.use(index(new StateObject(session_map, db, redis_client)));
     return app;
 }

@@ -34,7 +34,7 @@ export default (state: StateObject) => {
         }
         if (ps_make(req.body.pwd, rs[0].passrd) === rs[0].passcode) {
             await new Promise(async (resolve, reject) => {
-                req.sessionStore!.destroy((await state.session_map[rs[0].id]), (err) => {
+                state.redis.del((await state.session_map[rs[0].id]), (err) => {
                     if(err) reject(err);
                     else resolve();
                 });
