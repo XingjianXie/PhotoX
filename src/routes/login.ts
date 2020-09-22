@@ -5,6 +5,7 @@ import createError from "http-errors";
 import log from "../tools/log";
 import auth from "../tools/auth"
 import StateObject from "../class/state_object";
+import session_killer from "../tools/session_killer";
 
 export default (state: StateObject) => {
     const router = express.Router();
@@ -33,12 +34,7 @@ export default (state: StateObject) => {
             return;
         }
         if (ps_make(req.body.pwd, rs[0].passrd) === rs[0].passcode) {
-            await new Promise(async (resolve, reject) => {
-                state.redis.del((await state.session_map[rs[0].id]), (err) => {
-                    if(err) reject(err);
-                    else resolve();
-                });
-            });
+            await session_killer(state, rs[0].id);
             req.session!.sign = true;
             req.session!.userID = rs[0].id;
             req.session!.type = rs[0].type;

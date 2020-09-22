@@ -4,6 +4,7 @@ import query from "../../db/query";
 import log from "../../tools/log";
 import auth from "../../tools/auth";
 import StateObject from "../../class/state_object";
+import session_killer from "../../tools/session_killer";
 
 export default (state: StateObject) => {
     let router = express.Router();
@@ -34,12 +35,7 @@ export default (state: StateObject) => {
             return;
         }
         const userID = req.session!.userID;
-        await new Promise(async (resolve, reject) => {
-            state.redis.del((await state.session_map[rs[0].id]), (err) => {
-                if(err) reject(err);
-                else resolve();
-            });
-        });
+        await session_killer(state, rs[0].id);
         state.session_map[rs[0].id] = undefined;
 
         log(res.locals.config, state.db, userID, "User", rs[0].id, "Kick Out", true, null);
