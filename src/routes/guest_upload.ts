@@ -64,7 +64,7 @@ export default (state: StateObject) => {
         }
         res.sendStatus(200);
     });
-    router.post('/upload', multer({limits: {fileSize: 1e8}}).array("photo", 20), async(req, res, next) => {
+    router.post('/upload', multer({limits: {fileSize: 1e8, files: 20}}).array("photo", 20), async(req, res, next) => {
         if (!req.session || !req.session!.guestUploadLogin) {
             next(createError(401, 'Unauthorized'));
             return;

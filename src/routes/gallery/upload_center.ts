@@ -44,7 +44,7 @@ export default (state: StateObject) => {
             wd: req.query.wd,
         });
     });
-    router.post('/', multer({limits: {fileSize: 1e8}}).array("photo", 50), async(req, res, next) => {
+    router.post('/', multer({limits: {fileSize: 1e8, files: 50}}).array("photo", 50), async(req, res, next) => {
         if (!(req.files instanceof Array)) {
             throw req.files;
         }
