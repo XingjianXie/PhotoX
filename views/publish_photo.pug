@@ -38,7 +38,10 @@ block content
                   -let i = 1
                   while i <= 10
                     .form-group
-                      input.form-control.form-control-user(type="text", placeholder="Face " + i.toString() + " in Photo", name="mark" + i.toString(), oninput="input(" + i.toString() + ")", autocomplete="off", spellcheck="false", maxlength=30)
+                      input.form-control.form-control-user.dropdown-toggle(data-toggle='dropdown', aria-expanded='false', type="text", placeholder="Face " + i.toString() + " in Photo", name="mark" + i.toString(), oninput="input(" + i.toString() + ")", autocomplete="off", spellcheck="false", maxlength=30)
+                      .dropdown-menu.d-none(role='menu', name="markdrop" + i.toString(), style = {'max-height': '170px', 'overflow-y': 'auto'})
+                        for j in config.suggestion_api
+                          a.dropdown-item.d-none(role='presentation', onclick="$('[name=mark" + i.toString() + "]').val('" + j + "');")= j
                     -i++
 
                   .form-group
@@ -64,9 +67,25 @@ append javascripts
             current_space++;
           }
         }
-        for (let i = 1; i <= 10; i++)
+        for (let i = 1; i <= 10; i++) {
+          if ($('[name=mark' + i.toString() + ']').val()) {
+            let flag = false;
+            for (const c of $('[name=markdrop' + i.toString() + ']').children()) {
+              if ($(c).html().includes($('[name=mark' + i.toString() + ']').val())) {
+                $(c).removeClass('d-none');
+                flag = true;
+              } else {
+                $(c).addClass('d-none');
+              }
+            }
+            if (flag) $('[name=markdrop' + i.toString() + ']').removeClass('d-none');
+            else $('[name=markdrop' + i.toString() + ']').addClass('d-none');
+          } else {
+            $('[name=markdrop' + i.toString() + ']').addClass('d-none');
+          }
           if (i <= current_space) $('[name=mark' + i.toString() + ']').removeClass('d-none');
           else $('[name=mark' + i.toString() + ']').addClass('d-none');
+        }
       }
     }
     input(1);
