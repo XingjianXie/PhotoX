@@ -58,8 +58,8 @@ export default {
     countPhotoSpecificCategory: 'SELECT COUNT(*) FROM photo WHERE category=? AND deleted=0 AND type=2',
 
     //Download
-    addDownload: 'INSERT INTO download values(UUID(), ?, ?)',
-    getDownloadByPhotoId: 'SELECT download.*, user.name AS user_name from download LEFT OUTER JOIN user ON user.id=download.user where photo = ?',
+    addDownload: 'INSERT INTO download(`uuid`, `user`, `photo`) values(UUID(), ?, ?)',
+    getDownloadByPhotoId: 'SELECT download.*, user.name AS user_name from download LEFT OUTER JOIN user ON user.id=download.user where photo = ? order by create_time',
     isDownloadedByUser: 'SELECT * FROM download where user=? and photo=?',
     download: 'SELECT * FROM download where uuid=? and user=? and photo=?',
     removeDownload: 'DELETE FROM download WHERE user=? and photo=?',

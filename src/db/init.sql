@@ -76,6 +76,7 @@ CREATE TABLE `download` (
   `uuid` char(36) NOT NULL DEFAULT '0',
   `user` int(10) unsigned NOT NULL,
   `photo` int(10) unsigned NOT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
