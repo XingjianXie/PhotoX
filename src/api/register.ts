@@ -15,7 +15,10 @@ export default (state: StateObject) => {
             next(createError(401, 'Disabled'));
             return;
         }
-        res.render("register");
+        res.json({
+            "code": 200,
+            "bg": res.locals.config.bg2
+        })
     });
 
     router.post('/', async(req, res, next) => {
@@ -46,11 +49,9 @@ export default (state: StateObject) => {
             const id : number = (await state.db(query.addUser, [req.body.phone_number, req.body.name, 0, password[0], password[1]])).insertId;
             log(res.locals.config, state.db, 0, "User", id, "Register", true, null);
 
-            res.status(201);
-            res.render('notification', {
+            res.json({
                 code: 201,
                 msg: "Register Successfully",
-                inf: "",
                 home: true
             });
         } catch(e) {

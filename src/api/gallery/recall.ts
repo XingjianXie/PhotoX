@@ -3,7 +3,7 @@ import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
 import log from "../../tools/log";
-import auth from "../../tools/api/auth";
+import auth from "../../tools/auth";
 import StateObject from "../../class/state_object";
 
 export default (state: StateObject) => {
@@ -19,17 +19,6 @@ export default (state: StateObject) => {
         if (!req.session!.type && (req.session!.userID !== rs[0].uploader_id)) {
             log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Recall", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
-            return;
-        }
-        if (req.body.confirm === '1' && !res.locals.config.disable_dangerous_action_confirm) {
-            let data1 = req.body;
-            data1.confirm = '0';
-            res.render('confirm', {
-                msg: 'Recall Confirmation',
-                inf1: 'Are you sure to recall photo ' + rs[0].id.toString() + '?',
-                inf2: 'YOU MAY NOT UNDO THIS ACTION',
-                data: data1
-            });
             return;
         }
 
@@ -56,18 +45,15 @@ export default (state: StateObject) => {
 
         log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Recall", true, null);
 
-        res.status(200);
         if (dw.length) {
-            res.status(200);
-            res.render('notification', {
+            res.json({
                 code: 200,
                 msg: "Recall Successfully",
                 inf: "The user download this photo will be noticed",
             });
         }
         else {
-            res.status(200);
-            res.render('notification', {
+            res.json({
                 code: 200,
                 msg: "Recall Successfully",
             });

@@ -15,7 +15,10 @@ export default (state: StateObject) => {
 
             log(res.locals.config, state.db, id, "User", id, "Logout", true, null);
 
-            res.redirect('/login');
+            res.json({
+                code: 302,
+                url: "/",
+            })
         });
     });
     return router;

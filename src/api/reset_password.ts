@@ -9,9 +9,6 @@ import session_killer from "../tools/session_killer";
 
 export default (state: StateObject) => {
     const router = express.Router();
-    router.get('/', (req, res, next) => {
-        res.render("reset_password", { pre: req.query.id });
-    });
     router.post('/', async(req, res, next) => {
         let id = 0;
         if (req.session!.type) {
@@ -69,17 +66,14 @@ export default (state: StateObject) => {
             log(res.locals.config, state.db, userID, "User", id, "Reset Password", true, null);
 
             if (id === userID) {
-                res.status(200);
-                res.render('notification', {
+                res.json({
                     code: 200,
                     msg: "Update Successfully",
                     inf: "Please login again",
-                    home: true
                 });
             }
             else {
-                res.status(200);
-                res.render('notification', {
+                res.json({
                     code: 200,
                     msg: "Update Successfully",
                     inf: "The user just reset password will be logout",

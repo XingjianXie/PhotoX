@@ -9,16 +9,7 @@ import StateObject from "../../../class/state_object";
 
 export default (state: StateObject) => {
     const router = express.Router();
-    router.get('/', async(req, res, next) => {
-        if (res.locals.config.disable_admin_add_category) {
-            log(res.locals.config, state.db, req.session!.userID, "Category", null, "Add", false, "Error: Disabled");
-            next(createError(400, 'Disabled'));
-            return;
-        }
-        res.render('add_category');
-    });
-
-    router.post('/', async(req, res, next) => {
+    router.use('/', async(req, res, next) => {
         if (!req.body.name) {
             log(res.locals.config, state.db, req.session!.userID, "Category", null, "Add", false, "Error: Bad Request");
             next(createError(400, 'Name Required'));
@@ -40,11 +31,9 @@ export default (state: StateObject) => {
             return
         }
 
-        res.status(201);
-        res.render('notification', {
+        res.json({
             code: 201,
             msg: "Add Successfully",
-            bk2: true
         });
     });
     return router;

@@ -9,20 +9,7 @@ import StateObject from "../../class/state_object";
 
 export default (state: StateObject) => {
     const router = express.Router();
-    router.get('/:name', async(req, res, next) => {
-        if (!req.params.name) {
-            next(createError(400, 'Name Required'));
-            return;
-        }
-        let rs = await state.db(query.getConfigByName, [req.params.name]);
-        if (!rs[0]) {
-            next(createError(404, 'Config Not Found'));
-            return;
-        }
-        res.render('edit_config', {c: rs[0]});
-    });
-
-    router.post('/:name', async(req, res, next) => {
+    router.use('/:name', async(req, res, next) => {
         if (!req.params.name) {
             next(createError(400, 'Name Required'));
             return;
@@ -43,10 +30,9 @@ export default (state: StateObject) => {
             return
         }
         await state.db(query.updateConfig, [req.body.value, req.params.name]);
-        res.render('notification', {
+        res.json({
             code: 200,
             msg: "Update Successfully",
-            bk2: true
         });
     });
 

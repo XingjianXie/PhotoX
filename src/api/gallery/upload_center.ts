@@ -32,16 +32,16 @@ export default (state: StateObject) => {
 
 
         if (!rs.length && total) {
-            res.redirect("/gallery/upload_center?pg=" + Math.ceil(total / maximum).toString() + "&max=" + maximum.toString());
+            res.json({
+                code: 416,
+                total: total,
+            });
             return;
         }
 
-        res.render(!req.query.others ? 'upload_center' : 'upload_center_others', {
-            photos: rs,
+        res.json({
+            content: { photo: rs },
             total: total,
-            current: pg,
-            maximum: maximum,
-            wd: req.query.wd,
         });
     });
     router.post('/', multer({limits: {fileSize: 1e8, files: 50}}).array("photo", 50), async(req, res, next) => {
@@ -49,7 +49,10 @@ export default (state: StateObject) => {
             throw req.files;
         }
         const t = await upload_photo(res.locals.config, state.db, req.files, req.session!.userID, req.app.get("root"));
-        res.send(t);
+        res.json({
+            code: 200,
+            result: t,
+        })
     });
     return router;
 };

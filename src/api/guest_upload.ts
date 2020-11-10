@@ -16,7 +16,10 @@ export default (state: StateObject) => {
             next(createError(401, 'Disabled'));
             return;
         }
-        res.render("guest_upload");
+        res.json({
+            "code": 200,
+            "bg": res.locals.config.bg3
+        })
     });
     router.post('/', async(req, res, next) => {
         if (!auth(req, res, next, "redirect", "nologin")) return;
@@ -62,7 +65,9 @@ export default (state: StateObject) => {
             req.session!.guestUploadUserID = id;
             req.session!.guestUploadLogin = true;
         }
-        res.sendStatus(200);
+        res.json({
+            code: 200
+        })
     });
     router.post('/upload', multer({limits: {fileSize: 1e8, files: 20}}).array("photo", 20), async(req, res, next) => {
         if (!req.session || !req.session!.guestUploadLogin) {
@@ -75,7 +80,10 @@ export default (state: StateObject) => {
         const t = await upload_photo(res.locals.config, state.db, req.files, req.session!.guestUploadUserID, req.app.get("root"));
         req.session!.destroy((err) => {
             if (err) throw err;
-            res.send(t);
+            res.json({
+                code: 200,
+                result: t,
+            })
         });
     });
     return router;

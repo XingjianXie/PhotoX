@@ -11,7 +11,10 @@ export default (state: StateObject) => {
     const router = express.Router();
     router.get('/', (req, res, next) => {
         if (!auth(req, res, next, "redirect", "nologin")) return;
-        res.render("login");
+        res.json({
+            "code": 200,
+            "bg": res.locals.config.bg1
+        })
     });
 
     router.post('/', async(req, res, next) => {
@@ -41,7 +44,10 @@ export default (state: StateObject) => {
             req.session!.name = rs[0].name;
             state.session_map[rs[0].id] = req.sessionID;
             log(res.locals.config, state.db, 0, "User", rs[0].id, "Login", true, "IP Address: " + req.headers['x-forwarded-for']);
-            res.redirect('/');
+            res.json({
+                "code": 302,
+                "url": "/"
+            })
         } else {
             log(res.locals.config, state.db, 0, "User", rs[0].id, "Login", false, "IP Address: " + req.headers['x-forwarded-for'] + "; Error: Unauthorized");
             next(createError(401, ' Password Unauthorized'));

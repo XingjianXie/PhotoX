@@ -39,22 +39,22 @@ export default (state: StateObject) => {
         }
 
         if (!rs.length && total) {
-            res.redirect("/message?pg=" + Math.ceil(total / maximum).toString() + "&wd=" + (req.query.wd || '') + "&max=" + maximum.toString() + !req.query.sent ? "&sent=1" : "");
+            res.json({
+                code: 416,
+                total: total,
+            });
             return;
         }
 
-        res.render(!req.query.sent ? 'message' : 'message_sent', {
-            messages: rs,
+        res.json({
+            code: 200,
+            content: { message: rs },
             total: total,
-            current: pg,
-            maximum: maximum,
-            wd: req.query.wd,
         });
     });
     //router.use(xauth("sign"))
     router.use('/mark_as_read', mark_as_read(state));
-
     router.use(xauth("admin"))
-    router.use('/new', _new(state));
+    router.put('/', _new(state));
     return router;
 };

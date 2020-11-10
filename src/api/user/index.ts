@@ -22,7 +22,10 @@ export default (state: StateObject) => {
             : (await state.db(query.countSearchUserWithLimited, [req.session!.type, isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), isNaN(Number(req.query.wd)) ? -1 : Number(req.query.wd), req.query.wd]))[0]['COUNT(*)'];
 
         if (!rs.length && total) {
-            res.redirect("/user?pg=" + Math.ceil(total / maximum).toString() + "&wd=" + (req.query.wd || '') + "&max=" + maximum.toString());
+            res.json({
+                code: 416,
+                total: total,
+            });
             return;
         }
 
@@ -31,19 +34,15 @@ export default (state: StateObject) => {
             new_map[value.id] = await state.session_map[value.id];
         };
 
-        res.render('user', {
-            users: rs,
+        res.json({
+            content: { user: rs },
             total: total,
-            current: pg,
-            maximum: maximum,
-            wd: req.query.wd,
-            map: new_map
         });
     });
     //router.use(xauth("admin"))
-    router.use('/delete', _delete(state));
     router.use('/logout', logout(state));
-    router.use('/add', add(state));
-    router.use('/edit', edit(state));
+    router.put('/', add(state));
+    router.patch('/', edit(state));
+    router.delete('/', _delete(state));
     return router;
 };

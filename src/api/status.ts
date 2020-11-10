@@ -23,7 +23,7 @@ export default (state: StateObject) => {
         const allLogs = await state.db(query.allLog, []);
         const successLogs = await state.db(query.allSuccessLog, []);
         const failLogs = await state.db(query.allFailLog, []);
-        res.render("status", {
+        res.json({
             usersLength,
             usersDeleted,
             photosPublished,
@@ -52,18 +52,6 @@ export default (state: StateObject) => {
             return;
         }
 
-        if (req.body.confirm === '1' && !res.locals.config.disable_dangerous_action_confirm) {
-            let data1 = req.body;
-            data1.confirm = '0';
-            res.render('confirm', {
-                msg: 'Run Script Confirmation',
-                inf1: 'Are you sure to run this script?',
-                inf2: 'PLEASE ENSURE YOU KNOW WHAT YOU ARE DOING',
-                data: data1
-            });
-            return;
-        }
-
         const script = (await import(path.join("../tools/mscript/", encodeURIComponent(req.params.name)))).default(state.db, req.app.get('root'))
         console.log(script)
 
@@ -81,13 +69,10 @@ export default (state: StateObject) => {
         await state.db(query.maintenance, ["false"]);
         await script.callback();
 
-        res.render('notification', {
+        res.json({
             code: 200,
             msg: "Script Finished",
-            inf: '<a href="#result" data-toggle="collapse">Result</a><br>' +
-                '<div id="result" class="collapse">' +
-                result +
-                '</div>',
+            result
         });
     })
     return router;

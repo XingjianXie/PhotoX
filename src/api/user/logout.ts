@@ -42,17 +42,14 @@ export default (state: StateObject) => {
 
         res.status(200);
         if (rs[0].id === userID) {
-            res.status(200);
-            res.render('notification', {
+            res.json({
                 code: 200,
                 msg: "Logout Successfully",
                 inf: "Your are logout now",
-                home: true
             });
         }
         else {
-            res.status(200);
-            res.render('notification', {
+            res.json({
                 code: 200,
                 msg: "Logout Successfully",
             });

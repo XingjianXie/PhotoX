@@ -17,16 +17,16 @@ export default (state: StateObject) => {
             : (await state.db(query.countSearchLogWithLimit, [req.session!.type, req.query.wd, req.query.wd, req.query.wd, req.query.wd, req.query.wd, req.query.wd]))[0]['COUNT(*)'];
 
         if (!rs.length && total) {
-            res.redirect("/log?pg=" + Math.ceil(total / maximum).toString() + "&wd=" + (req.query.wd || '') + "&max=" + maximum.toString());
+            res.json({
+                code: 416,
+                total: total,
+            });
             return;
         }
 
-        res.render('log', {
-            logs: rs,
+        res.json({
+            content: { log: rs },
             total: total,
-            current: pg,
-            maximum: maximum,
-            wd: req.query.wd,
         });
     });
     return router;

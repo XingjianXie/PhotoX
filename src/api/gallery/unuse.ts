@@ -32,7 +32,9 @@ export default (state: StateObject) => {
             ]);
             log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Cancel Use", true, null);
         }
-        res.sendStatus(200);
+        res.json({
+            code: 200
+        })
     });
     return router;
 };

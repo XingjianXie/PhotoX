@@ -8,12 +8,12 @@ import StateObject from "../../../class/state_object";
 
 export default (state: StateObject) => {
     const router = express.Router();
-    router.post('/', async(req, res, next) => {
-        if (isNaN(Number(req.body.categoryId)) || Number(req.body.categoryId) === 0) {
+    router.use('/:id', async(req, res, next) => {
+        if (isNaN(Number(req.params.id)) || Number(req.params.id) === 0) {
             next(createError(400, 'Category ID Should Be A Nonzero Number'));
             return;
         }
-        let rs = await state.db(query.getCategoryById, [Number(req.body.categoryId)]);
+        let rs = await state.db(query.getCategoryById, [Number(req.params.id)]);
         if (!rs[0]) {
             log(res.locals.config, state.db, req.session!.userID, "Category", Number(req.body.categoryId), "Delete", false, "Error: Not Found");
             next(createError(404, 'Category Not Found'));
@@ -29,23 +29,11 @@ export default (state: StateObject) => {
             next(createError(400, 'Disabled'));
             return;
         }
-        if (req.body.confirm === '1' && !res.locals.config.disable_dangerous_action_confirm) {
-            let num : number = (await state.db(query.countPhotoSpecificCategory, [rs[0].id]))[0]["COUNT(*)"];
-            let data1 = req.body;
-            data1.confirm = '0';
-            res.render('confirm', {
-                msg: 'Delete Confirmation',
-                inf1: 'Are you sure to delete category ' + rs[0].name + ' (' + rs[0].id.toString() + ')',
-                inf2: !num ? '' : '[ASK MARK XIE BEFORE YOU DO THIS] YOU MAY NOT UNDO THIS ACTION: ALL PHOTOS(' + num.toString() + ') WHICH HAS THIS CATEGORY WILL BE MOVED TO DEFAULT CATEGORY',
-                data: data1
-            });
-            return;
-        }
 
         await state.db(query.moveCategory, [0, rs[0].id]);
         await state.db(query.deleteCategory, [rs[0].id]);
 
-        res.render('notification', {
+        res.json({
             code: 200,
             msg: "Delete Successfully",
         });

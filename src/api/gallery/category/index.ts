@@ -30,17 +30,14 @@ export default (state: StateObject) => {
             return;
         }
 
-        res.render('category', {
-            categories: rs,
+        res.json({
+            content: { category: rs },
             total: total,
-            current: pg,
-            maximum: maximum,
-            wd: req.query.wd,
         });
     });
     //router.use(xauth("admin"))
-    router.use('/add', add(state));
-    router.use('/edit', edit(state));
-    router.use('/delete', _delete(state));
+    router.put('/', add(state));
+    router.patch('/', edit(state));
+    router.delete('/', _delete(state));
     return router;
 };

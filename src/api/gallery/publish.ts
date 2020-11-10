@@ -3,32 +3,11 @@ import query from "../../db/query";
 import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
 import log from "../../tools/log";
-import auth from "../../tools/api/auth";
+import auth from "../../tools/auth";
 import StateObject from "../../class/state_object";
 
 export default (state: StateObject) => {
     const router = express.Router();
-    router.get('/:id', async(req, res, next) => {
-        if (isNaN(Number(req.params.id))) {
-            next(createError(400, 'Photo ID Should Be A Number'));
-            return;
-        }
-        const rs : any[] = await state.db(query.getPhotoById, [Number(req.params.id)]);
-        if (!rs[0] || rs[0].type !== 1) {
-            log(res.locals.config, state.db, req.session!.userID, "Photo", Number(req.params.id), "Publish", false, "Error: Not Found");
-            next(createError(404, 'Photo Not Found'));
-            return;
-        }
-        if (!res.locals.config.allow_publish_others && req.session!.userID !== rs[0].uploader_id) {
-            log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Publish", false, "Error: Unauthorized");
-            next(createError(401, 'Unauthorized'));
-            return;
-        }
-        const category : any[] = await state.db(query.queryCategoryForQueryPhoto, []);
-        res.render('publish_photo', {
-            category, p: rs[0]
-        });
-    });
     router.post('/:id', async(req, res, next) => {
         if (isNaN(Number(req.params.id))) {
             next(createError(400, 'Photo ID Should Be A Number'));
@@ -50,16 +29,6 @@ export default (state: StateObject) => {
             next(createError(400, 'Category or Name Required'));
             return;
         }
-        if (req.body.confirm === '1' && !res.locals.config.disable_dangerous_action_confirm) {
-            let data1 = req.body;
-            data1.confirm = '0';
-            res.render('confirm', {
-                msg: 'Publish Confirmation',
-                inf1: 'Are you sure to publish photo ' + rs[0].id.toString() + '?',
-                data: data1
-            });
-            return;
-        }
 
         await state.db(query.publishPhoto, [req.body.name, req.body.category, rs[0].id]);
         log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Publish", true, null);
@@ -70,11 +39,9 @@ export default (state: StateObject) => {
             log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Assign to Face", true, 'Face: ' + req.body['mark' + i.toString()]);
         }
 
-        res.status(200);
-        res.render('notification', {
+        res.json({
             code: 200,
             msg: "Publish Successfully",
-            bk2: true
         });
     });
 

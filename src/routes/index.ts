@@ -15,7 +15,7 @@ import config from './config'
 import guest_upload from "./guest_upload";
 import status from "./status";
 import xauth from "../tools/xauth";
-import api from "./api"
+import api from "../api"
 import StateObject from '../class/state_object';
 
 export default (state: StateObject) => {

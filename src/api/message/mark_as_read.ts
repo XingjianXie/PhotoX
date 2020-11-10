@@ -23,7 +23,9 @@ export default (state: StateObject) => {
 
             log(res.locals.config, state.db, req.session!.userID, "Message", rs[0].id, "Read", true, null);
             await state.db(query.readMessage, [req.session!.userID, rs[0].id]);
-            res.sendStatus(200);
+            res.json({
+                code: 200
+            })
         } else {
             const rs : any[] = await state.db(query.queryMyUnreadMessage, [req.session!.userID, req.session!.userID]);
             if (!rs.length) {
@@ -35,7 +37,9 @@ export default (state: StateObject) => {
             log(res.locals.config, state.db, req.session!.userID, "Message", null, "Read All", true, null);
             for (let v of rs)
                 await state.db(query.readMessage, [req.session!.userID, v.id]);
-            res.sendStatus(200);
+            res.json({
+                code: 200
+            })
         }
     });
     return router;

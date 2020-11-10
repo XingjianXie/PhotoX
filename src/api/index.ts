@@ -6,7 +6,6 @@ import register from './register';
 import logout from './logout';
 import gallery from './gallery';
 import user from './user';
-import create_password from './create_password'
 import reset_password from './reset_password'
 import log from './log'
 import message from './message'
@@ -20,8 +19,14 @@ import StateObject from '../class/state_object';
 export default (state: StateObject) => {
     const router = express.Router();
     router.get('/',  (req, res) => {
-        if (!req.session || !req.session!.sign) res.redirect('/login');
-        else res.redirect('/gallery');
+        if (!req.session || !req.session!.sign) res.json({
+            code: 302,
+            url: "/login"
+        })
+        else res.json({
+            code: 302,
+            url: "/gallery"
+        })
     });
 
     //router.use(xauth("none"))
@@ -29,7 +34,6 @@ export default (state: StateObject) => {
     router.use('/register', register(state));
     router.use('/uploads', uploads(state));
     router.use('/guest_upload', guest_upload(state));
-    router.use('/create_password', create_password(state));
 
     router.use(xauth("sign"))
     router.use('/message', message(state));
@@ -50,12 +54,11 @@ export default (state: StateObject) => {
     });
 
     router.use((err : any, req: express.Request, res: express.Response, next: Function) => {
-        res.status(err.status || 500);
-        res.render('notification', {
+        res.json({
             code: err.status || 500,
             msg: err.message,
             inf: req.app.get('env') === 'development' ? err.stack : null,
-        });
+        })
     });
     return router;
 };

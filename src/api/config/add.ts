@@ -9,11 +9,7 @@ import StateObject from "../../class/state_object";
 
 export default (state: StateObject) => {
     const router = express.Router();
-    router.get('/', async(req, res, next) => {
-        res.render('add_config');
-    });
-
-    router.post('/', async(req, res, next) => {
+    router.use('/', async(req, res, next) => {
         if (!req.body.name) {
             next(createError(400, 'Name Required'));
             return;
@@ -36,11 +32,9 @@ export default (state: StateObject) => {
             } else throw e;
             return
         }
-        res.status(201);
-        res.render('notification', {
+        res.json({
             code: 201,
             msg: "Add Successfully",
-            bk2: true
         });
     });
 

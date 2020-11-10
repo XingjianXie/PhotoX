@@ -32,7 +32,10 @@ export default (state: StateObject) => {
             ]);
             log(res.locals.config, state.db, req.session!.userID, "Photo", rs[0].id, "Download", true, null);
         }
-        res.send((await state.db(query.isDownloadedByUser, [req.session!.userID, rs[0].id]))[0].uuid);
+        res.json({
+            code: 200,
+            uuid: (await state.db(query.isDownloadedByUser, [req.session!.userID, rs[0].id]))[0].uuid
+        })
     });
     return router;
 };

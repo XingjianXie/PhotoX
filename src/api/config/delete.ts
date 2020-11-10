@@ -7,27 +7,16 @@ import StateObject from "../../class/state_object";
 
 export default (state: StateObject) => {
     const router = express.Router();
-    router.post('/', async(req, res, next) => {
-        const rs : any[] = await state.db(query.getDeletableConfigByName, [req.body.name]);
+    router.use('/:name', async(req, res, next) => {
+        const rs : any[] = await state.db(query.getDeletableConfigByName, [req.params.name]);
         if (!rs[0]) {
             next(createError(404, 'Config Not Found'));
-            return;
-        }
-        if (req.body.confirm === '1' && !res.locals.config.disable_dangerous_action_confirm) {
-            let data1 = req.body;
-            data1.confirm = '0';
-            res.render('confirm', {
-                msg: 'Delete Confirmation',
-                inf1: 'Are you sure to delete config ' + rs[0].name,
-                inf2: 'YOU MAY NOT UNDO THIS ACTION',
-                data: data1
-            });
             return;
         }
 
         await state.db(query.deleteConfig, [rs[0].name]);
 
-        res.render('notification', {
+        res.json({
             code: 200,
             msg: "Delete Successfully",
         });

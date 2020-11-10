@@ -20,21 +20,21 @@ export default (state: StateObject) => {
             : (await state.db(query.countSearchConfigWithLimit, [req.query.wd]))[0]['COUNT(*)'];
 
         if (!rs.length && total) {
-            res.redirect("/config?pg=" + Math.ceil(total / maximum).toString() + "&wd=" + (req.query.wd || '') + "&max=" + maximum.toString());
+            res.json({
+                code: 416,
+                total: total,
+            });
             return;
         }
 
-        res.render('config', {
-            configs: rs,
+        res.json({
+            content: { config: rs },
             total: total,
-            current: pg,
-            maximum: maximum,
-            wd: req.query.wd,
         });
     });
     //router.use(xauth("system"))
-    router.use('/new', _new(state));
-    router.use('/delete', _delete(state));
-    router.use('/edit', edit(state))
+    router.put('/', _new(state));
+    router.patch('/', edit(state))
+    router.delete('/', _delete(state));
     return router;
 };
