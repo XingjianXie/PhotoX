@@ -5,7 +5,7 @@ import createError from "http-errors";
 import log from "../tools/log";
 import os, {totalmem} from "os";
 import path from "path";
-import auth from "../tools/auth";
+import auth from "../tools/api/auth";
 import StateObject from "../class/state_object";
 
 export default (state: StateObject) => {

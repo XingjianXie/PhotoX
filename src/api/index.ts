@@ -14,8 +14,7 @@ import uploads from './uploads'
 import config from './config'
 import guest_upload from "./guest_upload";
 import status from "./status";
-import xauth from "../tools/xauth";
-import api from "./api"
+import xauth from "../tools/api/xauth";
 import StateObject from '../class/state_object';
 
 export default (state: StateObject) => {
@@ -26,7 +25,6 @@ export default (state: StateObject) => {
     });
 
     //router.use(xauth("none"))
-    router.use('/api', api(state));
     router.use('/login', login(state));
     router.use('/register', register(state));
     router.use('/uploads', uploads(state));

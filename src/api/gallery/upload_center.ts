@@ -8,7 +8,7 @@ import crypto from "crypto";
 import path from "path";
 import log from "../../tools/log"
 import upload_photo from '../../tools/upload_photo';
-import auth from "../../tools/auth";
+import auth from "../../tools/api/auth";
 import StateObject from "../../class/state_object";
 import multer from "multer";
 

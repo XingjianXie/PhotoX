@@ -5,8 +5,8 @@ import add from "./add";
 import _delete from './delete';
 import edit from "./edit";
 import logout from "./logout";
-import auth from "../../tools/auth";
-import xauth from "../../tools/xauth";
+import auth from "../../tools/api/auth";
+import xauth from "../../tools/api/xauth";
 import StateObject from "../../class/state_object";
 
 export default (state: StateObject) => {

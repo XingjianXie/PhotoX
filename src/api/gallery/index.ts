@@ -7,8 +7,8 @@ import download from "./download";
 import unuse from "./unuse";
 import category from "./category";
 import query from '../../db/query';
-import auth from "../../tools/auth";
-import xauth from "../../tools/xauth";
+import auth from "../../tools/api/auth";
+import xauth from "../../tools/api/xauth";
 import StateObject from "../../class/state_object";
 
 export default (state: StateObject) => {

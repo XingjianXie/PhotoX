@@ -4,8 +4,8 @@ import createError from "http-errors";
 import {create as ps_create} from "../../tools/password";
 import {AllHtmlEntities} from 'html-entities';
 import log from "../../tools/log";
-import auth from "../../tools/auth";
-import xauth from "../../tools/xauth";
+import auth from "../../tools/api/auth";
+import xauth from "../../tools/api/xauth";
 import StateObject from "../../class/state_object";
 
 export default (state: StateObject) => {

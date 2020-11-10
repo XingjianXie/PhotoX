@@ -4,8 +4,8 @@ import createError from "http-errors";
 import mark_as_read from "./mark_as_read";
 import _new from "./new";
 import { AllHtmlEntities } from 'html-entities';
-import auth from "../../tools/auth";
-import xauth from "../../tools/xauth";
+import auth from "../../tools/api/auth";
+import xauth from "../../tools/api/xauth";
 import StateObject from "../../class/state_object";
 
 export default (state: StateObject) => {

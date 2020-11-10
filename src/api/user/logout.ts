@@ -2,7 +2,7 @@ import express from 'express';
 import createError from "http-errors";
 import query from "../../db/query";
 import log from "../../tools/log";
-import auth from "../../tools/auth";
+import auth from "../../tools/api/auth";
 import StateObject from "../../class/state_object";
 import session_killer from "../../tools/session_killer";
 

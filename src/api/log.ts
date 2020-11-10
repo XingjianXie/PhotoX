@@ -1,7 +1,7 @@
 import express from 'express';
 import query from "../db/query";
 import createError from "http-errors";
-import auth from "../tools/auth"
+import auth from "../tools/api/auth"
 import StateObject from "../class/state_object";
 
 export default (state: StateObject) => {
