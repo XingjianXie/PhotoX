@@ -2,7 +2,7 @@ import express from 'express';
 import query from '../db/query';
 import {create as ps_create, make as ps_make} from '../tools/password';
 import createError from "http-errors";
-import log from "../tools/log";
+import log from "../tools/api/log";
 import auth from "../tools/api/auth";
 import StateObject from "../class/state_object";
 

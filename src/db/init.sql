@@ -104,6 +104,7 @@ CREATE TABLE `log` (
   `target` int(10) unsigned DEFAULT NULL,
   `action` varchar(100) NOT NULL,
   `success` tinyint(1) NOT NULL,
+  `api` tinyint(1) NOT NULL,
   `extra_message` longtext,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

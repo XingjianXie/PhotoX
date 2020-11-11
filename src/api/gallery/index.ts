@@ -8,7 +8,7 @@ import auth from "../../tools/api/auth";
 import xauth from "../../tools/api/xauth";
 import StateObject from "../../class/state_object";
 import createError from "http-errors";
-import log from "../../tools/log";
+import log from "../../tools/api/log";
 import publish from './publish';
 import recall from './recall';
 import _delete from './delete';

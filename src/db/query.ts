@@ -101,7 +101,7 @@ export default {
     clearMark: 'DELETE FROM mark WHERE photo_id=?',
 
     //Log
-    log: 'INSERT INTO log(operator, target_type, target, action, success, extra_message) VALUES(?, ?, ?, ?, ?, ?)',
+    log: 'INSERT INTO log(operator, target_type, target, action, success, api, extra_message) VALUES(?, ?, ?, ?, ?, ?, ?)',
     allLog: 'SELECT * FROM log',
     allSuccessLog: 'SELECT * FROM log where success=true',
     allFailLog: 'SELECT * FROM log where success=false',

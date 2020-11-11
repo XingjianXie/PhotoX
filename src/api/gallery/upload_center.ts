@@ -6,7 +6,7 @@ import {mkdir, unlink} from "fs";
 import * as util from "util";
 import crypto from "crypto";
 import path from "path";
-import log from "../../tools/log"
+import log from "../../tools/api/log"
 import upload_photo from '../../tools/upload_photo';
 import auth from "../../tools/api/auth";
 import StateObject from "../../class/state_object";

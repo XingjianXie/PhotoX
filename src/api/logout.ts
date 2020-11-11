@@ -1,6 +1,6 @@
 import express from 'express';
 import query from "../db/query";
-import log from "../tools/log";
+import log from "../tools/api/log";
 import auth from "../tools/api/auth";
 import StateObject from "../class/state_object";
 

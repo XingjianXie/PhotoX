@@ -2,7 +2,7 @@ import express from 'express';
 import query from '../db/query';
 import {make as ps_make, create as ps_create} from '../tools/password';
 import createError from "http-errors";
-import log from "../tools/log";
+import log from "../tools/api/log";
 import os, {totalmem} from "os";
 import path from "path";
 import auth from "../tools/api/auth";
