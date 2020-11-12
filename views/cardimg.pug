@@ -49,10 +49,10 @@ each p, i in photos
           form.d-inline-block(method='post' action='/gallery/recall')
             input.d-none(value=p.id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
             input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
-            button.btn.btn-danger.btn-sm.mx-1(type='submit', disabled=!mdata[i].download.length && !session.type)
+            button.btn.btn-danger.btn-sm.mx-1(type='submit')
               | Recall
           form.d-inline-block(method='post' action='/gallery/delete')
             input.d-none(value=p.id, name='photoID', autocomplete="off", spellcheck="false", maxlength=30)
             input.d-none(value='1', name='confirm', autocomplete="off", spellcheck="false", maxlength=30)
-            button.btn.btn-danger.btn-sm.mx-1(type='submit', disabled=!mdata[i].download.length && !session.type)
+            button.btn.btn-danger.btn-sm.mx-1(type='submit')
               | Delete
