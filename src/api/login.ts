@@ -13,7 +13,10 @@ export default (state: StateObject) => {
         if (!auth(req, res, next, "redirect", "nologin")) return;
         res.json({
             "code": 200,
-            "bg": res.locals.config.bg1
+            "allowRegister": res.locals.config.allow_register,
+            "allowGuestUpload": res.locals.config.allow_guestUpload,
+            "background": res.locals.config.bg1,
+            "welcomeWord": res.locals.config.welcome_word
         })
     });
 
