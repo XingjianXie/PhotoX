@@ -1,6 +1,7 @@
 import express from 'express';
 import createError from "http-errors";
 
+import layout from './layout';
 import login from './login';
 import register from './register';
 import logout from './logout';
@@ -30,6 +31,7 @@ export default (state: StateObject) => {
     });
 
     //router.use(xauth("none"))
+    router.use('/layout', layout(state));
     router.use('/login', login(state));
     router.use('/register', register(state));
     router.use('/uploads', uploads(state));

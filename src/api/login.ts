@@ -12,11 +12,15 @@ export default (state: StateObject) => {
     router.get('/', (req, res, next) => {
         if (!auth(req, res, next, "redirect", "nologin")) return;
         res.json({
-            "code": 200,
-            "allowRegister": res.locals.config.allow_register,
-            "allowGuestUpload": res.locals.config.allow_guestUpload,
-            "background": res.locals.config.bg1,
-            "welcomeWord": res.locals.config.welcome_word
+            code: 200,
+            content: {
+                view: {
+                    allowRegister: res.locals.config.allow_register,
+                    allowGuestUpload: res.locals.config.allow_guestUpload,
+                    background: res.locals.config.bg1,
+                    welcomeWord: res.locals.config.welcome_word
+                }
+            }
         })
     });
 
