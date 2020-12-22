@@ -34,6 +34,7 @@ block content
                 th Operator
                 th Target
                 th Action
+                th API
                 th Extra Info
             tbody
               each val in logs
@@ -46,6 +47,7 @@ block content
                     th.text-success= val.action
                   else
                     th.text-danger= val.action
+                  th= val.api ? "Yes" : "No"
                   th= val.extra_message
         .row.d-block.d-lg-flex
           .col-sm-12.col-md-6.align-self-center

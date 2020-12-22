@@ -101,8 +101,9 @@ export default {
     clearMark: 'DELETE FROM mark WHERE photo_id=?',
 
     //Log
-    log: 'INSERT INTO log(operator, target_type, target, action, success, extra_message) VALUES(?, ?, ?, ?, ?, ?)',
+    log: 'INSERT INTO log(operator, target_type, target, action, success, api, extra_message) VALUES(?, ?, ?, ?, ?, ?, ?)',
     allLog: 'SELECT * FROM log',
+    weeklyReport: 'select * from log LEFT OUTER JOIN user ON user.id = operator where action="Publish" and success=1',
     allSuccessLog: 'SELECT * FROM log where success=true',
     allFailLog: 'SELECT * FROM log where success=false',
     queryLogWithLimit: 'SELECT log.*, operator_obj.name AS operator_name, target_type, target, COALESCE(targetP_obj.name, targetU_obj.name, targetC_obj.name, "NO NAME") AS target_name, action, success, extra_message FROM log LEFT OUTER JOIN user AS operator_obj ON operator_obj.id=log.operator LEFT OUTER JOIN photo AS targetP_obj ON log.target_type="Photo" AND targetP_obj.id=log.target LEFT OUTER JOIN user AS targetU_obj ON log.target_type="User" AND targetU_obj.id=log.target LEFT OUTER JOIN category AS targetC_obj ON log.target_type="Category" AND targetC_obj.id=log.target WHERE operator_obj.type <= ? ORDER BY log.id DESC LIMIT ?,?',

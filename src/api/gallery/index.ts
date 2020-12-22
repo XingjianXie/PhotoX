@@ -1,15 +1,17 @@
 import express from 'express';
 import upload_center from "./upload_center";
-import _delete from "./delete";
-import publish from "./publish";
-import recall from "./recall";
 import download from "./download";
 import unuse from "./unuse";
 import category from "./category";
 import query from '../../db/query';
-import auth from "../../tools/auth";
-import xauth from "../../tools/xauth";
+import auth from "../../tools/api/auth";
+import xauth from "../../tools/api/xauth";
 import StateObject from "../../class/state_object";
+import createError from "http-errors";
+import log from "../../tools/api/log";
+import publish from './publish';
+import recall from './recall';
+import _delete from './delete';
 
 export default (state: StateObject) => {
     const router = express.Router();
@@ -36,33 +38,32 @@ export default (state: StateObject) => {
 
 
         if (!rs.length && total) {
-            res.redirect("/gallery?pg=" + Math.ceil(total / maximum).toString() + "&max=" + maximum.toString());
+            res.json({
+                code: 416,
+                total: total,
+            });
             return;
         }
 
 
         const t = await Promise.all(rs.map(async(val) => {
             return {
-                face: await state.db(query.getMarkByPhotoId, [val.id]),
-                download: await state.db(query.getDownloadByPhotoId, [val.id]),
-                vd: !!(await state.db(query.isDownloadedByUser, [req.session!.userID, val.id])).length
+                photo: val,
+                tag: await state.db(query.getMarkByPhotoId, [val.id]),
+                usage: (await state.db(query.getDownloadByPhotoId, [val.id]))[0] ?? null,
+                downloaded: !!(await state.db(query.isDownloadedByUser, [req.session!.userID, val.id])).length
             };
         }));
 
         const category : any[] = await state.db(query.queryCategoryForQueryPhoto, []);
 
-        res.render('gallery', {
-            photos: rs,
-            mdata: t,
+        res.json({
+            code: 200,
+            content: t,
             total: total,
-            current: pg,
-            maximum: maximum,
-            uploadsLength: (await state.db(query.countUnPublishedPhoto, [req.session!.userID]))[0]['COUNT(*)'],
-            category: category,
-            cur_category: cur_category,
-            wd: req.query.wd
         });
     });
+
     //router.use(xauth("sign"))
     router.use('/upload_center', upload_center(state));
     router.use('/publish', publish(state));

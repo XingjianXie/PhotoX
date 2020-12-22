@@ -1,12 +1,12 @@
 import express from 'express';
 import createError from "http-errors";
 
+import layout from './layout';
 import login from './login';
 import register from './register';
 import logout from './logout';
 import gallery from './gallery';
 import user from './user';
-import create_password from './create_password'
 import reset_password from './reset_password'
 import log from './log'
 import message from './message'
@@ -14,24 +14,28 @@ import uploads from './uploads'
 import config from './config'
 import guest_upload from "./guest_upload";
 import status from "./status";
-import xauth from "../tools/xauth";
-import api from "../api"
+import xauth from "../tools/api/xauth";
 import StateObject from '../class/state_object';
 
 export default (state: StateObject) => {
     const router = express.Router();
     router.get('/',  (req, res) => {
-        if (!req.session || !req.session!.sign) res.redirect('/login');
-        else res.redirect('/gallery');
+        if (!req.session || !req.session!.sign) res.json({
+            code: 302,
+            url: "/login"
+        })
+        else res.json({
+            code: 302,
+            url: "/gallery"
+        })
     });
 
     //router.use(xauth("none"))
-    router.use('/api', api(state));
+    router.use('/layout', layout(state));
     router.use('/login', login(state));
     router.use('/register', register(state));
     router.use('/uploads', uploads(state));
     router.use('/guest_upload', guest_upload(state));
-    router.use('/create_password', create_password(state));
 
     router.use(xauth("sign"))
     router.use('/message', message(state));
@@ -52,12 +56,11 @@ export default (state: StateObject) => {
     });
 
     router.use((err : any, req: express.Request, res: express.Response, next: Function) => {
-        res.status(err.status || 500);
-        res.render('notification', {
+        res.json({
             code: err.status || 500,
             msg: err.message,
             inf: req.app.get('env') === 'development' ? err.stack : null,
-        });
+        })
     });
     return router;
 };
