@@ -10,7 +10,7 @@ import session_killer from "../tools/session_killer";
 export default (state: StateObject) => {
     const router = express.Router();
     router.get('/', (req, res, next) => {
-        let login = req.session ? req.session.sign : false
+        let login = !req.session ? false : req.session.login
         res.json({
             code: 200,
             content: {
@@ -19,7 +19,7 @@ export default (state: StateObject) => {
                     name: login ? req.session!.name : "GUEST",
                     id: login ? req.session!.userId : -1,
                     type: login ? req.session!.type : -1,
-                    typeName: login ? res.locals.typeName[req.session!.type] : "Guest",
+                    typeName: login ? res.locals.typeName(req.session!.type) : "Guest",
                     allowRegister: res.locals.config.allow_register
                 },
                 message: res.locals.unreadMeessageLength
