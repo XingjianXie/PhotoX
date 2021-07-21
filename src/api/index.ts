@@ -20,7 +20,7 @@ import StateObject from '../class/state_object';
 export default (state: StateObject) => {
     const router = express.Router();
     router.get('/',  (req, res) => {
-        if (!req.session || !req.session!.sign) res.json({
+        if (!req.session || !req.session.sign) res.json({
             code: 302,
             url: "/login"
         })

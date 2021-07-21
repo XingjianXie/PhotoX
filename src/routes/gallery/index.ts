@@ -45,7 +45,7 @@ export default (state: StateObject) => {
             return {
                 face: await state.db(query.getMarkByPhotoId, [val.id]),
                 download: await state.db(query.getDownloadByPhotoId, [val.id]),
-                vd: !!(await state.db(query.isDownloadedByUser, [req.session!.userID, val.id])).length
+                vd: !!(await state.db(query.isDownloadedByUser, [req.session.userID, val.id])).length
             };
         }));
 
@@ -57,7 +57,7 @@ export default (state: StateObject) => {
             total: total,
             current: pg,
             maximum: maximum,
-            uploadsLength: (await state.db(query.countUnPublishedPhoto, [req.session!.userID]))[0]['COUNT(*)'],
+            uploadsLength: (await state.db(query.countUnPublishedPhoto, [req.session.userID]))[0]['COUNT(*)'],
             category: category,
             cur_category: cur_category,
             wd: req.query.wd

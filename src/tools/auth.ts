@@ -9,7 +9,7 @@ let level = {
 
 export = async(req: express.Request, res: express.Response, next: express.NextFunction, type: "redirect" | "deny", name: "nologin" | "sign" | "admin" | "system") => {
     if (name === "nologin") {
-        if (req.session && req.session!.sign) {
+        if (req.session && req.session.sign) {
             if (type === "redirect") {
                 res.redirect('/');
             } else if (type == "deny") {
@@ -19,7 +19,7 @@ export = async(req: express.Request, res: express.Response, next: express.NextFu
         }
         return true
     }
-    if (!req.session || !req.session!.sign || req.session!.type <= level[name]) {
+    if (!req.session || !req.session.sign || req.session.type <= level[name]) {
         if (type === "redirect") {
             res.redirect('/');
         } else if (type == "deny") {

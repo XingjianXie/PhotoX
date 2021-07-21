@@ -19,8 +19,8 @@ export default (state: StateObject) => {
         const maximum = Math.max(Number(req.query.max) || 5, 1);
         let rs : any[], total : number;
         if (!req.query.others) {
-            rs = await state.db(query.queryUnPublishedPhotoWithLimit, [req.session!.userID, (pg - 1) * maximum, maximum]);
-            total = (await state.db(query.countQueryUnPublishedPhotoWithLimit, [req.session!.userID]))[0]['COUNT(*)'];
+            rs = await state.db(query.queryUnPublishedPhotoWithLimit, [req.session.userID, (pg - 1) * maximum, maximum]);
+            total = (await state.db(query.countQueryUnPublishedPhotoWithLimit, [req.session.userID]))[0]['COUNT(*)'];
         } else {
             rs = !req.query.wd
                 ? await state.db(query.queryOthersUnPublishedPhotoWithLimit, [ (pg - 1) * maximum, maximum])
@@ -48,7 +48,7 @@ export default (state: StateObject) => {
         if (!(req.files instanceof Array)) {
             throw req.files;
         }
-        const t = await upload_photo(res.locals.config, state.db, req.files, req.session!.userID, req.app.get("root"));
+        const t = await upload_photo(res.locals.config, state.db, req.files, req.session.userID, req.app.get("root"));
         res.json({
             code: 200,
             result: t,

@@ -45,10 +45,10 @@ export default (state: StateObject) => {
         }
         if (ps_make(req.body.pwd, rs[0].passrd) === rs[0].passcode) {
             await session_killer(state, rs[0].id);
-            req.session!.sign = true;
-            req.session!.userID = rs[0].id;
-            req.session!.type = rs[0].type;
-            req.session!.name = rs[0].name;
+            req.session.sign = true;
+            req.session.userID = rs[0].id;
+            req.session.type = rs[0].type;
+            req.session.name = rs[0].name;
             state.session_map[rs[0].id] = req.sessionID;
             log(res.locals.config, state.db, 0, "User", rs[0].id, "Login", true, "IP Address: " + req.headers['x-forwarded-for']);
             res.json({

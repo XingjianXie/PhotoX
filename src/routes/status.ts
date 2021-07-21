@@ -71,7 +71,7 @@ export default (state: StateObject) => {
         //=========aha==========
         const result = await script.run();
         await state.db(query.addMessage, [0, null,
-            "Script " + encodeURIComponent(req.params.name) + " has been run by " + req.session!.name + " (" + req.session!.userID + "). " + "<br>"
+            "Script " + encodeURIComponent(req.params.name) + " has been run by " + req.session.name + " (" + req.session.userID + "). " + "<br>"
             + '<a href="#" onclick="$(this.nextElementSibling.nextElementSibling).collapse(\'toggle\'); return false;">Result</a><br>'
             + '<div class="collapse">'
             + result

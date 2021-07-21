@@ -9,12 +9,20 @@ import redis from 'redis';
 import index from './routes';
 import db from "./db/db";
 import {Store} from "express-session";
-import {mkdir} from "fs";
-import * as util from "util";
 import {promisify, types} from "util";
 import query from "./db/query";
 import StateObject from "./class/state_object";
 
+declare module 'express-session' {
+    export interface Session {
+        userID: number;
+        guestUploadUserID: number;
+        guestUploadLogin: boolean;
+        sign: boolean;
+        type: number;
+        name: string;
+    }
+}
 
 export default async function create_application() {
     const redisStore = require('connect-redis')(session);
@@ -95,8 +103,8 @@ export default async function create_application() {
 
         res.locals.config = config;
         res.locals.session = req.session;
-        if (req.session && req.session!.sign)
-            res.locals.unreadMeessageLength = (await db(query.countQueryMyUnreadMessage, [req.session!.userID, req.session!.userID]))[0]['COUNT(*)'];
+        if (req.session && req.session.sign)
+            res.locals.unreadMeessageLength = (await db(query.countQueryMyUnreadMessage, [req.session.userID, req.session.userID]))[0]['COUNT(*)'];
         res.locals.typeName = new Proxy({}, {
             get(target, index) {
                 if (!isNaN(Number(index))) {

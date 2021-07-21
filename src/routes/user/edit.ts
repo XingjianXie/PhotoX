@@ -16,22 +16,22 @@ export default (state: StateObject) => {
         }
         const rs : any[] = await state.db(query.getUserById, [Number(req.params.id)]);
         if (!rs[0]) {
-            log(res.locals.config, state.db, req.session!.userID, "User", Number(req.params.id), "Edit", false, "Error: Not Found");
+            log(res.locals.config, state.db, req.session.userID, "User", Number(req.params.id), "Edit", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
-        if (req.session!.type <= rs[0].type && req.session!.userID !== Number(req.params.id)) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
+        if (req.session.type <= rs[0].type && req.session.userID !== Number(req.params.id)) {
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (res.locals.config.disable_admin_edit_user) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Disabled");
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Disabled");
             next(createError(401, 'Disabled'));
             return;
         }
@@ -53,39 +53,39 @@ export default (state: StateObject) => {
         }
         const rs : any[] = await state.db(query.getUserById, [Number(req.params.id)]);
         if (!rs[0]) {
-            log(res.locals.config, state.db, req.session!.userID, "User", Number(req.params.id), "Edit", false, "Error: Not Found");
+            log(res.locals.config, state.db, req.session.userID, "User", Number(req.params.id), "Edit", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
-        if (req.session!.type <= rs[0].type && req.session!.userID !== rs[0].id) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
+        if (req.session.type <= rs[0].type && req.session.userID !== rs[0].id) {
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
-        if (req.session!.type < Number(req.body.type)) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
+        if (req.session.type < Number(req.body.type)) {
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (!req.body.name && !req.body.type && !req.body.phone_number) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Bad Request");
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Bad Request");
             next(createError(400, 'Type or Name Required'));
             return;
         }
         if (res.locals.config.disable_admin_edit_user) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Edit", false, "Error: Disabled");
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Edit", false, "Error: Disabled");
             next(createError(401, 'Disabled'));
             return;
         }
         if (req.body.confirm === '1' && !res.locals.config.disable_dangerous_action_confirm) {
             let data1 = req.body;
             data1.confirm = '0';
-            if(req.session!.userID === rs[0].id && Number(req.body.type) < req.session!.type) {
+            if(req.session.userID === rs[0].id && Number(req.body.type) < req.session.type) {
                 res.render('confirm', {
                     msg: 'Edit User Confirmation',
                     inf1: 'Are you sure to downgrade your type?',
@@ -94,7 +94,7 @@ export default (state: StateObject) => {
                 });
                 return;
             }
-            else if(req.session!.userID !== rs[0].id && Number(req.body.type) === req.session!.type) {
+            else if(req.session.userID !== rs[0].id && Number(req.body.type) === req.session.type) {
                 res.render('confirm', {
                     msg: 'Edit User Confirmation',
                     inf1: 'Are you sure to make ' + res.locals.typeName[rs[0].type] + ' ' + rs[0].name + ' (' + rs[0].id + ') have the same type with you?',
@@ -104,7 +104,7 @@ export default (state: StateObject) => {
                 return;
             }
         }
-        const userID = req.session!.userID;
+        const userID = req.session.userID;
         await session_killer(state, rs[0].id);
         state.session_map[rs[0].id] = undefined;
 

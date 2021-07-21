@@ -14,7 +14,7 @@ export default (state: StateObject) => {
     });
     router.post('/', async(req, res, next) => {
         let id = 0;
-        if (req.session!.type) {
+        if (req.session.type) {
             if (!req.body.id) {
                 next(createError(400, 'User ID Required'));
                 return;
@@ -23,46 +23,46 @@ export default (state: StateObject) => {
                 next(createError(400, 'User ID Should Be Number'));
                 return;
             }
-            if (req.body.pwd_old && Number(req.body.id) !== req.session!.userID) {
-                log(res.locals.config, state.db, req.session!.userID, "User", Number(req.body.id), "Reset Password", false, "Error: Unauthorized");
+            if (req.body.pwd_old && Number(req.body.id) !== req.session.userID) {
+                log(res.locals.config, state.db, req.session.userID, "User", Number(req.body.id), "Reset Password", false, "Error: Unauthorized");
                 next(createError(401, 'Unauthorized'));
                 return;
             }
             id = Number(req.body.id);
         } else {
             if (req.body.id) {
-                log(res.locals.config, state.db, req.session!.userID, "User", Number(req.body.id), "Reset Password", false, "Error: Unauthorized");
+                log(res.locals.config, state.db, req.session.userID, "User", Number(req.body.id), "Reset Password", false, "Error: Unauthorized");
                 next(createError(401, 'Unauthorized'));
                 return;
             }
             if (!req.body.pwd_old) {
-                log(res.locals.config, state.db, req.session!.userID, "User", req.session!.userID, "Reset Password", false, "Error: Bad Request");
+                log(res.locals.config, state.db, req.session.userID, "User", req.session.userID, "Reset Password", false, "Error: Bad Request");
                 next(createError(400, 'Old Password Required'));
                 return;
             }
-            id = req.session!.userID;
+            id = req.session.userID;
         }
         if (!req.body.pwd_new) {
-            log(res.locals.config, state.db, req.session!.userID, "User", id, "Reset Password", false, "Error: Bad Request");
+            log(res.locals.config, state.db, req.session.userID, "User", id, "Reset Password", false, "Error: Bad Request");
             next(createError(400, 'New Password Required'));
             return;
         }
 
         const rs : any[] = await state.db(query.getUserById, [id]);
         if (!rs.length) {
-            log(res.locals.config, state.db, req.session!.userID, "User", id, "Reset Password", false, "Error: Not Found");
+            log(res.locals.config, state.db, req.session.userID, "User", id, "Reset Password", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
-        if (Number(req.body.id) !== req.session!.userID && res.locals.config.disable_admin_reset_password) {
-            log(res.locals.config, state.db, req.session!.userID, "User", id, "Reset Password", false, "Error: Disabled");
+        if (Number(req.body.id) !== req.session.userID && res.locals.config.disable_admin_reset_password) {
+            log(res.locals.config, state.db, req.session.userID, "User", id, "Reset Password", false, "Error: Disabled");
             next(createError(401, 'Disabled'));
             return;
         }
-        if (req.session!.type > rs[0].type || ps_make(req.body.pwd_old, rs[0].passrd) === rs[0].passcode) {
+        if (req.session.type > rs[0].type || ps_make(req.body.pwd_old, rs[0].passrd) === rs[0].passcode) {
             const ps_new = ps_create(req.body.pwd_new);
             await state.db(query.resetPassword, [ ps_new[0], ps_new[1], id]);
-            const userID = req.session!.userID;
+            const userID = req.session.userID;
             await session_killer(state, id);
             state.session_map[id] = undefined;
 
@@ -86,7 +86,7 @@ export default (state: StateObject) => {
                 });
             }
         } else {
-            log(res.locals.config, state.db, req.session!.userID, "User", id, "Reset Password", false, "Error: Unauthorized");
+            log(res.locals.config, state.db, req.session.userID, "User", id, "Reset Password", false, "Error: Unauthorized");
             next(createError(401, 'Password or Privilege Unauthorized'));
         }
     });

@@ -15,17 +15,17 @@ export default (state: StateObject) => {
         }
         let rs = await state.db(query.getCategoryById, [Number(req.params.id)]);
         if (!rs[0]) {
-            log(res.locals.config, state.db, req.session!.userID, "Category", Number(req.body.categoryId), "Delete", false, "Error: Not Found");
+            log(res.locals.config, state.db, req.session.userID, "Category", Number(req.body.categoryId), "Delete", false, "Error: Not Found");
             next(createError(404, 'Category Not Found'));
             return;
         }
-        if (req.session!.type <= rs[0].owner_type && req.session!.userID !== Number(rs[0].owner)) {
-            log(res.locals.config, state.db, req.session!.userID, "Category", rs[0].id, "Delete", false, "Error: Unauthorized");
+        if (req.session.type <= rs[0].owner_type && req.session.userID !== Number(rs[0].owner)) {
+            log(res.locals.config, state.db, req.session.userID, "Category", rs[0].id, "Delete", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (res.locals.config.disable_admin_delete_category) {
-            log(res.locals.config, state.db, req.session!.userID, "Category", rs[0].id, "Delete", false, "Error: Disabled");
+            log(res.locals.config, state.db, req.session.userID, "Category", rs[0].id, "Delete", false, "Error: Disabled");
             next(createError(400, 'Disabled'));
             return;
         }

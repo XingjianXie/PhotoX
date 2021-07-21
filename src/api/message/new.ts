@@ -1,11 +1,8 @@
 import express from 'express';
 import query from "../../db/query";
 import createError from "http-errors";
-import {create as ps_create} from "../../tools/password";
-import {AllHtmlEntities} from 'html-entities';
+import {encode} from 'html-entities';
 import log from "../../tools/api/log";
-import auth from "../../tools/api/auth";
-import xauth from "../../tools/api/xauth";
 import StateObject from "../../class/state_object";
 
 export default (state: StateObject) => {
@@ -20,13 +17,13 @@ export default (state: StateObject) => {
             next(createError(400, 'Bad Request'));
             return;
         }
-        if (req.body.send_button === "Send Html" && req.session!.type !== 127) {
+        if (req.body.send_button === "Send Html" && req.session.type !== 127) {
             next(createError(401, 'Unauthorized'));
             return;
         }
         const rs : any[] = await state.db(query.getUserById, [Number(req.body.id)]);
         if (!rs[0]) {
-            log(res.locals.config, state.db, req.session!.userID, "User", Number(req.body.id), "Send Message", false, "Error: Not Found");
+            log(res.locals.config, state.db, req.session.userID, "User", Number(req.body.id), "Send Message", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
@@ -34,9 +31,9 @@ export default (state: StateObject) => {
             next(createError(401, 'Disabled'));
             return;
         }
-        const id : number = (await state.db(query.addMessage, [req.session!.userID, req.body.id ? req.body.id : null, req.body.send_button === "Send" ? new AllHtmlEntities().encode(req.body.content).replace(/\n/g, "<br>") : req.body.content])).insertId;
-        log(res.locals.config, state.db, req.session!.userID, "Message", id, "Create", true, "Content: " + req.body.content + ", Html: " + (req.body.send_button === "Send" ? "False" : "True"));
-        log(res.locals.config, state.db, req.session!.userID, "User", req.body.id ? Number(req.body.id) : null, "Send Message", true, "Message ID: " + id.toString());
+        const id : number = (await state.db(query.addMessage, [req.session.userID, req.body.id ? req.body.id : null, req.body.send_button === "Send" ? encode(req.body.content).replace(/\n/g, "<br>") : req.body.content])).insertId;
+        log(res.locals.config, state.db, req.session.userID, "Message", id, "Create", true, "Content: " + req.body.content + ", Html: " + (req.body.send_button === "Send" ? "False" : "True"));
+        log(res.locals.config, state.db, req.session.userID, "User", req.body.id ? Number(req.body.id) : null, "Send Message", true, "Message ID: " + id.toString());
         res.json({
             code: 200,
             msg: "Send Successfully",

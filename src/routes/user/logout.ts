@@ -15,26 +15,26 @@ export default (state: StateObject) => {
         }
         const rs : any[] = await state.db(query.getUserById, [Number(req.body.userID)]);
         if (!rs[0]) {
-            log(res.locals.config, state.db, req.session!.userID, "User", Number(req.params.id), "Kick Out", false, "Error: Not Found");
+            log(res.locals.config, state.db, req.session.userID, "User", Number(req.body.userID), "Kick Out", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
-        if (req.session!.type <= rs[0].type && req.session!.userID !== rs[0].id) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Kick Out", false, "Error: Unauthorized");
+        if (req.session.type <= rs[0].type && req.session.userID !== rs[0].id) {
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Kick Out", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Kick Out", false, "Error: Unauthorized");
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Kick Out", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (res.locals.config.disable_admin_kick_user) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Kick Out", false, "Error: Disabled");
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Kick Out", false, "Error: Disabled");
             next(createError(401, 'Disabled'));
             return;
         }
-        const userID = req.session!.userID;
+        const userID = req.session.userID;
         await session_killer(state, rs[0].id);
         state.session_map[rs[0].id] = undefined;
 

@@ -8,7 +8,7 @@ let level = {
 }
 
 export = (name: "sign" | "admin" | "system") => (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    if (!req.session || !req.session!.sign || req.session!.type <= level[name]) {
+    if (!req.session || !req.session.sign || req.session.type <= level[name]) {
         if (req.method === "GET") {
             res.json({
                 code: 302,

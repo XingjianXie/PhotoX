@@ -52,28 +52,28 @@ export default (state: StateObject) => {
                 next(createError(400, 'Phone Number Has Been Taken as Staff Account'));
                 return;
             }
-            req.session!.guestUploadUserID = rs[0].id;
-            req.session!.guestUploadLogin = true;
+            req.session.guestUploadUserID = rs[0].id;
+            req.session.guestUploadLogin = true;
             log(res.locals.config, state.db, 0, "User", rs[0].id, "Guest Upload (Previous)", true, null);
         } else {
             const id : number = (await state.db(query.addUser, [req.body.phone_number, req.body.name, 126, null, null])).insertId;
             log(res.locals.config, state.db, 0, "User", id, "Guest Upload (New)", true, null);
 
-            req.session!.guestUploadUserID = id;
-            req.session!.guestUploadLogin = true;
+            req.session.guestUploadUserID = id;
+            req.session.guestUploadLogin = true;
         }
         res.sendStatus(200);
     });
     router.post('/upload', multer({limits: {fileSize: 1e8, files: 20}}).array("photo", 20), async(req, res, next) => {
-        if (!req.session || !req.session!.guestUploadLogin) {
+        if (!req.session || !req.session.guestUploadLogin) {
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (!(req.files instanceof Array)) {
             throw req.files;
         }
-        const t = await upload_photo(res.locals.config, state.db, req.files, req.session!.guestUploadUserID, req.app.get("root"));
-        req.session!.destroy((err) => {
+        const t = await upload_photo(res.locals.config, state.db, req.files, req.session.guestUploadUserID, req.app.get("root"));
+        req.session.destroy((err) => {
             if (err) throw err;
             res.send(t);
         });

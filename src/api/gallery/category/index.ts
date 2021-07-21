@@ -12,7 +12,7 @@ export default (state: StateObject) => {
     const router = express.Router();
     router.get('/',  async(req, res, next) => {
         if (res.locals.config.disable_admin_edit_category && res.locals.config.disable_admin_add_category && res.locals.config.disable_admin_delete_category) {
-            log(res.locals.config, state.db, req.session!.userID, "Category", null, "List Categories", false, "Error: Disabled");
+            log(res.locals.config, state.db, req.session.userID, "Category", null, "List Categories", false, "Error: Disabled");
             next(createError(401, 'Disabled'));
             return;
         }

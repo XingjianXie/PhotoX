@@ -51,7 +51,7 @@ export default (state: StateObject) => {
                 photo: val,
                 tag: await state.db(query.getMarkByPhotoId, [val.id]),
                 usage: (await state.db(query.getDownloadByPhotoId, [val.id]))[0] ?? null,
-                downloaded: !!(await state.db(query.isDownloadedByUser, [req.session!.userID, val.id])).length
+                downloaded: !!(await state.db(query.isDownloadedByUser, [req.session.userID, val.id])).length
             };
         }));
 

@@ -16,26 +16,26 @@ export default (state: StateObject) => {
         }
         const rs : any[] = await state.db(query.getUserById, [Number(req.params.id)]);
         if (!rs[0]) {
-            log(res.locals.config, state.db, req.session!.userID, "User", Number(req.params.id), "Delete", false, "Error: Not Found");
+            log(res.locals.config, state.db, req.session.userID, "User", Number(req.params.id), "Delete", false, "Error: Not Found");
             next(createError(404, 'User Not Found'));
             return;
         }
-        if (req.session!.type <= rs[0].type && req.session!.userID !== Number(req.params.id)) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Delete", false, "Error: Unauthorized");
+        if (req.session.type <= rs[0].type && req.session.userID !== Number(req.params.id)) {
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Delete", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (rs[0].type === 127) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Delete", false, "Error: Unauthorized");
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Delete", false, "Error: Unauthorized");
             next(createError(401, 'Unauthorized'));
             return;
         }
         if (res.locals.config.disable_admin_delete_user) {
-            log(res.locals.config, state.db, req.session!.userID, "User", rs[0].id, "Delete", false, "Error: Disabled");
+            log(res.locals.config, state.db, req.session.userID, "User", rs[0].id, "Delete", false, "Error: Disabled");
             next(createError(401, 'Disabled'));
             return;
         }
-        const userID = req.session!.userID;
+        const userID = req.session.userID;
         await session_killer(state, rs[0].id);
         state.session_map[rs[0].id] = undefined;
 
