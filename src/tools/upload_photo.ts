@@ -7,14 +7,15 @@ const exif = require('exif-reader');
 
 export default async(config: any, db: (sql : string, values : any) => Promise<any>, files: Express.Multer.File[], userID: number, root: string) => {
     return await Promise.all(files.map(async(value) => {
-        const bufs : any = [];
-        value.stream.on('data', (d) => { bufs.push(d); });
 
-        const buffer = await (new Promise<Buffer>(function (resolve, reject) {
+        /*
+	const buffer = await (new Promise<Buffer>(function (resolve, reject) {
             value.stream.on('end', () => {
                 resolve(Buffer.concat(bufs))
             });
-        }));
+	}));
+	*/
+	const buffer = value.buffer;
         const photo_md5 = config.disable_photo_md5 ? null
             : crypto.createHash('md5').update(buffer).digest('base64');
         try {
