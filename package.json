@@ -28,7 +28,7 @@
     "mysql": "^2.18.1",
     "pug": "^3.0.1",
     "redis": "^3.1.1",
-    "sharp": "^0.25.4"
+    "sharp": "^0.30.5"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",
